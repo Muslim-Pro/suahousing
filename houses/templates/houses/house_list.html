@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Houses Available - SUA Student Housing{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center fw-bold text-success">Houses Available in Morogoro</h2>
+
+<div class="row mb-5">
+    <div class="col-12 text-center">
+        <span class="me-2 text-muted fw-bold"></span>
+        <a href="{% url 'house_list' %}" class="btn btn-sm {% if not selected_location %}btn-success{% else %}btn-outline-success{% endif %} m-1 rounded-pill px-3">All Areas</a>
+        {% for loc_code, loc_name in locations %}
+        <a href="{% url 'house_list' %}?location={{ loc_code }}" class="btn btn-sm {% if selected_location == loc_code %}btn-success{% else %}btn-outline-success{% endif %} m-1 rounded-pill px-3">
+            {{ loc_name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row">
+    {% for house in houses %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+            {% if house.image %}
+                <img src="{{ house.image.url }}" class="card-img-top" alt="{{ house.title }}" style="height: 220px; object-fit: cover;" loading="lazy">
+            {% else %}
+                <div class="card-img-top bg-success bg-opacity-10 d-flex align-items-center justify-content-center text-muted" style="height: 220px;">Hakuna picha</div>
+            {% endif %}
+            <div class="card-body">
+                <span class="badge bg-success mb-2">{{ house.get_location_display }}</span>
+                <h5 class="card-title fw-bold text-dark">{{ house.title }}</h5>
+                <p class="card-text text-muted small"><i class="bi bi-geo-alt"></i> Address: {{ house.address }}</p>
+            </div>
+            <div class="card-footer bg-white border-0 pb-3">
+                <a href="{% url 'house_detail' house.pk %}" class="btn btn-success w-100 rounded-pill detail-btn">View Details / Houses</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center my-5">
+        <h4 class="text-muted">No house available on this area now.</h4>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.detail-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            this.style.pointerEvents = 'none';
+            this.style.opacity = '0.8';
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Fetching...';
+        });
+    });
+
+    window.addEventListener('pageshow', function() {
+        document.querySelectorAll('.detail-btn').forEach(function(button) {
+            button.style.pointerEvents = 'auto';
+            button.style.opacity = '1';
+            button.innerHTML = 'View Details / Houses';
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SUA Student Housing{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    /* Hii inaficha maandishi na ma-list yote ya msaada ya crispy forms */
+    .form-text, .help-block, .text-muted ul {
+        display: none !important;
+    }
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top shadow-sm py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% if request.user.is_authenticated %}{% url 'house_list' %}{% else %}{% url 'home' %}{% endif %}">SSH</a>
+        
+        <!-- Kitufe cha Simu (Responsive Toggler) ili isivurugike kwenye screen ndogo -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#suaNavbarNav" aria-controls="suaNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Hapa ndipo viungo vikuu vya katikati vinapokaa ki-expert bila kuleta error -->
+        <div class="collapse navbar-collapse" id="suaNavbarNav">
+            
+            <!-- Hivi ndo vitakaa pale kwenye maduara myekundu katikati kabisa (mx-auto) -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
+                {% if not request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}">Home</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}">Available Rooms</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}#support">Help & Support</a>
+                </li>
+            </ul>
+
+            <!-- Upande wa Kulia: Mfumo wako wa authentication uliokuwepo mwanzo umelindwa salama -->
+            <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                {% if request.user.is_authenticated %}
+                    <span class="text-white fw-bold me-2">Hellow {{ request.user.username }}!</span>
+                    <form method="post" action="{% url 'logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm rounded-pill fw-bold px-3">Log out</button>
+                    </form>
+                {% else %}
+                    <a class="btn btn-outline-light btn-sm rounded-pill fw-bold px-4 me-1" href="{% url 'login' %}">Sign In</a>
+                    <a class="btn btn-light btn-sm rounded-pill fw-bold text-success px-3" href="{% url 'register' %}">Sign Up</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+    {% block full_width %}{% endblock %}
+
+    <div class="container mt-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+
+
+
+
+
+<footer class="footer text-white" style="background-color: rgb(26, 140, 95); margin-top: 152px; padding-top: 60px; padding-bottom: 30px;">
+    <div class="footer_top">
+        <div class="container">
+            <div class="row">
+                <!-- SEHEMU YA WANANCHI / CONTACT -->
+                <div class="col-xl-4 col-md-6 col-lg-4 mb-4">
+                    <div class="footer_widget">
+                        <h3 class="footer_title text-white fw-bold mb-3" style="font-size: 20px;">
+                            SUA Student Housing
+                        </h3>
+                        <p class="text-white-50">
+                            Morogoro, Tanzania<br>
+                            Mazimbu & Main Campus Area<br>
+                            <a href="tel:+255700000000" class="text-white text-decoration-none d-block mt-2">
+                                <i class="fa fa-phone me-2"></i> +255 614 504 540
+                            </a>
+                            <a href="mailto:suahousinginfo@gmail.com" class="text-white text-decoration-none d-block mt-1">
+                                <i class="fa fa-envelope me-2"></i> suahousinginfo@gmail.com
+                            </a>
+                        </p>
+                        <!-- Mitandao ya kijamii ikiwa na rangi nyeupe safi -->
+                        <div class="socail_links mt-3">
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item"><a href="#" class="text-white me-3" style="font-size: 18px;"><i class="fa fa-facebook"></i></a></li>
+                                <li class="list-inline-item"><a href="#" class="text-white me-3" style="font-size: 18px;"><i class="fa fa-twitter"></i></a></li>
+                                <li class="list-inline-item"><a href="#" class="text-white me-3" style="font-size: 18px;"><i class="fa fa-instagram"></i></a></li>
+                                <li class="list-inline-item"><a href="#" class="text-white" style="font-size: 18px;"><i class="fa fa-youtube-play"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEHEMU YA KAMPUNI / LINKS -->
+                <div class="col-xl-2 col-md-6 col-lg-2 mb-4">
+                    <div class="footer_widget">
+                        <h3 class="footer_title text-white fw-bold mb-3" style="font-size: 20px;">
+                            Company
+                        </h3>
+                        <!-- list-unstyled inaondoa vile vidoti vya kizembe vya li -->
+                        <ul class="links list-unstyled">
+                            <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Pricing</a></li>
+                            <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">About Us</a></li>
+                            <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Houses Gallery</a></li>
+                            <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Contact Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SEHEMU YA MAENEO MAARUFU (Ondoa Indonesia weka Morogoro!) -->
+                <div class="col-xl-3 col-md-6 col-lg-3 mb-4">
+                    <div class="footer_widget">
+                        <h3 class="footer_title text-white fw-bold mb-3" style="font-size: 20px;">
+                            Popular Locations
+                        </h3>
+                        <ul class="links list-unstyled row">
+                            <div class="col-6">
+                                <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Mazimbu</a></li>
+                                <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Main Campus</a></li>
+                                <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Chang'ombe</a></li>
+                            </div>
+                            <div class="col-6">
+                                <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Kingolwira</a></li>
+                                <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Town Area</a></li>
+                                <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Misufini</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SEHEMU YA INSTAGRAM -->
+                <!-- SEHEMU YA: WHY CHOOSE US / SERVICES -->
+        <div class="col-xl-3 col-md-6 col-lg-3 mb-4">
+            <div class="footer_widget">
+                <h3 class="footer_title text-white fw-bold mb-3" style="font-size: 20px;">
+                    Why Choose Us
+                </h3>
+                <ul class="list-unstyled">
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fa fa-check-circle text-white me-2 mt-1" style="font-size: 16px;"></i>
+                        <span class="text-white-50" style="font-size: 14px;"><strong>Verified Houses:</strong> Every hostel has been inspected for your safety.</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fa fa-map-marker text-white me-2 mt-1" style="font-size: 16px;"></i>
+                        <span class="text-white-50" style="font-size: 14px;"><strong>Close to Campus:</strong> Every hostel is close to the university campus.</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fa fa-clock-o text-white me-2 mt-1" style="font-size: 16px;"></i>
+                        <span class="text-white-50" style="font-size: 14px;"><strong>Fast Booking:</strong> Every hostel offers fast and easy booking.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEHEMU YA COPYRIGHT (Imenyooka sasa hivi kwa jina la mradi wako) -->
+    <div class="copy-right_text mt-4 pt-4 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <p class="copy_right text-center text-white-50 mb-0" style="font-size: 14px;">
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | SUA Student Housing | Developed by <a href="/admin/" class="text-white text-decoration-none fw-bold">Pro_!</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

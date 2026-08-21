@@ -1,0 +1,459 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Rooms - SUA Student Housing{% endblock %}
+
+{% block content %}
+<style>
+    .rooms-hero {
+        background: linear-gradient(135deg, rgba(25, 135, 84, 0.94), rgba(15, 90, 55, 0.88)),
+                    url('https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+        border-radius: 1.25rem;
+        color: white;
+        padding: 4.5rem 2rem;
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 12px 35px rgba(25, 135, 84, 0.25);
+    }
+
+    .stat-pill {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 999px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+    }
+
+    .filter-btn {
+        transition: all 0.25s ease;
+    }
+    .filter-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .house-card {
+        border: none;
+        border-radius: 1.1rem;
+        overflow: hidden;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+        transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background: #fff;
+    }
+    .house-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+    }
+    .house-card-img {
+        height: 230px;
+        object-fit: cover;
+        width: 100%;
+    }
+    .house-card-img-placeholder {
+        height: 230px;
+        background: linear-gradient(135deg, #d1e7dd, #a3cfbb);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #198754;
+        font-weight: 700;
+    }
+
+    .room-chip {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 0.85rem;
+        padding: 0.75rem;
+        transition: background 0.2s ease;
+    }
+    .room-chip:hover {
+        background: #eef8f2;
+        border-color: #b8dfc8;
+    }
+    .room-chip img {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+        flex-shrink: 0;
+    }
+    .room-chip-placeholder {
+        width: 56px;
+        height: 56px;
+        border-radius: 0.5rem;
+        background: #198754;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .info-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        background: #fff;
+        height: 100%;
+    }
+
+    .guide-step {
+        width: 44px;
+        height: 44px;
+        background: #198754;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(45px);
+        transition: all 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    .btn-cta-custom {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+    .btn-cta-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+    }
+
+    .location-highlight {
+        border-left: 4px solid #198754;
+        padding-left: 1rem;
+    }
+</style>
+
+<!-- HERO -->
+<section class="rooms-hero text-center reveal">
+    <p class="text-uppercase fw-semibold mb-2 opacity-75" style="letter-spacing: 2px;">Live Listings</p>
+    <h1 class="display-4 fw-bold mb-3">Available Houses &amp; Rooms</h1>
+    <p class="lead mx-auto mb-4" style="max-width: 720px;">
+        Browse real-time listings from verified landlords around SUA campuses. Every house below is pulled directly from our database.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+        <span class="stat-pill">{{ total_houses }} Houses Open</span>
+        <span class="stat-pill">{{ total_rooms }} Rooms Listed</span>
+        <span class="stat-pill">5 Campus Areas</span>
+    </div>
+    {% if not request.user.is_authenticated %}
+        <a href="{% url 'login' %}?next={% url 'available_rooms' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom me-2">
+            Login for Full Access
+        </a>
+        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4 btn-cta-custom">
+            Create Account
+        </a>
+    {% else %}
+        <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom">
+            Go to Dashboard
+        </a>
+    {% endif %}
+</section>
+
+<!-- LOCATION FILTER -->
+<section class="mb-5 reveal" id="listings">
+    <div class="text-center mb-4">
+        <h6 class="text-success fw-bold text-uppercase">Filter by Area</h6>
+        <h2 class="fw-bold">Find Rooms Near Your Campus</h2>
+    </div>
+    <div class="text-center mb-5">
+        <a href="{% url 'available_rooms' %}#listings"
+           class="btn btn-sm filter-btn {% if not selected_location %}btn-success{% else %}btn-outline-success{% endif %} m-1 rounded-pill px-4">
+            All Areas
+        </a>
+        {% for loc_code, loc_name in locations %}
+        <a href="{% url 'available_rooms' %}?location={{ loc_code }}#listings"
+           class="btn btn-sm filter-btn {% if selected_location == loc_code %}btn-success{% else %}btn-outline-success{% endif %} m-1 rounded-pill px-3">
+            {{ loc_name }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- HOUSES + ROOMS FROM DATABASE -->
+    <div class="row g-4">
+        {% for house in houses %}
+        <div class="col-lg-6 reveal">
+            <div class="house-card h-100">
+                {% if house.image %}
+                    <img src="{{ house.image.url }}" class="house-card-img" alt="{{ house.title }}" loading="lazy">
+                {% else %}
+                    <div class="house-card-img-placeholder">No Photo</div>
+                {% endif %}
+
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-success">{{ house.get_location_display }}</span>
+                        <small class="text-muted fw-semibold">{{ house.room_count }} room{{ house.room_count|pluralize }}</small>
+                    </div>
+
+                    <h4 class="fw-bold mb-2">{{ house.title }}</h4>
+                    <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> {{ house.address }}</p>
+                    <p class="text-secondary small mb-3">{{ house.description|truncatewords:28 }}</p>
+
+                    {% if house.min_price %}
+                        <p class="text-success fw-bold mb-3">From TZS {{ house.min_price|floatformat:0 }} / semester</p>
+                    {% endif %}
+
+                    {% if house.rooms.all %}
+                        <h6 class="fw-bold text-dark mb-3">Rooms Available</h6>
+                        <div class="d-flex flex-column gap-2 mb-3">
+                            {% for room in house.rooms.all %}
+                            <div class="room-chip d-flex align-items-center gap-3">
+                                {% if room.room_image %}
+                                    <img src="{{ room.room_image.url }}" alt="{{ room.get_room_type_display }}">
+                                {% else %}
+                                    <div class="room-chip-placeholder">🛏</div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold small">{{ room.get_room_type_display }}</div>
+                                    <div class="text-danger fw-bold">TZS {{ room.price|floatformat:0 }}</div>
+                                    {% if room.description %}
+                                        <div class="text-muted" style="font-size: 0.78rem;">{{ room.description|truncatewords:12 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-light border small mb-3">No rooms listed yet for this house.</div>
+                    {% endif %}
+
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'house_detail' house.pk %}" class="btn btn-success w-100 rounded-pill fw-bold">View Full Details</a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" class="btn btn-success w-100 rounded-pill fw-bold">Login to View Details</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5 reveal">
+            <div class="display-1 mb-3">🏠</div>
+            <h4 class="text-muted fw-bold">No houses available in this area right now.</h4>
+            <p class="text-muted">Try another location or check back soon.</p>
+            <a href="{% url 'available_rooms' %}" class="btn btn-outline-success rounded-pill px-4 mt-2">Show All Areas</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- WHY BROWSE HERE -->
+<section class="py-5 mb-5 reveal">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80"
+                 class="img-fluid rounded-4 shadow-lg" alt="Student room interior" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h6 class="text-success fw-bold text-uppercase">Smart Search</h6>
+            <h2 class="fw-bold mb-3">Every Listing Is Live from Our Database</h2>
+            <p class="text-muted mb-4">
+                Unlike static brochures, this page updates automatically whenever landlords add new houses or rooms through the admin panel. You always see what's actually available today.
+            </p>
+            <div class="location-highlight mb-3">
+                <strong>Mazimbu &amp; Moringe</strong>
+                <p class="text-muted small mb-0">Perfect for students who want to walk or take a short bodaboda to class.</p>
+            </div>
+            <div class="location-highlight mb-3">
+                <strong>Chang'ombe &amp; Kingolwira</strong>
+                <p class="text-muted small mb-0">Budget-friendly options with strong student communities nearby.</p>
+            </div>
+            <div class="location-highlight">
+                <strong>Morogoro Town</strong>
+                <p class="text-muted small mb-0">Ideal if you prefer town amenities and regular bajaj routes to campus.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS BANNER (REAL DATA) -->
+<section class="py-4 mb-5 bg-success text-white rounded-4 shadow-sm reveal">
+    <div class="row text-center g-4 py-3">
+        <div class="col-md-3 col-6">
+            <h2 class="display-5 fw-bold mb-0">{{ total_houses }}</h2>
+            <p class="mb-0 text-white-50">Active Houses</p>
+        </div>
+        <div class="col-md-3 col-6">
+            <h2 class="display-5 fw-bold mb-0">{{ total_rooms }}</h2>
+            <p class="mb-0 text-white-50">Listed Rooms</p>
+        </div>
+        <div class="col-md-3 col-6">
+            <h2 class="display-5 fw-bold mb-0">5</h2>
+            <p class="mb-0 text-white-50">Morogoro Areas</p>
+        </div>
+        <div class="col-md-3 col-6">
+            <h2 class="display-5 fw-bold mb-0">24/7</h2>
+            <p class="mb-0 text-white-50">Online Access</p>
+        </div>
+    </div>
+</section>
+
+<!-- HOW TO BOOK -->
+<section class="py-5 mb-5 reveal">
+    <div class="text-center mb-5">
+        <h6 class="text-success fw-bold text-uppercase">Booking Guide</h6>
+        <h2 class="fw-bold">How to Secure a Room</h2>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4 reveal reveal-delay-1">
+            <div class="info-card p-4 text-center">
+                <div class="guide-step mx-auto">1</div>
+                <h5 class="fw-bold">Browse Listings</h5>
+                <p class="text-muted small mb-0">Use the area filters above to find houses near your faculty or campus.</p>
+            </div>
+        </div>
+        <div class="col-md-4 reveal reveal-delay-2">
+            <div class="info-card p-4 text-center">
+                <div class="guide-step mx-auto">2</div>
+                <h5 class="fw-bold">Compare Rooms &amp; Prices</h5>
+                <p class="text-muted small mb-0">Check room types, semester prices, and photos before making a decision.</p>
+            </div>
+        </div>
+        <div class="col-md-4 reveal reveal-delay-3">
+            <div class="info-card p-4 text-center">
+                <div class="guide-step mx-auto">3</div>
+                <h5 class="fw-bold">Login &amp; Contact</h5>
+                <p class="text-muted small mb-0">Sign in to view full details and reach the landlord directly to book.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ROOM TYPES -->
+<section class="py-4 mb-5 reveal">
+    <div class="text-center mb-5">
+        <h6 class="text-success fw-bold text-uppercase">Room Types</h6>
+        <h2 class="fw-bold">Choose What Fits Your Budget</h2>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="info-card p-4">
+                <h5 class="fw-bold text-success">Master Bedroom</h5>
+                <p class="text-muted small mb-0">Private bathroom inside the room. Best for comfort and privacy during exams week.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="info-card p-4">
+                <h5 class="fw-bold text-success">Single Room</h5>
+                <p class="text-muted small mb-0">Standard student room with shared bathroom outside. Most popular and affordable option.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="info-card p-4">
+                <h5 class="fw-bold text-success">Double Room</h5>
+                <p class="text-muted small mb-0">Spacious room suitable for sharing with a roommate to split costs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="py-4 mb-5 reveal">
+    <div class="text-center mb-4">
+        <h6 class="text-success fw-bold text-uppercase">FAQ</h6>
+        <h2 class="fw-bold">Common Questions</h2>
+    </div>
+    <div class="accordion accordion-flush shadow-sm rounded-4 overflow-hidden" id="roomsFaq">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button fw-bold text-success" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                    Are the prices shown per month or per semester?
+                </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#roomsFaq">
+                <div class="accordion-body text-muted">
+                    All prices on this portal are listed per semester, which is the standard rental period for SUA students.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button fw-bold text-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                    Do I need an account to see all details?
+                </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#roomsFaq">
+                <div class="accordion-body text-muted">
+                    You can preview houses and rooms on this page for free. Creating an account lets you access full details and contact information.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button fw-bold text-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                    How often are listings updated?
+                </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#roomsFaq">
+                <div class="accordion-body text-muted">
+                    Listings update instantly whenever a landlord adds or edits a house through the admin system. Refresh this page to see the latest availability.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="bg-success text-white rounded-4 p-5 text-center mb-5 reveal shadow-lg">
+    <h2 class="fw-bold mb-3">Found a Room You Like?</h2>
+    <p class="lead mb-4 mx-auto" style="max-width: 620px;">
+        Sign in to unlock full house details, landlord contacts, and faster booking.
+    </p>
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-5 btn-cta-custom">
+            Open My Dashboard
+        </a>
+    {% else %}
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-5 me-2 btn-cta-custom">
+            Register Free
+        </a>
+        <a href="{% url 'login' %}?next={% url 'available_rooms' %}" class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4 btn-cta-custom">
+            Sign In
+        </a>
+    {% endif %}
+</section>
+
+<!-- SUPPORT -->
+<section id="support" class="text-center pb-5 reveal">
+    <h3 class="fw-bold mb-3">Need Help Choosing a Room?</h3>
+    <p class="text-muted mb-0">
+        Email <a href="mailto:suahousinginfo@gmail.com" class="text-success fw-bold">suahousinginfo@gmail.com</a>
+        or WhatsApp <a href="https://wa.me/255614504540" target="_blank" class="fw-bold text-success">+255 614 504 540</a>.
+    </p>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const reveals = document.querySelectorAll(".reveal");
+
+    const revealOnScroll = function () {
+        reveals.forEach(function (el) {
+            const windowHeight = window.innerHeight;
+            const elementTop = el.getBoundingClientRect().top;
+            const elementVisible = 120;
+
+            if (elementTop < windowHeight - elementVisible) {
+                el.classList.add("active");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", revealOnScroll);
+    revealOnScroll();
+});
+</script>
+{% endblock %}

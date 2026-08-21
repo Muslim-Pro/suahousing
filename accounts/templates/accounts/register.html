@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create New Account - SUA Student Housing{% endblock %}
+
+{% block content %}
+<style>
+    .email-alert {
+        display: none;
+        border-left: 4px solid #dc3545;
+        animation: fadeIn 0.3s ease;
+    }
+    .email-field-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+    }
+    .email-field-valid {
+        border-color: #198754 !important;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15);
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="row justify-content-center my-5">
+    <div class="col-11 col-sm-10 col-md-8 col-lg-6">
+        <div class="card shadow-sm p-4" style="border-radius: 10px; border: none; background-color: #ffffff;">
+            <h3 class="text-center mb-2 text-success fw-bold">Register Here</h3>
+            <p class="text-center text-muted small mb-4">Join SUA Student Housing and find your room near campus.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} py-2 small mb-3" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div id="emailAlert" class="alert alert-danger email-alert py-2 small mb-3" role="alert">
+                <strong>Invalid email:</strong> <span id="emailAlertText">Please enter a valid email address.</span>
+            </div>
+
+            <form method="post" id="submitForm" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger py-2 small">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="row mb-3 gx-3">
+                    <div class="col-6">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.email.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    {{ form.email }}
+                    <div id="emailServerError" class="text-danger small mt-1 {% if not form.email.errors %}d-none{% endif %}">
+                        {% if form.email.errors %}{{ form.email.errors.0 }}{% endif %}
+                    </div>
+                    <div id="emailHelp" class="form-text text-muted small">itakutuma email ya kukaribisha kwenye anwani hii.</div>
+                </div>
+
+                <div class="row mb-3 gx-3">
+                    <div class="col-6">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg fw-bold">Register Now</button>
+                </div>
+            </form>
+
+            <p class="text-center mt-3 text-muted small mb-0">
+                Already have an account? <a href="{% url 'login' %}" class="text-decoration-none fw-bold text-success">Sign In</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('submitForm');
+        const emailInput = document.getElementById('id_email');
+        const emailAlert = document.getElementById('emailAlert');
+        const emailAlertText = document.getElementById('emailAlertText');
+        const emailServerError = document.getElementById('emailServerError');
+        const submitBtn = document.getElementById('submitBtn');
+        const emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+
+        function showEmailError(message) {
+            emailAlertText.textContent = message;
+            emailAlert.style.display = 'block';
+            emailInput.classList.add('email-field-invalid');
+            emailInput.classList.remove('email-field-valid');
+            emailInput.setAttribute('aria-invalid', 'true');
+        }
+
+        function clearEmailError() {
+            emailAlert.style.display = 'none';
+            emailInput.classList.remove('email-field-invalid');
+            emailInput.removeAttribute('aria-invalid');
+        }
+
+        function markEmailValid() {
+            clearEmailError();
+            emailInput.classList.add('email-field-valid');
+        }
+
+        function validateEmail(showAlert) {
+            const value = emailInput.value.trim();
+
+            if (!value) {
+                if (showAlert) showEmailError('Email address is required.');
+                return false;
+            }
+
+            if (!emailPattern.test(value)) {
+                if (showAlert) showEmailError('Please enter a valid email address (e.g. name@gmail.com).');
+                return false;
+            }
+
+            markEmailValid();
+            return true;
+        }
+
+        emailInput.addEventListener('blur', function () {
+            validateEmail(true);
+        });
+
+        emailInput.addEventListener('input', function () {
+            if (emailServerError) {
+                emailServerError.classList.add('d-none');
+                emailServerError.textContent = '';
+            }
+            if (emailInput.value.trim() === '') {
+                clearEmailError();
+                emailInput.classList.remove('email-field-valid');
+                return;
+            }
+            if (emailPattern.test(emailInput.value.trim())) {
+                markEmailValid();
+            } else {
+                emailInput.classList.remove('email-field-valid');
+            }
+        });
+
+        form.addEventListener('submit', function (e) {
+            if (!validateEmail(true)) {
+                e.preventDefault();
+                emailInput.focus();
+                emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Register Now';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Registering...';
+        });
+
+        {% if form.email.errors %}
+        showEmailError("{{ form.email.errors.0|escapejs }}");
+        emailInput.focus();
+        {% endif %}
+    });
+</script>
+{% endblock %}

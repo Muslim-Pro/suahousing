@@ -1,0 +1,2 @@
+@Codebase kuna tatizo inabidi utatue chunguza mradi huu mana naona  mtu akilogin kwny ukurasa wa house_list.html pamoja na house_detail.html inaonekana button ya home pale karibu na logout button, lkn pia mtu akiwa tayari ame login alaf aki click topleft link ya keny header(SUA Student Housing
+) inamrudisha home page hili nalo ni tatizo rekebisha. kutokana na wewe ni expert yaan system analyst and designer nakuachia u-solve

@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - SUA Student Housing{% endblock %}
+
+{% block content %}
+<style>
+    /* Styling za Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(25, 135, 84, 0.92), rgba(26, 140, 95, 0.85)),
+                    url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+        border-radius: 1.25rem;
+        color: white;
+        padding: 5rem 2rem;
+        margin-bottom: 3.5rem;
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(25, 135, 84, 0.2);
+    }
+
+    /* Kadi za Features na Elevate Hover */
+    .feature-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background: #ffffff;
+    }
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background-color: rgba(25, 135, 84, 0.12);
+        color: #198754;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-bottom: 1.2rem;
+    }
+
+    /* Steps Cards */
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background-color: #198754;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Campus Cards */
+    .campus-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+    }
+    .campus-card:hover {
+        transform: scale(1.03);
+    }
+    .campus-card img {
+        height: 180px;
+        object-fit: cover;
+    }
+
+    /* Reveal On Scroll Class */
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s ease-out;
+    }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Typing cursor */
+    .typing-cursor {
+        display: inline-block;
+        width: 3px;
+        background-color: white;
+        margin-left: 3px;
+        animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+</style>
+
+<!-- 1. HERO SECTION -->
+<section class="hero-section text-center reveal">
+    <h1 class="display-4 fw-bold mb-3">
+        <span id="typed-text"></span><span class="typing-cursor">&nbsp;</span>
+    </h1>
+
+    <p class="lead mb-4 mx-auto" style="max-width: 680px;">
+        Find housing and accommodation near the campus — Mazimbu, Moringe, Chang'ombe, and other prime locations in Morogoro.
+    </p>
+
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 me-2 shadow-sm">
+            View All Houses
+        </a>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 me-2 shadow-sm">
+            Login &amp; View Houses
+        </a>
+        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4">
+            Register Now
+        </a>
+    {% endif %}
+</section>
+
+<!-- 2. MAIN FEATURES -->
+<div class="row g-4 mb-5 reveal">
+    <div class="col-md-4">
+        <div class="card feature-card h-100 p-4">
+            <div class="feature-icon mx-auto">🏠</div>
+            <h5 class="fw-bold text-center">Verified Houses</h5>
+            <p class="text-muted text-center mb-0">
+                Explore inspected and verified student hostels and private houses around SUA campuses.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card h-100 p-4">
+            <div class="feature-icon mx-auto">📍</div>
+            <h5 class="fw-bold text-center">Near Campus</h5>
+            <p class="text-muted text-center mb-0">
+                Choose locations within walking distance — Mazimbu, Main Campus, Kingolwira, and Town Area.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card h-100 p-4">
+            <div class="feature-icon mx-auto">💰</div>
+            <h5 class="fw-bold text-center">Transparent Pricing</h5>
+            <p class="text-muted text-center mb-0">
+                Direct prices from landlords with zero hidden agent fees or extra commissions.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- 3. HOW IT WORKS SECTION -->
+<section class="py-5 mb-5 reveal">
+    <div class="text-center mb-5">
+        <h6 class="text-success fw-bold text-uppercase">Simple Process</h6>
+        <h2 class="fw-bold">How It Works</h2>
+        <p class="text-muted">Get your dream accommodation in 3 easy steps</p>
+    </div>
+
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="p-3">
+                <div class="step-number mx-auto">1</div>
+                <h5 class="fw-bold">Search &amp; Filter</h5>
+                <p class="text-muted">Browse through houses filtered by distance to your campus and monthly budget.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3">
+                <div class="step-number mx-auto">2</div>
+                <h5 class="fw-bold">Inspect Details</h5>
+                <p class="text-muted">Check real photos, available utilities (Water, LUKU, Security), and landlord details.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3">
+                <div class="step-number mx-auto">3</div>
+                <h5 class="fw-bold">Book Your Room</h5>
+                <p class="text-muted">Contact the house management directly and secure your room hassle-free.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. POPULAR LOCATIONS SECTION -->
+<section class="py-4 mb-5 reveal">
+    <div class="text-center mb-5">
+        <h6 class="text-success fw-bold text-uppercase">Locations</h6>
+        <h2 class="fw-bold">Popular Student Areas</h2>
+        <p class="text-muted">Find accommodation close to your specific faculty</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card campus-card">
+                <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Mazimbu">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold mb-1">Mazimbu Campus</h5>
+                    <small class="text-muted">Solomon Mahlangu Area</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card campus-card">
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Main Campus">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold mb-1">Main Campus</h5>
+                    <small class="text-muted">Moringe &amp; Forest Area</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card campus-card">
+                <img src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Chang'ombe">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold mb-1">Chang'ombe</h5>
+                    <small class="text-muted">Near Main Campus Gate</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card campus-card">
+                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Kingolwira">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold mb-1">Kingolwira</h5>
+                    <small class="text-muted">Quiet &amp; Affordable</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. STUDENT TESTIMONIALS SECTION -->
+<section class="py-5 mb-5 bg-light rounded-3 p-4 reveal">
+    <div class="text-center mb-5">
+        <h6 class="text-success fw-bold text-uppercase">Reviews</h6>
+        <h2 class="fw-bold">What Students Say</h2>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <p class="text-muted">"Finding a room near Mazimbu Campus was super stress-free. I connected directly with the landlord without middleman fees!"</p>
+                <div class="d-flex align-items-center mt-auto">
+                    <div class="fw-bold text-success">Salumu M.</div>
+                    <small class="ms-auto text-muted">BSc. Informatics</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <p class="text-muted">"The price details and photos matched the actual house. Very reliable portal for SUA students!"</p>
+                <div class="d-flex align-items-center mt-auto">
+                    <div class="fw-bold text-success">Amina K.</div>
+                    <small class="ms-auto text-muted">Diploma Student</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <p class="text-muted">"Saved me time wandering around Morogoro during orientation week. Highly recommended!"</p>
+                <div class="d-flex align-items-center mt-auto">
+                    <div class="fw-bold text-success">David L.</div>
+                    <small class="ms-auto text-muted">BSc. Agriculture</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. FREQUENTLY ASKED QUESTIONS (FAQ) -->
+<section class="py-4 mb-5 reveal" style="max-width: 800px; margin: 0 auto;">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="accordion accordion-flush shadow-sm rounded-3 overflow-hidden" id="faqAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq1">
+                <button class="accordion-button fw-bold text-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                    Is there any registration fee to view houses?
+                </button>
+            </h2>
+            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                    No, searching and viewing houses on the SUA Student Housing Portal is 100% free for all students.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq2">
+                <button class="accordion-button fw-bold text-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                    Are the houses owned by SUA University?
+                </button>
+            </h2>
+            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                    This portal features both private student hostels and verified off-campus houses near all SUA campuses in Morogoro.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faq3">
+                <button class="accordion-button fw-bold text-success collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                    How do I contact the landlord?
+                </button>
+            </h2>
+            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                    Once logged in, click on any house to view full details and direct phone/WhatsApp contact information of the house manager.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. CALL TO ACTION BANNER -->
+<section class="bg-success text-white rounded-3 p-5 text-center mb-5 reveal">
+    <h2 class="fw-bold mb-3">Ready to Find Your Next Home?</h2>
+    <p class="lead mb-4 mx-auto" style="max-width: 600px;">
+        Join hundreds of SUA students who find safe and convenient housing through our platform.
+    </p>
+    {% if not request.user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-5">
+            Create Free Account
+        </a>
+    {% else %}
+        <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-5">
+            Browse Houses Now
+        </a>
+    {% endif %}
+</section>
+
+<!-- 8. SUPPORT SECTION -->
+<section id="support" class="text-center pb-5 reveal">
+    <h3 class="fw-bold mb-3">Need Help?</h3>
+    <p class="text-muted mb-0">
+        Contact us through <a href="mailto:info@suahousing.ac.tz" class="text-success fw-bold">info@suahousing.ac.tz</a>
+        or WhatsApp <a href="https://wa.me/255614504540" target="_blank" class="fw-bold text-success">+255 614 504 540</a>.
+    </p>
+</section>
+
+<!-- SCRIPTS: TYPING EFFECT & REVEAL ON SCROLL -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // --- 1. TYPING EFFECT SCRIPT ---
+        const text = "Welcome to SUA Student Housing";
+        const typedTextElement = document.getElementById("typed-text");
+        
+        let index = 0;
+        let isDeleting = false;
+        
+        const typeSpeed = 100;
+        const deleteSpeed = 40;
+        const holdWordTime = 90000; // Dakika 1.5
+
+        function typeEffect() {
+            if (isDeleting) {
+                typedTextElement.textContent = text.substring(0, index - 1);
+                index--;
+            } else {
+                typedTextElement.textContent = text.substring(0, index + 1);
+                index++;
+            }
+
+            if (!isDeleting && index === text.length) {
+                setTimeout(() => { 
+                    isDeleting = true; 
+                    typeEffect(); 
+                }, holdWordTime);
+                return;
+            } 
+            else if (isDeleting && index === 0) {
+                isDeleting = false;
+            }
+
+            const currentSpeed = isDeleting ? deleteSpeed : typeSpeed;
+            setTimeout(typeEffect, currentSpeed);
+        }
+
+        typeEffect();
+
+        // --- 2. REVEAL ON SCROLL SCRIPT (JS ANIMATION) ---
+        const reveals = document.querySelectorAll(".reveal");
+
+        const revealOnScroll = function () {
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 100; // Distance in px before revealing
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        };
+
+        window.addEventListener("scroll", revealOnScroll);
+        revealOnScroll(); // Run once on load
+    });
+</script>
+{% endblock %}

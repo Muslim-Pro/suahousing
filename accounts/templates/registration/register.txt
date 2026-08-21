@@ -1,0 +1,47 @@
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm p-4" style="border-radius: 10px;">
+            <h3 class="text-center mb-4 text-success fw-bold">Register</h3>
+            
+            <form method="post" id="submitForm" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg fw-bold">Register Now</button>
+                </div>
+            </form>
+            
+            <p class="text-center mt-3 text-muted small mb-0">
+                Already have an account? <a href="{% url 'login' %}" class="text-decoration-none fw-bold text-success">Sign In</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+class UserRegisterForm(UserCreationForm):
+    first_name = forms.CharField(required=True, label="First Name ")
+    last_name = forms.CharField(required=True, label="Last Name ")
+    # Tunalazimisha email iandikwe na mtumiaji
+    email = forms.EmailField(required=True, label="Email Address")
+    # phone_number = forms.CharField(required=True, label="Phone Number (+2557XXX)")
+    class Meta:
+        model = User
+        # Hapa tunaambia Django itengeneze form yenye username na email pekee (password zitajazwa chini yake kiotomatiki)
+        fields = ['username', 'first_name', 'last_name', 'email' ]

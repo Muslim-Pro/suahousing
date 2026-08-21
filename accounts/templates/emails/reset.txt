@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .email-header {
+            background-color: #198754; /* Green success ya SUA */
+            color: #ffffff;
+            padding: 25px;
+            text-align: center;
+        }
+        .email-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .email-body {
+            padding: 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .password-box {
+            background-color: #e8f5e9;
+            border: 2px dashed #198754;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #198754;
+            letter-spacing: 2px;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #856404;
+            margin-top: 25px;
+        }
+        .btn-action {
+            display: inline-block;
+            background-color: #198754;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #eeeeee;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="email-container">
+        <!-- Header ya SUA Student Housing -->
+        <div class="email-header">
+            <h2>SUA Student Housing Portal</h2>
+        </div>
+
+        <!-- Maudhui ya Email -->
+        <div class="email-body">
+            <h3>Habari {{ username }},</h3>
+            <p>Umefanya maombi ya kubadilisha nenosiri (password) lako kwenye mfumo wa **SUA Student Housing**.</p>
+            
+            <p style="margin-bottom: 5px; font-weight: bold; color: #555;">Nenosiri lako jipya la muda ni:</p>
+            
+            <!-- Box la Password Jipya -->
+            <div class="password-box">
+                {{ new_password }}
+            </div>
+
+            <p style="text-align: center;">
+                <a href="{{ login_url }}" class="btn-action">Ingia Kwenye Akaunti (Log In)</a>
+            </p>
+
+            <!-- Warning Box -->
+            <div class="warning-box">
+                <strong>Ankara ya Usalama:</strong> Tafadhali ingia kwenye mfumo na ubadilishe nenosiri hili mara moja kwa ajili ya usalama wa akaunti yako ya makazi.
+            </div>
+
+            <p style="margin-top: 25px; margin-bottom: 0;">Wako katika Ujenzi wa Elimu,<br><strong>Dawati la Huduma za Makazi (SUA Housing Team)</strong></p>
+        </div>
+
+        <!-- Footer ya Chuo -->
+        <div class="email-footer">
+            &copy; 2026 Sokoine University of Agriculture (SUA)<br>
+            P.O. Box 3000, Chuo Kikuu, Morogoro - Tanzania
+        </div>
+    </div>
+
+</body>
+</html>

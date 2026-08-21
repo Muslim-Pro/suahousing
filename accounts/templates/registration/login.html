@@ -1,0 +1,447 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %} <!-- Tumeruhusu static files hapa -->
+
+{% block title %}Login - SUA Student Housing{% endblock %}
+
+{% block content %}
+<style>
+    .login-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f4f6f9;
+        padding: 20px;
+    }
+
+    .login-container {
+        display: flex;
+        width: 100%;
+        max-width: 950px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    /* Upande wa Kushoto: Sasa ni Carousel badala ya picha moja */
+    .login-carousel-side {
+        flex: 1.2;
+        display: none;
+        position: relative;
+    }
+
+    .carousel, .carousel-inner, .carousel-item {
+        height: 100%;
+        min-height: 450px;
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .login-form-side {
+        flex: 1;
+        padding: 40px 35px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .sua-branding {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    .sua-logo {
+        max-width: 80px;
+        margin-bottom: 12px;
+    }
+    .sua-branding h3 {
+        color: #006400;
+        font-weight: 700;
+        margin-bottom: 5px;
+        font-size: 24px;
+    }
+    .sua-branding p {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .btn-sua-green {
+        background-color: #006400 !important;
+        border-color: #006400 !important;
+        color: white !important;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-sua-green:hover {
+        background-color: #0d5c1d !important;
+        border-color: #0d5c1d !important;
+    }
+
+    @media (min-width: 768px) {
+        .login-carousel-side {
+            display: block; /* Inatokea kwenye PC pekee */
+        }
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-container">
+        
+        <!-- 1. Upande wa Kushoto: Picha Tatu Zinazoslide (Carousel) -->
+        <div class="login-carousel-side">
+            <div id="suaHostelCarousel" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="3000">
+                
+                <!-- Vitufe vya Vidoti vya Chini (Indicators) -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#suaHostelCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#suaHostelCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#suaHostelCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+
+                <!-- Picha Zenyewe Tatu (Unaweza kubadilisha src kuweka picha zako) -->
+                <div class="carousel-inner h-100">
+                    <div class="carousel-item active h-100">
+                        <img src="{% static 'images/hostel1.jpg' %}" alt="Hostel Room 1">
+                    </div>
+                    <div class="carousel-item h-100">
+                        <img src="{% static 'images/hostel2.jpg' %}" alt="Hostel Room 2">
+                    </div>
+                    <div class="carousel-item h-100">
+                        <img src="{% static 'images/hostel3.jpg' %}" alt="Hostel Room 3">
+                    </div>
+                </div>
+
+                <!-- Vitufe vya Control (Mshale wa Kushoto na Kulia) -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#suaHostelCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#suaHostelCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                
+            </div>
+        </div>
+        
+        <!-- 2. Upande wa Kulia: Fomu na Brand ya Chuo -->
+        <div class="login-form-side">
+            
+            <div class="sua-branding">
+                <!-- Hapa nimebadilisha iweze kusoma nembo kutoka kwenye static folder lenu -->
+                <img src="{% static 'images/sua-logo.png' %}" alt="SUA Logo" class="sua-logo">
+                <h3 class="text-success">SUA STUDENT HOUSING</h3>
+                <p>Enter your credentials to login</p>
+            </div>
+            
+            {% if form.errors %}
+                <div class="alert alert-danger text-center py-2 mb-3 small" role="alert">
+                    Incorrect Username or Password. Try again!
+                </div>
+            {% endif %}
+          
+            <form method="post" id="loginForm" novalidate>
+                {% csrf_token %}
+                
+                <!-- Sehemu ya Username yenye Need Help sambamba kwenye mstari mmoja -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="id_username" class="form-label fw-bold mb-0 text-muted small">Username*</label>
+                        <a href="#" class="text-success text-decoration-none fw-bold small" data-bs-toggle="modal" style="font-size: 14px;" data-bs-target="#helpModal">
+                            Need Help ?
+                        </a>
+                    </div>
+                    <!-- Input ya Username inayochukua muundo wa Bootstrap -->
+                    <input type="text" name="username" autofocus maxlength="150" class="form-control" required id="id_username" placeholder="Enter your username">
+                    {% if form.username.errors %}
+                        <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Sehemu ya Password ya kawaida -->
+                <!-- Sehemu ya Password ya Student Housing yenye Forgot Password  -->
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="id_password" class="form-label fw-bold mb-0 text-muted small">Password*</label>
+                    <a href="#" class="text-success text-decoration-none" style="font-size: 11px; font-weight: 600;" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                        Forgot password?
+                    </a>
+                </div>
+                <input type="password" name="password" class="form-control" required id="id_password" placeholder="Enter your password">
+                {% if form.password.errors %}
+                    <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
+                {% endif %}
+            </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" id="loginBtn" class="btn text-light bg-success btn-lg fw-bold">Sign In</button>
+                </div>
+            </form>
+            
+            <p class="text-center mt-4 text-muted small mb-0">
+                Don't have an account yet? <a href="{% url 'register' %}" class="text-decoration-none fw-bold text-success">Sign Up</a>
+            </p>
+            
+        </div>
+        
+    </div>
+</div>
+
+<!-- Bootstrap Modal ya Need Help (Iliyoboreshwa zaidi) -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel"       aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
+            
+            <!-- Modal Header yenye Vitufe vyote vikiwa vimeunganishwa sasa -->
+            <div class="modal-header bg-light border-bottom">
+                <div class="d-flex gap-2">
+                    <!-- Kitufe cha New User kinachopeleka kwenye register -->
+                    <a href="{% url 'register' %}" class="btn btn-success btn-sm fw-bold px-3"><i class="fas fa-user-plus me-1"></i> New User</a>
+                    <!-- Kitufe cha Student kinachopeleka/kinachorudisha kwenye login ukurasa huu huu -->
+                    <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm fw-bold px-3">Student</a>
+                    <!-- Kitufe cha Staff kinachopeleka kwenye Django admin portal -->
+                    <a href="/admin/" class="btn btn-outline-secondary btn-sm fw-bold px-3">Staff</a>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <!-- Modal Body yenye Maswali yote yakiwa text-success -->
+            <div class="modal-body p-4">
+                <div class="accordion" id="helpAccordion">
+                    
+                    <!-- Swali la 1 (text-success) -->
+                    <div class="accordion-item border mb-3" style="border-radius: 6px;">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button fw-bold text-success bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                What is my username?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body text-muted">
+                                Your username is the official name you selected during the registration phase on this portal. If you cannot recall your username, kindly check the confirmation email you received during registration, click on the <strong>New User</strong> option to set up a new housing account, or contact the accommodation desk.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Swali la 2 (Sasa hivi limekuwa text-success) -->
+                    <div class="accordion-item border mb-3" style="border-radius: 6px;">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed fw-bold text-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                What is my password?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body text-muted">
+                                Please use the password that you created during your sign-up process. If you have forgotten your credentials, please click Forgot password? or get in touch with the SUA Student Housing administrator at
+                                <a href="mailto:suahousinginfo@gmail.com" class="text-success fw-bold text-decoration-none">suahousinginfo@gmail.com</a>
+                                for a temporary password reset.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Swali la 3 (Sasa hivi nalo limekuwa text-success) -->
+                    <div class="accordion-item border mb-3" style="border-radius: 6px;">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed fw-bold text-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                How can I secure a room after logging in?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body text-muted">
+                                Once you have logged in successfully, navigate to the available houses panel, select your preferred hostel block, choose an open room.
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Modal Footer chenye Kitufe cha Close cha bg-success -->
+            <div class="modal-footer bg-light border-top">
+                <button type="button" class="btn btn-success fw-bold px-4" data-bs-dismiss="modal">✕ Close</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+      <!-- Bootstrap Modal ya Forgot Password yenye sehemu ya Alert -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; overflow: hidden; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <div class="modal-body p-4 text-center">
+                <div class="sua-branding mb-4">
+                    <img src="{% static 'images/sua-logo.png' %}" alt="SUA Logo" class="sua-logo mb-2" style="max-height: 80px;">
+                    <h4 class="text-success fw-bold">SUA STUDENT HOUSING</h4>
+                    <p class="text-muted small">Enter your username and email to receive your new password</p>
+                </div>
+
+                <!-- Hili ndilo boksi la Alert litakalotokea pale pale juu ya fomu -->
+                <div id="modalAlert" class="alert d-none py-2 mb-3 small" role="alert"></div>
+
+                <!-- Fomu yetu haina action ya HTML tena, tunaiendesha kwa JS -->
+                <form id="forgotPasswordForm" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3 text-start">
+                        <label for="reset_username" class="form-label fw-bold text-muted small mb-1">Username*</label>
+                        <input type="text" name="username" id="reset_username" class="form-control py-2" placeholder="Enter username" required>
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label for="reset_email" class="form-label fw-bold text-muted small mb-1">Email Address*</label>
+                        <input type="email" name="email" id="reset_email" class="form-control py-2" placeholder="Enter your registered email" required>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="submit" id="forgotPasswordBtn" class="btn text-light bg-success btn-lg fw-bold" style="font-size: 16px;">Request New Password</button>
+                    </div>
+                </form>
+
+                <div class="mt-3">
+                    <a href="#" class="text-success text-decoration-none fw-bold small" data-bs-dismiss="modal">Go back to login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+    
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Hii ni ya fomu kuu ya login
+    var loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function() {
+            var btn = document.getElementById('loginBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing in...';
+            }
+        });
+    }
+
+    // 2. JS ya Forgot Password yenye Sekunde 28 na X Button
+    var fpForm = document.getElementById('forgotPasswordForm');
+    if (fpForm) {
+        fpForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Inazuia kabisa ukurasa usirefreshi wala kusepa!
+
+            var form = this;
+            var btn = document.getElementById('forgotPasswordBtn');
+            var alertBox = document.getElementById('modalAlert');
+
+            // Washa spinner na zima button
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending Request...';
+            
+            if (alertBox) {
+                alertBox.classList.add('d-none'); // Ficha alert ya zamani
+            }
+
+            var formData = new FormData(form);
+
+            // Tuma data kwenda backend kisiri kwa AJAX
+            fetch("{% url 'forgot_password' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Zima spinner na rudisha button kawaida
+                btn.disabled = false;
+                btn.innerHTML = 'Request Reset Link';
+
+                if (alertBox) {
+                    alertBox.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-dismissible', 'fade', 'show');
+
+                    if (data.success) {
+                        // Alert ya Kijani ikiwa na X button
+                        alertBox.classList.add('alert-success', 'alert-dismissible', 'fade', 'show', 'text-start');
+                        alertBox.innerHTML = `
+                            <div>${data.message}</div>
+                            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                        form.reset(); // Safisha maboksi ya fomu
+
+                        // Muda umeongezwa kuwa sekunde 28 (28000ms), kisha modal ijifunge yenyewe
+                        setTimeout(function() {
+                            var fpModalEl = document.getElementById('forgotPasswordModal');
+                            var fpModal = bootstrap.Modal.getInstance(fpModalEl);
+                            if (fpModal) {
+                                fpModal.hide(); 
+                            }
+                        }, 28000);
+
+                    } else {
+                        // Alert ya Nyekundu ikiwa na X button pia (Haitajifunga yenyewe ili arekebishe makosa)
+                        alertBox.classList.add('alert-danger', 'alert-dismissible', 'fade', 'show', 'text-start');
+                        alertBox.innerHTML = `
+                            <div>${data.message}</div>
+                            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                    }
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.innerHTML = 'Request Reset Link';
+                if (alertBox) {
+                    alertBox.classList.remove('d-none', 'alert-success');
+                    alertBox.classList.add('alert-danger', 'alert-dismissible', 'fade', 'show', 'text-start');
+                    alertBox.innerHTML = `
+                        <div>Something went wrong. Please try again.</div>
+                        <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                }
+            });
+        });
+    }
+});
+</script>
+
+
+
+
+
+
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        var btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing in...';
+    });
+</script>
+
+
+
+<script>
+    // Hii ni ya fomu kuu ya login uliyoiweka mwanzo
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        var btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing in...';
+    });
+
+    // Hii ni mpya kwa ajili ya Modal ya Forgot Password
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function() {
+        var btn = document.getElementById('forgotPasswordBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending Request...';
+    });
+</script>
+
+
+{% endblock %}

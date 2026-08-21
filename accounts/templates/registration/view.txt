@@ -1,0 +1,47 @@
+
+def forgot_password(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        
+        # Hakikisha taarifa zimejazwa kabla ya kwenda kwenye database
+        if not username or not email:
+            return JsonResponse({
+                'success': False,
+                'message': 'Please fill in all fields!'
+            })
+        
+        try:
+            # Kutafuta kama kuna mtumiaji mwenye username na email hiyo
+            user = User.objects.get(username=username, email=email)
+            
+            # Kuzalisha password mpya ya herufi na namba (Kasi ya herufi 8)
+            characters = string.ascii_letters + string.digits
+            new_password = ''.join(random.choice(characters) for i in range(8))
+            
+            # Kuset password mpya kwenye database
+            user.set_password(new_password)
+            user.save()
+            
+            # Kutuma barua pepe kwenda kwa mtumiaji
+            subject = 'Your New Password - SUA Student Housing'
+            message = f'Hello {user.username},\n\nYour password has been successfully reset.\nYour new temporary password is: {new_password}\n\nPlease log in and change your password immediately for security purposes.\n\nRegards,\nSUA Student Housing Team'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [email]
+            
+            send_mail(subject, message, email_from, recipient_list)
+            
+            # Hapa tunarudisha jibu la mafanikio kwenda kwenye JavaScript (Mambo ya kijasusi)
+            return JsonResponse({
+                'success': True,
+                'message': 'A new password has been sent to your email address!'
+            })
+            
+        except User.DoesNotExist:
+            # Kama data hazipo au hazijamechi, tunatuma ujumbe huu
+            return JsonResponse({
+                'success': False,
+                'message': 'No user found with that username and email combination.'
+            })
+            
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'})

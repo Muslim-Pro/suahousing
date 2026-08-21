@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
+    'cloudinary',
     'django.contrib.staticfiles',
     'houses.apps.HousesConfig',
     'accounts.apps.AccountsConfig',
@@ -81,22 +83,7 @@ WSGI_APPLICATION = 'suarental_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'suarentals_db',
-#         'USER': 'postgres',
-#         'PASSWORD': 'database',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
-# # DATABASES['default'] = dj_database_url.parse(config('DATABASE_URL'))
-# DATABASES['default'] = dj_database_url.config(
-#     default=f"postgres://{DATABASES['default']['USER']}:{DATABASES['default']['PASSWORD']}@{DATABASES['default']['HOST']}:{DATABASES['default']['PORT']}/{DATABASES['default']['NAME']}",
-#     conn_max_age=600
-# )
+# 
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL'),
@@ -181,3 +168,12 @@ EMAIL_HOST_PASSWORD = 'kdlukmvcnyrneriy'
 DEFAULT_FROM_EMAIL = f'SUA Student Housing <{SUPPORT_EMAIL}>'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
+
+# kuhusu picha zilizopakiwa kwenye cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

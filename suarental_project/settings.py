@@ -129,7 +129,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Picha zilizopakiwa zinaenda kwenye house_images/ na room_images/ chini ya mradi
+# Picha zilizopakiwa zinaenda kwenye house_images/ na room_images/ chini ya project
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -138,7 +138,7 @@ CRISPY_ALLOWED_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 
-# Mtu akilogin, mpeleke moja kwa moja kwenye ukurasa wa orodha ya hosteli
+# Mtu akilogin, mpeleke kwenye ukurasa wa orodha ya hosteli
 LOGIN_REDIRECT_URL = 'house_list' 
 
 

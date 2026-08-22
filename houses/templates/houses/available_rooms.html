@@ -413,6 +413,30 @@
 </section>
 
 <!-- CTA -->
+<section class="bg-success text-white rounded-4 p-4 p-md-5 text-center mb-5 reveal shadow-lg">
+    <h2 class="fw-bold mb-3">Found a Room You Like?</h2>
+    <p class="lead mb-4 mx-auto" style="max-width: 620px;">
+        Sign in to unlock full house details, landlord contacts, and faster booking.
+    </p>
+
+    {% if request.user.is_authenticated %}
+        <div>
+            <a href="{% url 'house_list' %}" class="btn btn-light rounded-pill fw-bold text-success px-4 py-2 text-nowrap btn-cta-custom">
+                Open My Dashboard
+            </a>
+        </div>
+    {% else %}
+        <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3">
+            <a href="{% url 'register' %}" class="btn btn-light rounded-pill fw-bold text-success px-4 py-2 text-nowrap btn-cta-custom">
+                Register Free
+            </a>
+            <a href="{% url 'login' %}?next={% url 'available_rooms' %}" class="btn btn-outline-light rounded-pill fw-bold px-4 py-2 text-nowrap btn-cta-custom">
+                Sign In
+            </a>
+        </div>
+    {% endif %}
+</section>
+<!-- CTA
 <section class="bg-success text-white rounded-4 p-5 text-center mb-5 reveal shadow-lg">
     <h2 class="fw-bold mb-3">Found a Room You Like?</h2>
     <p class="lead mb-4 mx-auto" style="max-width: 620px;">
@@ -430,7 +454,7 @@
             Sign In
         </a>
     {% endif %}
-</section>
+</section> -->
 
 <!-- SUPPORT -->
 <section id="support" class="text-center pb-5 reveal">

@@ -1,0 +1,12 @@
+{% if not request.user.is_authenticated %}
+        <a href="{% url 'login' %}?next={% url 'available_rooms' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom me-2">
+            Login for Full Access
+        </a>
+        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4 btn-cta-custom">
+            Create Account
+        </a>
+    {% else %}
+        <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom">
+            Go to Dashboard
+        </a>
+    {% endif %}

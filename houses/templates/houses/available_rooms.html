@@ -150,17 +150,22 @@
         <span class="stat-pill">{{ total_rooms }} Rooms Listed</span>
         <span class="stat-pill">5 Campus Areas</span>
     </div>
+    
     {% if not request.user.is_authenticated %}
-        <a href="{% url 'login' %}?next={% url 'available_rooms' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom me-2">
+    <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3">
+        <a href="{% url 'login' %}?next={% url 'available_rooms' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom">
             Login for Full Access
         </a>
         <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4 btn-cta-custom">
             Create Account
         </a>
+    </div>
     {% else %}
-        <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom">
-            Go to Dashboard
-        </a>
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom">
+                Go to Dashboard
+            </a>
+        </div>
     {% endif %}
 </section>
 

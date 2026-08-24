@@ -156,7 +156,7 @@ LOGIN_URL = 'login'
 
 
 # Django Email Configuration using Gmail SMTP
-SUPPORT_EMAIL = 'suahousinginfo@gmail.com'
+SUPPORT_EMAIL = config('SUPPORT_EMAIL', default='suahousinginfo@gmail.com')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -164,7 +164,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 #
 EMAIL_HOST_USER = SUPPORT_EMAIL
-EMAIL_HOST_PASSWORD = 'kdlukmvcnyrneriy'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = f'SUA Student Housing <{SUPPORT_EMAIL}>'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 

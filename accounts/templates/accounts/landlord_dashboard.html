@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+
+{% block title %}Landlord Dashboard - SUA Student Housing{% endblock %}
+
+{% block extra_css %}
+<style>
+    .landlord-shell {
+        min-height: calc(100vh - 76px);
+    }
+    .landlord-sidebar {
+        background-color: #1e293b;
+        min-height: calc(100vh - 76px);
+        width: 260px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .landlord-sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.72);
+        border-radius: 0.6rem;
+        padding: 0.7rem 0.9rem;
+        font-weight: 600;
+        font-size: 0.92rem;
+    }
+    .landlord-sidebar .nav-link:hover,
+    .landlord-sidebar .nav-link.active {
+        background-color: rgba(25, 135, 84, 0.22);
+        color: #fff;
+    }
+    .landlord-sidebar .nav-link i {
+        width: 22px;
+        color: #86efac;
+    }
+    .sidebar-bottom-link {
+        margin-top: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-top: 0.75rem;
+    }
+    .profile-dropdown-toggle {
+        color: #fff;
+        text-decoration: none;
+    }
+    .profile-dropdown-toggle:hover,
+    .profile-dropdown-toggle:focus {
+        color: #fff;
+    }
+    .profile-dropdown-toggle::after {
+        margin-left: 0.4rem;
+        vertical-align: middle;
+    }
+    .profile-menu {
+        min-width: 250px;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.45rem 0;
+        margin-top: 0.5rem !important;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+    }
+    .profile-menu .dropdown-item {
+        padding: 0.7rem 1.15rem;
+        font-weight: 600;
+        font-size: 0.92rem;
+        color: #334155;
+    }
+    .profile-menu .dropdown-item i {
+        width: 22px;
+        color: #64748b;
+    }
+    .profile-menu .dropdown-item:hover {
+        background-color: #f1f5f9;
+    }
+    .profile-menu .dropdown-item.text-danger i {
+        color: #dc3545;
+    }
+    .page-title-bar {
+        width: 6px;
+        height: 34px;
+        background-color: #198754;
+        border-radius: 4px;
+    }
+    .stat-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    .profile-avatar {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.55);
+    }
+    .profile-avatar-lg {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 4px solid #d1fae5;
+    }
+    .table-property-thumb {
+        width: 64px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    @media (max-width: 991.98px) {
+        .landlord-sidebar {
+            width: 100%;
+            min-height: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top shadow-sm py-3">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold" href="{% url 'landlord_dashboard' %}">SSH</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#landlordNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="landlordNavbar">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
+                <li class="nav-item">
+                    <a class="nav-link text-white fw-semibold" href="{% url 'landlord_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}">Available Rooms</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 fw-semibold" href="#properties">My Properties</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}#support">Help & Support</a>
+                </li>
+            </ul>
+            {% if user.is_authenticated and user.user_type == 'landlord' %}
+            <div class="dropdown mt-3 mt-lg-0">
+                <button class="btn btn-link profile-dropdown-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if user.profile.profile_pic %}
+                        <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.first_name|default:user.username }}" class="rounded-circle profile-avatar">
+                    {% else %}
+                        <span class="rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center profile-avatar fw-bold">
+                            {{ user.first_name|first|default:user.username|first|upper }}
+                        </span>
+                    {% endif %}
+                    <span class="fw-bold text-uppercase">{{ user.first_name|default:user.username }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end profile-menu">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#profilePicModal">
+                            <i class="fa-regular fa-user"></i> Update Profile Picture
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="fa-solid fa-key"></i> Change Password
+                        </button>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-power-off"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block page_wrapper %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block full_width %}
+{% if user.is_authenticated and user.user_type == 'landlord' %}
+<div class="d-lg-flex landlord-shell">
+    <aside class="landlord-sidebar p-3">
+        <p class="text-uppercase small text-white-50 fw-bold px-2 mb-3">Landlord menu</p>
+        <nav class="nav flex-column gap-1">
+            <a class="nav-link active" href="{% url 'landlord_dashboard' %}">
+                <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
+            </a>
+            <a class="nav-link" href="#properties">
+                <i class="fa-solid fa-building me-2"></i> My Properties
+            </a>
+            <a class="nav-link" href="#properties">
+                <i class="fa-solid fa-door-open me-2"></i> Add Room
+            </a>
+            <a class="nav-link" href="#inquiries">
+                <i class="fa-solid fa-comments me-2"></i> Tenant Inquiries
+            </a>
+            <a class="nav-link" href="#payments">
+                <i class="fa-solid fa-money-bill-wave me-2"></i> Payments
+            </a>
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#profilePicModal">
+                <i class="fa-solid fa-user-gear me-2"></i> Profile &amp; Settings
+            </a>
+        </nav>
+        <div class="sidebar-bottom-link">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                <i class="fa-solid fa-key me-2"></i> Change Password
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-grow-1 p-3 p-lg-4 bg-light">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <span class="page-title-bar"></span>
+                <h1 class="h4 mb-0 fw-bold text-uppercase">Landlord Dashboard</h1>
+            </div>
+            <a href="{% url 'admin:houses_house_add' %}" class="btn btn-success rounded-pill fw-bold px-4">
+                <i class="fa-solid fa-plus me-1"></i> Add New Property
+            </a>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="card stat-card h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Total Properties</p>
+                            <h3 class="fw-bold mb-0">{{ total_properties }}</h3>
+                        </div>
+                        <div class="stat-icon bg-success bg-opacity-10 text-success">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card stat-card h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Vacant Rooms</p>
+                            <h3 class="fw-bold mb-0">{{ vacant_rooms }}</h3>
+                        </div>
+                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="fa-solid fa-door-closed"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card stat-card h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Occupied Rooms</p>
+                            <h3 class="fw-bold mb-0">{{ occupied_rooms }}</h3>
+                        </div>
+                        <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="fa-solid fa-bed"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3" id="inquiries">
+                <div class="card stat-card h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Total Inquiries</p>
+                            <h3 class="fw-bold mb-0">{{ total_inquiries }}</h3>
+                        </div>
+                        <div class="stat-icon bg-info bg-opacity-10 text-info">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4" id="properties">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h2 class="h5 fw-bold mb-0">My Recent Properties</h2>
+            </div>
+            <div class="card-body px-4 pb-4">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Property</th>
+                                <th>Location</th>
+                                <th>Rooms</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for house in houses %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        {% if house.image %}
+                                            <img src="{{ house.image.url }}" alt="{{ house.title }}" class="table-property-thumb">
+                                        {% else %}
+                                            <div class="table-property-thumb bg-success bg-opacity-10 d-flex align-items-center justify-content-center">
+                                                <i class="fa-solid fa-image text-success"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span class="fw-semibold">{{ house.title }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ house.get_location_display }}</td>
+                                <td>{{ house.rooms.count }}</td>
+                                <td>
+                                    {% if house.is_available %}
+                                        <span class="badge rounded-pill bg-success">Available</span>
+                                    {% else %}
+                                        <span class="badge rounded-pill bg-secondary">Occupied</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{% url 'house_detail' house.pk %}" class="btn btn-sm btn-outline-success me-1" title="Edit / view">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form method="post" action="{% url 'landlord_delete_house' house.pk %}" class="d-inline" onsubmit="return confirm('Delete {{ house.title }}? This cannot be undone.');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-5">
+                                    You have not listed any properties yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mt-4" id="payments">
+            <div class="card-body p-4">
+                <h2 class="h5 fw-bold mb-2">Payments</h2>
+                <p class="text-muted mb-0">Payment tracking for tenant rent will appear here once the module is connected.</p>
+            </div>
+        </div>
+    </main>
+</div>
+{% else %}
+<div class="container py-5">
+    <div class="alert alert-warning">
+        You must be signed in as a landlord to use this dashboard.
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -2,8 +2,10 @@ import re
 
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
+
+from .models import Profile
 
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$')
@@ -82,3 +84,41 @@ class UserRegisterForm(UserCreationForm):
             raise ValidationError('This email is already registered. Please sign in or use another email.')
 
         return email
+
+
+class ProfilePicForm(forms.ModelForm):
+    profile_pic = forms.ImageField(
+        required=True,
+        label='Profile picture',
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control',
+            'accept': 'image/*',
+        }),
+    )
+
+    class Meta:
+        model = Profile
+        fields = ['profile_pic']
+
+
+class LandlordPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Current password',
+            'autocomplete': 'current-password',
+        })
+        self.fields['old_password'].label = 'Current password'
+        self.fields['new_password1'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'New password',
+            'autocomplete': 'new-password',
+        })
+        self.fields['new_password1'].label = 'New password'
+        self.fields['new_password2'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Confirm new password',
+            'autocomplete': 'new-password',
+        })
+        self.fields['new_password2'].label = 'Confirm new password'

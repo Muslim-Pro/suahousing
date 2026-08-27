@@ -35,10 +35,13 @@ from accounts import views as accounts_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('dashboard/', accounts_views.landlord_dashboard, name='landlord_dashboard'),
     path('available-rooms/', views.available_rooms, name='available_rooms'),
     path('houses/', views.house_list, name='house_list'),
     path('house/<int:pk>/', views.house_detail, name='house_detail'),
     path('register', accounts_views.register, name='register'),
+    path('accounts/login/', accounts_views.CustomLoginView.as_view(), name='login'),
+    path('accounts/logout/', accounts_views.CustomLogoutView.as_view(), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls')),
 ]

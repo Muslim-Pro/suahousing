@@ -124,22 +124,26 @@
     .sua-toast-warning .sua-toast-icon { background-color: #fd7e14; }
     .sua-toast-warning .sua-toast-progress { background-color: #fd7e14; }
 
-    /* Picha ndogo ya profile kwenye navbar ya kawaida */
-    .nav-profile-avatar {
+    /* Navbar: picha ndogo ya profile + first name + dropdown kama landlord dashboard */
+    .navbar-profile-avatar {
         width: 32px;
         height: 32px;
         object-fit: cover;
         border: 2px solid rgba(255, 255, 255, 0.55);
     }
-    .nav-profile-toggle {
+    .navbar-profile-toggle {
         color: #fff;
         text-decoration: none;
     }
-    .nav-profile-toggle:hover,
-    .nav-profile-toggle:focus {
+    .navbar-profile-toggle:hover,
+    .navbar-profile-toggle:focus {
         color: #fff;
     }
-    .nav-profile-menu {
+    .navbar-profile-toggle::after {
+        margin-left: 0.4rem;
+        vertical-align: middle;
+    }
+    .navbar-profile-menu {
         min-width: 250px;
         border: none;
         border-radius: 0.75rem;
@@ -147,27 +151,21 @@
         margin-top: 0.5rem !important;
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
     }
-    .nav-profile-menu .dropdown-item {
+    .navbar-profile-menu .dropdown-item {
         padding: 0.7rem 1.15rem;
         font-weight: 600;
         font-size: 0.92rem;
         color: #334155;
     }
-    .nav-profile-menu .dropdown-item i {
+    .navbar-profile-menu .dropdown-item i {
         width: 22px;
         color: #64748b;
     }
-    .nav-profile-menu .dropdown-item:hover {
+    .navbar-profile-menu .dropdown-item:hover {
         background-color: #f1f5f9;
     }
-    .nav-profile-menu .dropdown-item.text-danger i {
+    .navbar-profile-menu .dropdown-item.text-danger i {
         color: #dc3545;
-    }
-    .nav-profile-avatar-lg {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border: 4px solid #d1fae5;
     }
 </style>
 {% block extra_css %}{% endblock %}
@@ -236,42 +234,44 @@
                 </li>
             </ul>
 
-            <!-- Upande wa Kulia: picha + first name + dropdown (kama landlord dashboard) -->
+            <!-- Upande wa Kulia: picha ya profile + first name (si username) -->
             <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
                 {% if request.user.is_authenticated %}
-                <div class="dropdown">
-                    <button class="btn btn-link nav-profile-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {% if request.user.profile.profile_pic %}
-                            <img src="{{ request.user.profile.profile_pic.url }}" alt="{{ request.user.first_name|default:request.user.username }}" class="rounded-circle nav-profile-avatar">
-                        {% else %}
-                            <span class="rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center nav-profile-avatar fw-bold">
-                                {{ request.user.first_name|first|default:request.user.username|first|upper }}
-                            </span>
-                        {% endif %}
-                        <span class="fw-bold text-uppercase">{{ request.user.first_name|default:request.user.username }}</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end nav-profile-menu">
-                        <li>
-                            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#profilePicModal">
-                                <i class="fa-regular fa-user"></i> Update Profile Picture
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                                <i class="fa-solid fa-key"></i> Change Password
-                            </button>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form method="post" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-power-off"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+                    <div class="dropdown">
+                        <button class="btn btn-link navbar-profile-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if request.user.profile.profile_pic %}
+                                <img src="{{ request.user.profile.profile_pic.url }}" alt="{{ request.user.first_name|default:request.user.username }}" class="rounded-circle navbar-profile-avatar">
+                            {% else %}
+                                <span class="rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center navbar-profile-avatar fw-bold">
+                                    {{ request.user.first_name|first|default:request.user.username|first|upper }}
+                                </span>
+                            {% endif %}
+                            <span class="fw-bold text-uppercase">{{ request.user.first_name|default:request.user.username }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end navbar-profile-menu">
+                            {% if request.user.user_type == 'landlord' %}
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'landlord_dashboard' %}">
+                                    <i class="fa-regular fa-user"></i> Update Profile Picture
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'landlord_dashboard' %}">
+                                    <i class="fa-solid fa-key"></i> Change Password
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% endif %}
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-power-off"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 {% else %}
                     <a class="btn btn-outline-light btn-sm rounded-pill fw-bold px-4 me-1" href="{% url 'login' %}">Sign In</a>
                     <a class="btn btn-light btn-sm rounded-pill fw-bold text-success px-3" href="{% url 'register' %}">Sign Up</a>
@@ -281,73 +281,6 @@
         </div>
     </div>
 </nav>
-    {% endblock %}
-
-    {% block account_modals %}
-    {% if request.user.is_authenticated %}
-    <div class="modal fade" id="profilePicModal" tabindex="-1" aria-labelledby="profilePicModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold" id="profilePicModalLabel">Update Profile Picture</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pt-2">
-                    <div class="text-center mb-4">
-                        {% if request.user.profile.profile_pic %}
-                            <img src="{{ request.user.profile.profile_pic.url }}" alt="Current profile" class="rounded-circle nav-profile-avatar-lg mb-2">
-                        {% else %}
-                            <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center nav-profile-avatar-lg mb-2 fw-bold fs-2">
-                                {{ request.user.first_name|first|default:request.user.username|first|upper }}
-                            </div>
-                        {% endif %}
-                        <p class="fw-bold mb-0">{{ request.user.first_name|default:request.user.username }}</p>
-                        <p class="text-muted small mb-0">{{ request.user.email }}</p>
-                    </div>
-                    <form method="post" action="{% url 'update_profile_pic' %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <label for="id_profile_pic" class="form-label fw-semibold">Upload or change profile picture</label>
-                        <input type="file" name="profile_pic" id="id_profile_pic" class="form-control" accept="image/*" required>
-                        <div class="d-grid mt-3">
-                            <button type="submit" class="btn btn-success rounded-pill fw-bold">Save picture</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold" id="changePasswordModalLabel">Change Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pt-2">
-                    <form method="post" action="{% url 'landlord_change_password' %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="id_old_password" class="form-label fw-semibold">Current password</label>
-                            <input type="password" name="old_password" id="id_old_password" class="form-control" placeholder="Current password" autocomplete="current-password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_new_password1" class="form-label fw-semibold">New password</label>
-                            <input type="password" name="new_password1" id="id_new_password1" class="form-control" placeholder="New password" autocomplete="new-password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_new_password2" class="form-label fw-semibold">Confirm new password</label>
-                            <input type="password" name="new_password2" id="id_new_password2" class="form-control" placeholder="Confirm new password" autocomplete="new-password" required>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success rounded-pill fw-bold">Update password</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
     {% endblock %}
 
     {% block full_width %}{% endblock %}

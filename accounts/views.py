@@ -1,6 +1,7 @@
 import random
 import re
 import string
+import threading
 
 from django.conf import settings
 from django.contrib import messages
@@ -12,13 +13,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils.http import url_has_allowed_host_and_scheme
 from django.template.loader import render_to_string
 
 from houses.models import House, Room
 
 from .forms import LandlordPasswordChangeForm, ProfilePicForm, UserRegisterForm
 from .models import Profile
+
+
+def _send_email_background(subject, text_content, html_content, recipient_list):
+    """Tuma email nyuma ili request ya mtumiaji isingoje SMTP (Render timeout)."""
+    try:
+        msg = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.DEFAULT_FROM_EMAIL,
+            recipient_list,
+        )
+        msg.attach_alternative(html_content, 'text/html')
+        msg.send(fail_silently=True)
+    except Exception:
+        pass
 
 
 def forgot_password(request):
@@ -114,23 +129,18 @@ def register(request):
                 f"SUA Student Housing Team"
             )
 
-            try:
-                msg = EmailMultiAlternatives(
-                    subject, text_content, settings.DEFAULT_FROM_EMAIL, [email]
-                )
-                msg.attach_alternative(html_content, 'text/html')
-                msg.send()
-                messages.success(
-                    request,
-                    f'Welcome {first_name}! Your account has been created successfully. Check your email (inbox/spam) for login information.'
-                )
-            except Exception:
-                messages.success(
-                    request,
-                    f'Welcome {first_name}! Your account has been created successfully. You can log in now.'
-                )
+            # Usisubiri Gmail: tuma email kwenye thread ili usajili usife 500 kwenye Render
+            threading.Thread(
+                target=_send_email_background,
+                args=(subject, text_content, html_content, [email]),
+                daemon=True,
+            ).start()
 
-            # return redirect('login')
+            messages.success(
+                request,
+                f'Welcome {first_name}! Your account has been created successfully. You can log in now.'
+            )
+            return redirect('login')
 
         # messages.error(request, 'Please correct the errors in the form before proceeding.')
     else:
@@ -144,7 +154,7 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        jina = self.request.user.first_name or self.request.user.username
+        jina = self.request.user.get_full_name() or self.request.user.username
         messages.success(self.request, f'Welcome back, {jina}!')
         return response
 
@@ -167,19 +177,6 @@ class CustomLogoutView(LogoutView):
         if request.user.is_authenticated:
             messages.success(request, 'You have been logged out successfully.')
         return super().dispatch(request, *args, **kwargs)
-
-
-def _redirect_back(request):
-    """Rudisha mtumiaji kwenye ukurasa alikotoka baada ya kubadilisha picha au password."""
-    candidate = request.META.get('HTTP_REFERER', '')
-    if candidate and url_has_allowed_host_and_scheme(candidate, allowed_hosts={request.get_host()}):
-        return redirect(candidate)
-    try:
-        if request.user.profile.user_type == 'landlord':
-            return redirect('landlord_dashboard')
-    except Exception:
-        pass
-    return redirect('house_list')
 
 
 def _ensure_landlord(request):
@@ -219,7 +216,9 @@ def landlord_dashboard(request):
 
 @login_required
 def update_profile_pic(request):
-    profile, _ = Profile.objects.get_or_create(user=request.user)
+    profile = _ensure_landlord(request)
+    if profile is None:
+        return redirect('home')
 
     if request.method == 'POST':
         form = ProfilePicForm(request.POST, request.FILES, instance=profile)
@@ -229,7 +228,7 @@ def update_profile_pic(request):
         else:
             messages.error(request, 'Please choose a valid image file.')
 
-    return _redirect_back(request)
+    return redirect('landlord_dashboard')
 
 
 @login_required
@@ -249,8 +248,12 @@ def landlord_delete_house(request, pk):
 
 @login_required
 def landlord_change_password(request):
+    profile = _ensure_landlord(request)
+    if profile is None:
+        return redirect('home')
+
     if request.method != 'POST':
-        return _redirect_back(request)
+        return redirect('landlord_dashboard')
 
     password_form = LandlordPasswordChangeForm(user=request.user, data=request.POST)
     if password_form.is_valid():
@@ -260,9 +263,23 @@ def landlord_change_password(request):
             request,
             'Password changed successfully. Use the new password next time you sign in.',
         )
-        return _redirect_back(request)
+        return redirect('landlord_dashboard')
 
-    for field_errors in password_form.errors.values():
-        messages.error(request, field_errors[0])
-        break
-    return _redirect_back(request)
+    houses = (
+        House.objects.filter(landlord=request.user)
+        .prefetch_related('rooms')
+        .order_by('-created_at')
+    )
+    rooms = Room.objects.filter(house__landlord=request.user)
+    context = {
+        'profile': profile,
+        'profile_form': ProfilePicForm(instance=profile),
+        'password_form': password_form,
+        'houses': houses[:10],
+        'total_properties': houses.count(),
+        'vacant_rooms': rooms.filter(house__is_available=True).count(),
+        'occupied_rooms': rooms.filter(house__is_available=False).count(),
+        'total_inquiries': 0,
+        'open_password_modal': True,
+    }
+    return render(request, 'accounts/landlord_dashboard.html', context)

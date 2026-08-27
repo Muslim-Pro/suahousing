@@ -191,6 +191,11 @@
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Registering...';
         });
 
+        window.addEventListener('pageshow', function () {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Register Now';
+        });
+
         {% if form.email.errors %}
         showEmailError("{{ form.email.errors.0|escapejs }}");
         emailInput.focus();

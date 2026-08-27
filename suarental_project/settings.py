@@ -168,6 +168,8 @@ EMAIL_HOST_USER = SUPPORT_EMAIL
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = f'SUA Student Housing <{SUPPORT_EMAIL}>'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+# Zuia Gmail isishike request milele (Render ina timeout fupi)
+EMAIL_TIMEOUT = 8
 
 
 # kuhusu picha zilizopakiwa kwenye cloudinary

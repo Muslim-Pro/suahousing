@@ -355,11 +355,99 @@
         </div>
     </main>
 </div>
+
+<div class="modal fade" id="profilePicModal" tabindex="-1" aria-labelledby="profilePicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="profilePicModalLabel">Profile &amp; Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <div class="text-center mb-4">
+                    {% if user.profile.profile_pic %}
+                        <img src="{{ user.profile.profile_pic.url }}" alt="Current profile" class="rounded-circle profile-avatar-lg mb-2">
+                    {% else %}
+                        <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center profile-avatar-lg mb-2 fw-bold fs-2">
+                            {{ user.first_name|first|default:user.username|first|upper }}
+                        </div>
+                    {% endif %}
+                    <p class="fw-bold mb-0">{{ user.first_name|default:user.username }}</p>
+                    <p class="text-muted small mb-0">{{ user.email }}</p>
+                </div>
+                <form method="post" action="{% url 'update_profile_pic' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="id_profile_pic" class="form-label fw-semibold">Upload or change profile picture</label>
+                    <input type="file" name="profile_pic" id="id_profile_pic" class="form-control" accept="image/*" required>
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success rounded-pill fw-bold">Save picture</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="changePasswordModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <form method="post" action="{% url 'landlord_change_password' %}">
+                    {% csrf_token %}
+                    {% if password_form.non_field_errors %}
+                        <div class="alert alert-danger py-2 small">{{ password_form.non_field_errors }}</div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="{{ password_form.old_password.id_for_label }}" class="form-label fw-semibold">Current password</label>
+                        {{ password_form.old_password }}
+                        {% for error in password_form.old_password.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ password_form.new_password1.id_for_label }}" class="form-label fw-semibold">New password</label>
+                        {{ password_form.new_password1 }}
+                        {% for error in password_form.new_password1.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ password_form.new_password2.id_for_label }}" class="form-label fw-semibold">Confirm new password</label>
+                        {{ password_form.new_password2 }}
+                        {% for error in password_form.new_password2.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success rounded-pill fw-bold">Update password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% else %}
 <div class="container py-5">
     <div class="alert alert-warning">
         You must be signed in as a landlord to use this dashboard.
     </div>
 </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if open_password_modal %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modalEl = document.getElementById('changePasswordModal');
+        if (modalEl && window.bootstrap) {
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        }
+    });
+</script>
 {% endif %}
 {% endblock %}

@@ -7,10 +7,18 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.template.loader import render_to_string
 
-from .forms import UserRegisterForm
+from houses.models import House, Room
+
+from .forms import LandlordPasswordChangeForm, ProfilePicForm, UserRegisterForm
+from .models import Profile
 
 
 def forgot_password(request):
@@ -129,3 +137,132 @@ def register(request):
         form = UserRegisterForm()
 
     return render(request, 'accounts/register.html', {'form': form})
+
+
+class CustomLoginView(LoginView):
+    """Baada ya login, landlord anaenda dashboard; student anaenda houses."""
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        jina = self.request.user.first_name or self.request.user.username
+        messages.success(self.request, f'Welcome back, {jina}!')
+        return response
+
+    def get_success_url(self):
+        next_url = self.get_redirect_url()
+        if next_url:
+            return next_url
+        try:
+            if self.request.user.profile.user_type == 'landlord':
+                return reverse('landlord_dashboard')
+        except Exception:
+            pass
+        return reverse('house_list')
+
+
+class CustomLogoutView(LogoutView):
+    """Logout yenye toast ya success kwenye ukurasa unaofuata."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.success(request, 'You have been logged out successfully.')
+        return super().dispatch(request, *args, **kwargs)
+
+
+def _redirect_back(request):
+    """Rudisha mtumiaji kwenye ukurasa alikotoka baada ya kubadilisha picha au password."""
+    candidate = request.META.get('HTTP_REFERER', '')
+    if candidate and url_has_allowed_host_and_scheme(candidate, allowed_hosts={request.get_host()}):
+        return redirect(candidate)
+    try:
+        if request.user.profile.user_type == 'landlord':
+            return redirect('landlord_dashboard')
+    except Exception:
+        pass
+    return redirect('house_list')
+
+
+def _ensure_landlord(request):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type != 'landlord':
+        messages.error(request, 'This page is available to landlords only.')
+        return None
+    return profile
+
+
+@login_required
+def landlord_dashboard(request):
+    profile = _ensure_landlord(request)
+    if profile is None:
+        return redirect('home')
+
+    houses = (
+        House.objects.filter(landlord=request.user)
+        .prefetch_related('rooms')
+        .order_by('-created_at')
+    )
+    rooms = Room.objects.filter(house__landlord=request.user)
+
+    context = {
+        'profile': profile,
+        'profile_form': ProfilePicForm(instance=profile),
+        'password_form': LandlordPasswordChangeForm(user=request.user),
+        'houses': houses[:10],
+        'total_properties': houses.count(),
+        'vacant_rooms': rooms.filter(house__is_available=True).count(),
+        'occupied_rooms': rooms.filter(house__is_available=False).count(),
+        'total_inquiries': 0,
+        'open_password_modal': False,
+    }
+    return render(request, 'accounts/landlord_dashboard.html', context)
+
+
+@login_required
+def update_profile_pic(request):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfilePicForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile picture updated successfully.')
+        else:
+            messages.error(request, 'Please choose a valid image file.')
+
+    return _redirect_back(request)
+
+
+@login_required
+def landlord_delete_house(request, pk):
+    profile = _ensure_landlord(request)
+    if profile is None:
+        return redirect('home')
+
+    house = get_object_or_404(House, pk=pk, landlord=request.user)
+    if request.method == 'POST':
+        title = house.title
+        house.delete()
+        messages.success(request, f'"{title}" has been deleted.')
+
+    return redirect('landlord_dashboard')
+
+
+@login_required
+def landlord_change_password(request):
+    if request.method != 'POST':
+        return _redirect_back(request)
+
+    password_form = LandlordPasswordChangeForm(user=request.user, data=request.POST)
+    if password_form.is_valid():
+        user = password_form.save()
+        update_session_auth_hash(request, user)
+        messages.success(
+            request,
+            'Password changed successfully. Use the new password next time you sign in.',
+        )
+        return _redirect_back(request)
+
+    for field_errors in password_form.errors.values():
+        messages.error(request, field_errors[0])
+        break
+    return _redirect_back(request)

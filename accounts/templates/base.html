@@ -5,16 +5,205 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SUA Student Housing{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
     /* Hii inaficha maandishi na ma-list yote ya msaada ya crispy forms */
     .form-text, .help-block, .text-muted ul {
         display: none !important;
+    }
+
+    /* Chombo cha toasts: kimesimama juu kulia na kiko juu ya navbar */
+    .sua-toast-stack {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        width: min(380px, calc(100vw - 2rem));
+        pointer-events: none;
+    }
+
+    /* Kadi moja ya ujumbe (toast) */
+    .sua-toast {
+        pointer-events: auto;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+        animation: suaToastIn 0.28s ease;
+    }
+
+    /* Ingia kutoka kulia */
+    @keyframes suaToastIn {
+        from { opacity: 0; transform: translateX(24px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Toka kwenda kulia kabla ya kufutwa */
+    @keyframes suaToastOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(24px); }
+    }
+
+    /* Progress bar: upana unapungua kwa sekunde 4 */
+    @keyframes suaToastShrink {
+        from { width: 100%; }
+        to { width: 0%; }
+    }
+
+    .sua-toast.sua-toast-leaving {
+        animation: suaToastOut 0.22s ease forwards;
+    }
+
+    .sua-toast-body {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7rem;
+        padding: 0.85rem 0.9rem 0.7rem;
+    }
+
+    .sua-toast-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #fff;
+        font-size: 0.8rem;
+    }
+
+    .sua-toast-text {
+        flex: 1;
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1e293b;
+        line-height: 1.4;
+    }
+
+    /* Kitufe cha X cha kufunga kwa mkono */
+    .sua-toast-close {
+        border: 0;
+        background: transparent;
+        color: #94a3b8;
+        font-size: 1.15rem;
+        line-height: 1;
+        padding: 0;
+        cursor: pointer;
+    }
+    .sua-toast-close:hover {
+        color: #334155;
+    }
+
+    .sua-toast-progress {
+        height: 4px;
+        width: 100%;
+        animation: suaToastShrink 4s linear forwards;
+    }
+
+    /* Pause on hover: bar inaganda, toast haifungi mpaka mouse iondoke */
+    .sua-toast:hover .sua-toast-progress {
+        animation-play-state: paused;
+    }
+
+    /* Rangi: kijani = success, nyekundu = error, bluu = info */
+    .sua-toast-success .sua-toast-icon { background-color: #198754; }
+    .sua-toast-success .sua-toast-progress { background-color: #198754; }
+    .sua-toast-error .sua-toast-icon,
+    .sua-toast-danger .sua-toast-icon { background-color: #dc3545; }
+    .sua-toast-error .sua-toast-progress,
+    .sua-toast-danger .sua-toast-progress { background-color: #dc3545; }
+    .sua-toast-info .sua-toast-icon,
+    .sua-toast-debug .sua-toast-icon { background-color: #0d6efd; }
+    .sua-toast-info .sua-toast-progress,
+    .sua-toast-debug .sua-toast-progress { background-color: #0d6efd; }
+    .sua-toast-warning .sua-toast-icon { background-color: #fd7e14; }
+    .sua-toast-warning .sua-toast-progress { background-color: #fd7e14; }
+
+    /* Picha ndogo ya profile kwenye navbar ya kawaida */
+    .nav-profile-avatar {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.55);
+    }
+    .nav-profile-toggle {
+        color: #fff;
+        text-decoration: none;
+    }
+    .nav-profile-toggle:hover,
+    .nav-profile-toggle:focus {
+        color: #fff;
+    }
+    .nav-profile-menu {
+        min-width: 250px;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.45rem 0;
+        margin-top: 0.5rem !important;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+    }
+    .nav-profile-menu .dropdown-item {
+        padding: 0.7rem 1.15rem;
+        font-weight: 600;
+        font-size: 0.92rem;
+        color: #334155;
+    }
+    .nav-profile-menu .dropdown-item i {
+        width: 22px;
+        color: #64748b;
+    }
+    .nav-profile-menu .dropdown-item:hover {
+        background-color: #f1f5f9;
+    }
+    .nav-profile-menu .dropdown-item.text-danger i {
+        color: #dc3545;
+    }
+    .nav-profile-avatar-lg {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 4px solid #d1fae5;
     }
 </style>
 {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-light">
 
+    {# Soma Django messages zote hapa ili toast ionekane kwenye kila ukurasa (login, register, dashboard, n.k.) #}
+    <div class="sua-toast-stack" aria-live="polite" aria-atomic="true">
+        {% if messages %}
+            {% for message in messages %}
+                {# Chagua rangi kutoka Django tags: success=kijani, error=nyekundu, info=bluu #}
+                <div class="sua-toast {% if 'error' in message.tags or 'danger' in message.tags %}sua-toast-error{% elif 'success' in message.tags %}sua-toast-success{% elif 'warning' in message.tags %}sua-toast-warning{% else %}sua-toast-info{% endif %}" role="alert">
+                    <div class="sua-toast-body">
+                        <span class="sua-toast-icon">
+                            {% if 'error' in message.tags or 'danger' in message.tags %}
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            {% elif 'success' in message.tags %}
+                                <i class="fa-solid fa-circle-check"></i>
+                            {% elif 'warning' in message.tags %}
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-info"></i>
+                            {% endif %}
+                        </span>
+                        <p class="sua-toast-text">{{ message }}</p>
+                        {# X inafunga toast mara moja bila kusubiri sekunde 4 #}
+                        <button type="button" class="sua-toast-close" aria-label="Funga ujumbe">&times;</button>
+                    </div>
+                    {# Progress bar inapungua kwa sekunde 4; hover inaisimamisha #}
+                    <div class="sua-toast-progress"></div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% block navbar %}
     <nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top shadow-sm py-3">
     <div class="container">
         <a class="navbar-brand fw-bold" href="{% if request.user.is_authenticated %}{% url 'house_list' %}{% else %}{% url 'home' %}{% endif %}">SSH</a>
@@ -37,19 +226,52 @@
                 <li class="nav-item">
                     <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}">Available Rooms</a>
                 </li>
+                {% if request.user.is_authenticated and request.user.user_type == 'landlord' %}
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'landlord_dashboard' %}">Dashboard</a>
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}#support">Help & Support</a>
                 </li>
             </ul>
 
-            <!-- Upande wa Kulia: Mfumo wako wa authentication uliokuwepo mwanzo umelindwa salama -->
+            <!-- Upande wa Kulia: picha + first name + dropdown (kama landlord dashboard) -->
             <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
                 {% if request.user.is_authenticated %}
-                    <span class="text-white fw-bold me-2">Hellow {{ request.user.username }}!</span>
-                    <form method="post" action="{% url 'logout' %}" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm rounded-pill fw-bold px-3">Log out</button>
-                    </form>
+                <div class="dropdown">
+                    <button class="btn btn-link nav-profile-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if request.user.profile.profile_pic %}
+                            <img src="{{ request.user.profile.profile_pic.url }}" alt="{{ request.user.first_name|default:request.user.username }}" class="rounded-circle nav-profile-avatar">
+                        {% else %}
+                            <span class="rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center nav-profile-avatar fw-bold">
+                                {{ request.user.first_name|first|default:request.user.username|first|upper }}
+                            </span>
+                        {% endif %}
+                        <span class="fw-bold text-uppercase">{{ request.user.first_name|default:request.user.username }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end nav-profile-menu">
+                        <li>
+                            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#profilePicModal">
+                                <i class="fa-regular fa-user"></i> Update Profile Picture
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                <i class="fa-solid fa-key"></i> Change Password
+                            </button>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-power-off"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
                 {% else %}
                     <a class="btn btn-outline-light btn-sm rounded-pill fw-bold px-4 me-1" href="{% url 'login' %}">Sign In</a>
                     <a class="btn btn-light btn-sm rounded-pill fw-bold text-success px-3" href="{% url 'register' %}">Sign Up</a>
@@ -59,19 +281,90 @@
         </div>
     </div>
 </nav>
+    {% endblock %}
+
+    {% block account_modals %}
+    {% if request.user.is_authenticated %}
+    <div class="modal fade" id="profilePicModal" tabindex="-1" aria-labelledby="profilePicModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="profilePicModalLabel">Update Profile Picture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <div class="text-center mb-4">
+                        {% if request.user.profile.profile_pic %}
+                            <img src="{{ request.user.profile.profile_pic.url }}" alt="Current profile" class="rounded-circle nav-profile-avatar-lg mb-2">
+                        {% else %}
+                            <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center nav-profile-avatar-lg mb-2 fw-bold fs-2">
+                                {{ request.user.first_name|first|default:request.user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                        <p class="fw-bold mb-0">{{ request.user.first_name|default:request.user.username }}</p>
+                        <p class="text-muted small mb-0">{{ request.user.email }}</p>
+                    </div>
+                    <form method="post" action="{% url 'update_profile_pic' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="id_profile_pic" class="form-label fw-semibold">Upload or change profile picture</label>
+                        <input type="file" name="profile_pic" id="id_profile_pic" class="form-control" accept="image/*" required>
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-success rounded-pill fw-bold">Save picture</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <form method="post" action="{% url 'landlord_change_password' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_old_password" class="form-label fw-semibold">Current password</label>
+                            <input type="password" name="old_password" id="id_old_password" class="form-control" placeholder="Current password" autocomplete="current-password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_new_password1" class="form-label fw-semibold">New password</label>
+                            <input type="password" name="new_password1" id="id_new_password1" class="form-control" placeholder="New password" autocomplete="new-password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_new_password2" class="form-label fw-semibold">Confirm new password</label>
+                            <input type="password" name="new_password2" id="id_new_password2" class="form-control" placeholder="Confirm new password" autocomplete="new-password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success rounded-pill fw-bold">Update password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock %}
 
     {% block full_width %}{% endblock %}
 
+    {% block page_wrapper %}
     <div class="container mt-4">
         {% block content %}
         {% endblock %}
     </div>
+    {% endblock %}
 
 
 
 
 
 
+{% block footer %}
 <footer class="footer text-white" style="background-color: rgb(26, 140, 95); margin-top: 152px; padding-top: 60px; padding-bottom: 30px;">
     <div class="footer_top">
         <div class="container">
@@ -181,8 +474,51 @@
         </div>
     </div>
 </footer>
+{% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* Mfumo wa SUA toast: kufunga kiotomatiki baada ya progress bar, pause kwenye hover */
+        (function () {
+            var toasts = document.querySelectorAll('.sua-toast');
+
+            toasts.forEach(function (toast) {
+                var bar = toast.querySelector('.sua-toast-progress');
+                var closeBtn = toast.querySelector('.sua-toast-close');
+                var imefungwa = false;
+
+                /* Funga toast kwa animation, kisha iondoe kwenye DOM */
+                function fungaToast() {
+                    if (imefungwa) {
+                        return;
+                    }
+                    imefungwa = true;
+                    toast.classList.add('sua-toast-leaving');
+                    toast.addEventListener('animationend', function (e) {
+                        if (e.animationName === 'suaToastOut') {
+                            toast.remove();
+                        }
+                    });
+                }
+
+                /* Progress ikimalizika (sekunde 4), toast ijifunge yenyewe */
+                if (bar) {
+                    bar.addEventListener('animationend', function (e) {
+                        if (e.animationName === 'suaToastShrink') {
+                            fungaToast();
+                        }
+                    });
+                }
+
+                /* Kitufe cha X: mtumiaji anafunga kwa mkono */
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function () {
+                        fungaToast();
+                    });
+                }
+            });
+        })();
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

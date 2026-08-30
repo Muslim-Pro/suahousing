@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 // Zima spinner na rudisha button kawaida
                 btn.disabled = false;
-                btn.innerHTML = 'Request Reset Link';
+                btn.innerHTML = 'Request New Password';
 
                 if (alertBox) {
                     alertBox.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-dismissible', 'fade', 'show');
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 btn.disabled = false;
-                btn.innerHTML = 'Request Reset Link';
+                btn.innerHTML = 'Request New Password';
                 if (alertBox) {
                     alertBox.classList.remove('d-none', 'alert-success');
                     alertBox.classList.add('alert-danger', 'alert-dismissible', 'fade', 'show', 'text-start');
@@ -410,38 +410,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-
-
-
-
-
-
-
-<script>
-    document.getElementById('loginForm').addEventListener('submit', function() {
-        var btn = document.getElementById('loginBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing in...';
-    });
-</script>
-
-
-
-<script>
-    // Hii ni ya fomu kuu ya login uliyoiweka mwanzo
-    document.getElementById('loginForm').addEventListener('submit', function() {
-        var btn = document.getElementById('loginBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing in...';
-    });
-
-    // Hii ni mpya kwa ajili ya Modal ya Forgot Password
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function() {
-        var btn = document.getElementById('forgotPasswordBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending Request...';
-    });
-</script>
-
-
 {% endblock %}

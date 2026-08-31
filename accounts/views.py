@@ -73,15 +73,16 @@ def forgot_password(request):
                 f"Login: {context['login_url']}"
             )
 
-            msg = EmailMultiAlternatives(
-                subject, text_content, settings.DEFAULT_FROM_EMAIL, recipient_list
-            )
-            msg.attach_alternative(html_content, 'text/html')
-            msg.send()
+            # Usisubiri Gmail: tuma email nyuma ili Render isitoe timeout/500
+            threading.Thread(
+                target=_send_email_background,
+                args=(subject, text_content, html_content, recipient_list),
+                daemon=True,
+            ).start()
 
             return JsonResponse({
                 'success': True,
-                'message': 'A new password has been sent to your email address!'
+                'message': 'A new password has been sent to your email address. Check inbox or spam.'
             })
 
         except User.DoesNotExist:
@@ -89,10 +90,10 @@ def forgot_password(request):
                 'success': False,
                 'message': 'No user found with that username and email combination.'
             })
-        except Exception as e:
+        except Exception:
             return JsonResponse({
                 'success': False,
-                'message': f'Error: {str(e)}'
+                'message': 'Something went wrong. Please try again.'
             })
 
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})

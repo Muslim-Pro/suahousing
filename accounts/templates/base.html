@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
+    {% load static %}
+    
+    <!-- Link ya Favicon / Logo kwenye Browser Tab -->
+    <link rel="icon" type="image/png" href="{% static 'images/sua-logo.png' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SUA Student Housing{% endblock %}</title>

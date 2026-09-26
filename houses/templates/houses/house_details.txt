@@ -81,54 +81,9 @@
                         </div>
                     </div>
                     <div class="card-footer bg-white border-0 pb-3">
-                        <!-- Button inayofungua Pop-Up ya Malipo badala ya link ya tel: -->
-                        <button type="button" class="btn btn-success w-100 rounded-pill" data-bs-toggle="modal" data-bs-target="#paymentModal{{ room.id }}">
-                            Order / Contact
-                        </button>
+                        <a href="tel:0700000000" class="btn btn-success w-100 rounded-pill">Order / Contact</a>
                     </div>
                 </div>
-            </div>
-
-            <!-- Pop-up Window (Modal) ya Malipo kwa kila Chumba -->
-            <div class="modal fade" id="paymentModal{{ room.id }}" tabindex="-1" aria-labelledby="modalLabel{{ room.id }}" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content rounded-3 border-0 shadow">
-                  <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title fw-bold" id="modalLabel{{ room.id }}">Pay Room: {{ room.get_room_type_display }}</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body p-4">
-                    <p class="mb-1 text-muted">House: <strong>{{ house.title }}</strong></p>
-                    <p class="fs-4 fw-bold text-danger mb-3">Amount: TZS {{ room.price }}</p>
-                    
-                    <form action="{% url 'anzisha_malipo' house.id %}" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="room_id" value="{{ room.id }}">
-                        <input type="hidden" name="amount" value="{{ room.price }}">
-                        
-                        <!-- 1. CHAGUA MTANDAO (Hii ndio sehemu mpya ya kuongeza) -->
-                        <div class="mb-3 text-start">
-                            <label class="form-label fw-bold">Chagua Mtandao wa Simu</label>
-                            <select name="network" class="form-select" required>
-                                <option value="MPS">Vodacom (M-Pesa)</option>
-                                <option value="TIGO">Tigo Pesa</option>
-                                <option value="AIRTEL">Airtel Money</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3 text-start">
-                            <label class="form-label fw-bold">Phone Number for Payment (M-Pesa / TigoPesa):</label>
-                            <input type="text" name="phone_number" class="form-control" placeholder="Example: 0712345678" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100 rounded-pill py-2" onclick="this.querySelector('.spinner-border').classList.remove('d-none'); this.querySelector('.btn-txt').textContent=' Processing...';">
-                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                            <span class="btn-txt">Pay Now with Phone</span>
-                        </button>
-                        <!-- <button type="submit" class="btn btn-success w-100 rounded-pill py-2 fw-bold">Pay Now with Phone</button> -->
-                    </form>
-                  </div>
-                </div>
-              </div>
             </div>
             {% empty %}
             <div class="col-12">
@@ -138,8 +93,4 @@
         </div>
     </div>
 </div>
-
-
-
-
 {% endblock %}

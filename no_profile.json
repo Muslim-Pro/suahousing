@@ -1,0 +1,4061 @@
+[
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$u4m6UDfNXvbY2Q0gIT05he$F2wyQ8PWj2vaD0qZGrs9M0aJ5wvYNUWZov4O9YUvQlk=",
+            "last_login": "2026-09-11T09:49:50.437Z",
+            "is_superuser": true,
+            "username": "pro_",
+            "first_name": "",
+            "last_name": "Salumu",
+            "email": "muslimsalumu127@gmail.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2026-06-23T15:13:40Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$OOi7gQWJozmswIKAXGXWgn$tVZIavHm+XlHmw1Y7a1nubuSUMgYUltbLEvALUlByFI=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Putin",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-01T09:42:50.773Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$5CYbmnMLsYkHwkzZovUWEN$YnaUyREx2CS8I3ygfk8wZJjItAdTYsSIk66lTCm8OHI=",
+            "last_login": "2026-07-16T22:36:36.380Z",
+            "is_superuser": false,
+            "username": "putin",
+            "first_name": "Shaban",
+            "last_name": "Shaban",
+            "email": "putinshaban@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-01T09:45:28Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$Q1BJV0YZJ6IlK2jhbEKxcL$zQL5S8HNgb0j/ckCYgCGlX9WgqRYO+0zdsN9M5c8Kv4=",
+            "last_login": "2026-07-01T10:10:00.864Z",
+            "is_superuser": false,
+            "username": "mwaisa",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-01T10:09:39.742Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$ZZRSOINueUXC4z0H4ct8me$fHcV5b6EPH6tAuc1ibzlivDRZL+VdiTPl86i2EdmaV0=",
+            "last_login": "2026-07-04T21:25:37.120Z",
+            "is_superuser": false,
+            "username": "Isack_",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-01T12:34:14.693Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$SqQxDIhSVekTtKQ1wem6I0$CNOOnLHg/pRDVX/cFJva8ktrtaw5SmNflgK9oP4n2nA=",
+            "last_login": "2026-07-01T13:23:36.695Z",
+            "is_superuser": false,
+            "username": "salumu127",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-01T12:57:23.553Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$LnvIPC4qbpMt2pXDZCov3a$NAx/sICVo4zc09OT1emC616p+i4z3ZCY50IpQINyDK8=",
+            "last_login": "2026-07-04T18:20:20.168Z",
+            "is_superuser": false,
+            "username": "Upendo",
+            "first_name": "Upendo",
+            "last_name": "Isack",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-02T07:43:49Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$xOJZtkmwmi51emhXYwXWj0$zx/eSOknnMkU3fKiSG9OuArKZITd4lf2hwafSEfVNjk=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Teddy",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-02T07:47:26.535Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$6qEcyzbDs662d52pjuBnBa$ocVs5FkzhQqk4XvySaOTFanR0gm2F6ZRpa3wYHfXX0w=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Teddy001",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-02T07:48:35.250Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$OvQqustQCfw2vXzqsfm6YK$pLnye6qnp6TmDI2J0uobxU3m9ZLHya5lJOyI201d6eU=",
+            "last_login": "2026-07-04T13:54:55.433Z",
+            "is_superuser": false,
+            "username": "Doro",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-04T13:54:33.204Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$GMkX3UTxjLnkOyfUvYz3Cq$/qIYN6JmOHDzVMSUy7O8sJpeUwqkKO9cp+NdMJ+p2x4=",
+            "last_login": "2026-07-05T03:38:25.651Z",
+            "is_superuser": false,
+            "username": "ismaty",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-04T18:32:10.354Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$9Lrmn0wVHd9ILFLHCZHdG7$FouuqeZuoyTLxhydZK/hL7gSTUke+En6BKO7b7dbqEM=",
+            "last_login": "2026-07-05T03:41:37.069Z",
+            "is_superuser": false,
+            "username": "Jack",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-05T03:41:16.828Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$8xiC41lkp5lh0KTUlZdNCF$w8FCI1RFzueD+AlXauuqZd/RXxJOoftZ8YwvLbLQys4=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "muslim",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-06T08:16:18.913Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$QLkmqEol1iyXbMb8Oc5xAd$xxNZ0tQTLj83qA9b6ZEhqeLYQIvj34yvhEJUFR47lLM=",
+            "last_login": "2026-07-24T18:01:42.642Z",
+            "is_superuser": false,
+            "username": "omary",
+            "first_name": "",
+            "last_name": "",
+            "email": "abuubyserhamidu@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-16T20:55:37.056Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$DjRBQdjJhUwUp2CF7w6ZQQ$PLMtWtssRvGT0PLhoT2e1xsgeVHHjDUMEA37ndYT094=",
+            "last_login": "2026-07-19T20:54:09.484Z",
+            "is_superuser": false,
+            "username": "email",
+            "first_name": "",
+            "last_name": "",
+            "email": "muslimsalumu127@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-16T22:27:37.390Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$z9IR0vfeud7fx8QI3fVHB8$3zxNAUaMXYK0c4zoLFyt2Sj2zXftuR2vcDe2T/Gshnk=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "tws",
+            "first_name": "",
+            "last_name": "",
+            "email": "muslimsalumu127@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-16T22:35:00.582Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$1iPyvBVhEHHocgvGQEaYzX$jkkPvYkYxIdUe5BKwMGzBeleio/PlREA4Dcp/KBD234=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "dominics",
+            "first_name": "",
+            "last_name": "",
+            "email": "dominicaugustino84@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-16T22:38:19.852Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$A4MgXzWXokxc3IaB4miFTH$GUmArfvmVe8nvjsJ5dZask7HmQ6JBcPWUSXZEH25pGE=",
+            "last_login": "2026-08-18T20:14:05.252Z",
+            "is_superuser": false,
+            "username": "muuh",
+            "first_name": "",
+            "last_name": "",
+            "email": "muslimsalumu127@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-16T22:47:42.488Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$P6m6xkcln7VBdQCtTOmtBf$1BSm/SuUAGrj1Xe0DG6DW5nT2o1EuHoaOjG2vo9ZHuY=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Debora",
+            "first_name": "",
+            "last_name": "",
+            "email": "dominicaugustino84@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-16T22:49:22.695Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$9mNIqZdj7dQ620nbxM9rk2$u67eSxwozhohWELgUjyiUjePKaZ25oGG+0vvprJJeng=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "debo",
+            "first_name": "",
+            "last_name": "",
+            "email": "dominicaugustino84@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-16T23:05:27.152Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$cD2QQD3c2ilPPmdlmf7DGk$g7yfkV6IcRGyLI1YtgE379c/KnUpXvZWVOSwLDq/Nvw=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "kkkk",
+            "first_name": "",
+            "last_name": "",
+            "email": "domitiramsigwa@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-18T18:43:34.574Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$FQnB0lq51K6BTnWjt8Bg1j$vYPuvS+4fh3tD6MwjWhDFhu18rYk1lkc8AnDLKN51S0=",
+            "last_login": "2026-07-18T19:01:31.534Z",
+            "is_superuser": false,
+            "username": "dotto",
+            "first_name": "",
+            "last_name": "",
+            "email": "mbulwahonadotto@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-18T18:45:53.832Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$2Uc04r1C4rdN9THNjKzp25$EtBPauO8k4+4NLUqr63kfvY90sxe7elioSbSyyfIMEo=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "doto",
+            "first_name": "",
+            "last_name": "",
+            "email": "mbulwahonadotto@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-18T18:56:21.914Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$cEj4WSrOfW6Gt3LSmpaLTv$7h6eyJkU5P2/nJ3B4xlUvMLGjek5v23xZ9D34M+uFFQ=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "r",
+            "first_name": "",
+            "last_name": "",
+            "email": "muslimsalumu127@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-18T18:59:41.166Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$p6BZUUUYxLuYI4SQJggB06$ko8Sie5tPRvRwTbiDncXn34+ipfQOMHiYxxuiqCCSTU=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "tyuio",
+            "first_name": "",
+            "last_name": "",
+            "email": "mbulwahonadotto@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-18T19:01:19.206Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$DtEwepflPL97E1V9hr2uIY$8zabk+Tg3YaNLysrPd3LmAAOmPnm0eZiOAMWW1MTwXI=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "domitira",
+            "first_name": "",
+            "last_name": "",
+            "email": "domitiramsigwa@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-18T19:07:23.736Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$o47b2lTJqaQUjIITKlT9cq$j/lZvfyuvMt14+1ROqjVWH9qw1Q+s9NT6d6M+VqZ+Do=",
+            "last_login": "2026-07-25T16:54:47.911Z",
+            "is_superuser": false,
+            "username": "TechPro",
+            "first_name": "baraka",
+            "last_name": "ismail",
+            "email": "muslimsalumu127@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-19T12:04:16.080Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$mD1DyBrH95RQatBg22Blre$fgwc5J5JqeWpeRWjKh7bhxWqFzHQlGhlNZwpULh0amU=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "pro_dev",
+            "first_name": "Muslim_",
+            "last_name": "Salim",
+            "email": "muslimsalumu127@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-19T12:14:05.746Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$OZ4NsEt0PCxPMq6iijCnmG$SHl9YBAxaOdknKjg8MpAKnd5wrgpJbMosBLSISvprsY=",
+            "last_login": "2026-07-19T23:41:08.218Z",
+            "is_superuser": false,
+            "username": "pro_u",
+            "first_name": "Mus",
+            "last_name": "Saluu",
+            "email": "muslimsalimu128@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-19T23:40:52.021Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$0PlZSpXnoZd4NATierrPks$CDQk1tDorFh/pkg9yK0P21LuQYSYC4klaoch0kupz/Y=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "ndabu",
+            "first_name": "paul",
+            "last_name": "wailes",
+            "email": "paulwailes20@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-20T15:16:49.257Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$9b7231apgNakhjtJAJl11Y$0vylxVoiEjWPjtYWSyWmm/FBuwRRG422Cg0tICisutM=",
+            "last_login": "2026-07-20T15:21:10.242Z",
+            "is_superuser": false,
+            "username": "ndabu_",
+            "first_name": "paul",
+            "last_name": "wailes",
+            "email": "ndabumviye20@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-20T15:18:43.637Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$Xae4gbOi7DrUIFqs7OjpcG$EE5Rb5HC/CUpJQ38KkEYkspx4zLpxymE7D41u5Yr4Dk=",
+            "last_login": "2026-07-23T18:24:46.531Z",
+            "is_superuser": false,
+            "username": "jelly",
+            "first_name": "julius",
+            "last_name": "kelvin",
+            "email": "abuubyserhamidu@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-23T13:56:28.171Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$vv7TTX6nKrnKRuUXINQa0H$+fVbrneEAvk5hYMd69pQP9VdLg60Gbdv5BortVirgOE=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "joe_kuku",
+            "first_name": "juli",
+            "last_name": "kelvin",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-23T16:59:17Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$dQ4LlYGSHgRgOOBzlh2LB1$8nPlNSqi4UDwPTtPPMAoV8n2rst4WtSDqF0mD//3NW8=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "joekuku",
+            "first_name": "juliet",
+            "last_name": "kelvin",
+            "email": "muslimsalumu128@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-23T17:03:07.357Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$XNDSbx565gnXeyPU6EchCZ$OHNYjIaG52YpMvY6QAAZ3IwO+2KEUIL/MeA2vmR4UL8=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "kelly@g",
+            "first_name": "paulo",
+            "last_name": "kelvin",
+            "email": "payeiiwhejs20@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-23T23:36:34.929Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$0nMRYrhl656snDBnRH4uWk$9z6XagnqsMrTEmETIwUTfTflLNhX1V6rsmWPAk5Ulxk=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "kelly@g_",
+            "first_name": "paulo",
+            "last_name": "kelvin",
+            "email": "payeiwhejs20@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-24T09:41:13.426Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$PiC8jdgkq5n1BBYeJa5LAA$Zta4pcb+BkrL0J8A8XR8GC1JsUwUEJ3w4rIGuRyDQiQ=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "prosolution",
+            "first_name": "mpenje",
+            "last_name": "tps",
+            "email": "bongealex5@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-25T16:57:38.198Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$1TnVyktaU4vlXtLoBKic1s$BqzMNYLzsIw7f1GxsS9yuNe9qhJOxxSdHxRj0/dQLcA=",
+            "last_login": "2026-08-29T13:58:00.743Z",
+            "is_superuser": false,
+            "username": "putinio",
+            "first_name": "Putin",
+            "last_name": "Pas",
+            "email": "millinditech@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-22T13:20:22.878Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$TN7hCvXdGW36iiCdNPkBEX$jiGlWfN09F/3f/ozPcss2HjHFmK3QIB1W50/9NqH+3E=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Yuvim",
+            "first_name": "Vicent",
+            "last_name": "Msinjiri",
+            "email": "vicentmsinjili83@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-04T17:26:59.144Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$rvTThEflkuaDv6X6BXefEh$kdSSTHkXiBcg+SjleNPTV5RzSYnk51zIdm8OVq0Cufw=",
+            "last_login": "2026-08-22T14:08:16.782Z",
+            "is_superuser": false,
+            "username": "stela",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-22T13:36:05.609Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$79silHFqoowTAr22pgOFaB$Or+aQpUMj9GGpv5U6RGAeaJmhq1fvTU5iv8NjKShpnU=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "mko",
+            "first_name": "Muslim",
+            "last_name": "Salumu",
+            "email": "muslimsalumu129@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-24T10:59:30.224Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$KPMsI8i2Iuj4zEIaIkMEP9$Lcx3CxpzBJACVaufpZbuXrbltJjSjrU/L8AxIq6J3Y4=",
+            "last_login": "2026-08-27T16:25:18.190Z",
+            "is_superuser": false,
+            "username": "bafedebreezy@gmail.com",
+            "first_name": "Omary",
+            "last_name": "Yahya",
+            "email": "bafedebreezy@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-27T16:13:00.595Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$QKFlGa59GFADGvxCROGs2S$d7AW2r3ueN1urvCDpu7AcQ3BynQuTU3E0BKGycFw2a8=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Hacker",
+            "first_name": "Joel",
+            "last_name": "Joseph",
+            "email": "fantastchacker@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-09T13:16:26.082Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$YuxEgNd1DcFISiUJ4YMvpl$uEyVraPhelQsBnjOyoh1+93gZxUy0kWzwFzguSceyRM=",
+            "last_login": "2026-08-31T09:45:26Z",
+            "is_superuser": false,
+            "username": "crvcrvcrv",
+            "first_name": "Cravely",
+            "last_name": "Ibrahim",
+            "email": "cravelyibrahim@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-08-31T08:14:20Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$s1JTaIqxmuPFhQOcOYq5xZ$/5xu9OYUY/e9Oog6dC4k6+3KVQnOHs+9o7UVNhZjRSM=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "CRV",
+            "first_name": "Cravely",
+            "last_name": "Ibrahim",
+            "email": "cravelyibrahim@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-29T18:17:12.444Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "fields": {
+            "password": "pbkdf2_sha256$1200000$ik4WSqelHeNal5q7RuytyQ$rsWuncDMAUmwkJy46+F641OSMwu4i7w002VWiP4Finw=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "RV",
+            "first_name": "Cravely",
+            "last_name": "Ibrahim",
+            "email": "crvelyibrahim@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2026-07-29T18:33:31.081Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "0f8x15896odqhrmopgk7pu1ybatc8wne",
+        "fields": {
+            "session_data": ".eJxVjEEOwiAQRe_C2pAWCgwu3XsGMsOAVA0kpV0Z765NutDtf-_9lwi4rSVsPS1hZnEWZhCn35EwPlLdCd-x3pqMra7LTHJX5EG7vDZOz8vh_h0U7OVbgyOlbcYJcCDFdjRIUWWHenIGfLRGkaZMBkYCxQAxcgLgbAF19l68Pw1gOH8:1wzcuk:AYyyEGAY2hhH5VVDIu03Ni0-4aLpn8qLhvX8jaLxBC4",
+            "expire_date": "2026-09-10T16:25:18.197Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "36yvou1s7h3dmxgqcca47uohmu0sce7x",
+        "fields": {
+            "session_data": ".eJxVjEEOwiAQRe_C2pCBwrS4dN8zkGEGpWpoUtqV8e7apAvd_vfef6lI21ri1vISJ1FnZdTpd0vEj1x3IHeqt1nzXNdlSnpX9EGbHmfJz8vh_h0UauVbg2N2CcgSI2fhjDYMbnCJg-19R0IdEAhij9cu-QTBiMXMGIIHQ6DeH_fGN-w:1x13Z3:ZxRcFUhOSlMdz9dDwTpLLmU3WQCM0UbnM_WCRuUry6Y",
+            "expire_date": "2026-09-14T15:04:49.316Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "mgzll4vxpff95ahne52hoa89l91s2z03",
+        "fields": {
+            "session_data": ".eJxVjDkOwyAUBe9CHSE2s6RM7zOgD3yCkwgkY1dR7m5bcuG0b2bel3hYl-LXjrOfErmTQZDbdQwQ31gPkl5Qn43GVpd5CvRQ6Ek7HVvCz-N0_w4K9LLXVkXUwKSUTBrnLGJGHQcNLgfkMQktjAClnOHcAVrLgGUjwm4bKwMnvw0AUjeB:1x0xA8:KJqddZ9xKNK7k6NyyKtTTPv2fnUqLa0VDu-tZlWbhyM",
+            "expire_date": "2026-09-14T08:14:40.668Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "njn33bqqvbglsbp6lio6ffur688ztnlk",
+        "fields": {
+            "session_data": ".eJxVjEsKwjAUAO_y1hKapAlNl-49Q3m_mKok0M9KvLsUutDtzDBvmHDfyrSvukyzwAghwuUXEvJT62HkgfXeDLe6LTOZIzGnXc2tib6uZ_s3KLgWGEF9z70VFktZXFKLTkLwqIPTnLvO2y4RD-JCQopeOQfN7HuKPoraCJ8vM7Y5HA:1wnksw:WCQdWD92twNEUJqd1ZSR-sPQyeVXWq6pFDRPG8oi4BA",
+            "expire_date": "2026-08-08T22:30:22.141Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "ok9h48e968mo1tvtqk6u0kmyhe1aklri",
+        "fields": {
+            "session_data": ".eJxVjEEOwiAQRe_C2pCBwrS4dN8zkGEGpWpoUtqV8e7apAvd_vfef6lI21ri1vISJ1FnZdTpd0vEj1x3IHeqt1nzXNdlSnpX9EGbHmfJz8vh_h0UauVbg2N2CcgSI2fhjDYMbnCJg-19R0IdEAhij9cu-QTBiMXMGIIHQ6DeH_fGN-w:1x0JYF:EPiW_tz7ELYyfrcI7RDz0F72tg-Jd66KL3aV3af4bbE",
+            "expire_date": "2026-09-12T13:56:55.654Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "t5um16fa62p9gwjg5m1suh6v07dgk0aw",
+        "fields": {
+            "session_data": ".eJxVjDkOwyAUBe9CHSE2s6RM7zOgD3yCkwgkY1dR7m5bcuG0b2bel3hYl-LXjrOfErmTQZDbdQwQ31gPkl5Qn43GVpd5CvRQ6Ek7HVvCz-N0_w4K9LLXVkXUwKSUTBrnLGJGHQcNLgfkMQktjAClnOHcAVrLgGUjwm4bKwMnvw0AUjeB:1x0yZy:elNZ02pMvrTY73kCBOE9KAeqseOf5yFg_LHQ2zmmpt8",
+            "expire_date": "2026-09-14T09:45:26.638Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "vv74nnua6wg8bzzh7f8l76xu4sinm3uk",
+        "fields": {
+            "session_data": ".eJxVjEEOwiAQRe_C2pCBwrS4dN8zkGEGpWpoUtqV8e7apAvd_vfef6lI21ri1vISJ1FnZdTpd0vEj1x3IHeqt1nzXNdlSnpX9EGbHmfJz8vh_h0UauVbg2N2CcgSI2fhjDYMbnCJg-19R0IdEAhij9cu-QTBiMXMGIIHQ6DeH_fGN-w:1x0Ity:G3QLJLXFNPIG1PNi2CJfJhDAw1_jkMv7wx7kHSyk_YI",
+            "expire_date": "2026-09-12T13:15:18.301Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "wzjzz94hazhi8vo9v1jikoluogiwf2wv",
+        "fields": {
+            "session_data": ".eJxVjEEOwiAQRe_C2pCBwrS4dN8zkGEGpWpoUtqV8e7apAvd_vfef6lI21ri1vISJ1FnZdTpd0vEj1x3IHeqt1nzXNdlSnpX9EGbHmfJz8vh_h0UauVbg2N2CcgSI2fhjDYMbnCJg-19R0IdEAhij9cu-QTBiMXMGIIHQ6DeH_fGN-w:1wyVY1:Isbu01wCvLUJaBPXqU1Cno9QJXbNrECQFhGqsvCTats",
+            "expire_date": "2026-09-07T14:21:13.654Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 1,
+        "fields": {
+            "landlord": [
+                "pro_"
+            ],
+            "title": "Green hostel",
+            "description": "For women",
+            "location": "mazimbu",
+            "address": "Near  by wetland",
+            "image": "media/house_images/h8_nash5u",
+            "is_available": true,
+            "created_at": "2026-06-23T15:19:45.646Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 2,
+        "fields": {
+            "landlord": [
+                "pro_"
+            ],
+            "title": "Mton hostel",
+            "description": "For all",
+            "location": "moringe",
+            "address": "Mkabala na Getini",
+            "image": "media/house_images/h3_oxq3vn",
+            "is_available": true,
+            "created_at": "2026-06-23T15:32:18.180Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 3,
+        "fields": {
+            "landlord": [
+                "pro_"
+            ],
+            "title": "Tumaini hostel",
+            "description": "reffffffffffffffff",
+            "location": "town",
+            "address": "mkabala na msamvu",
+            "image": "media/house_images/h2_rvp3lg",
+            "is_available": true,
+            "created_at": "2026-06-24T10:33:47.432Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 4,
+        "fields": {
+            "landlord": [
+                "pro_"
+            ],
+            "title": "Unit 3",
+            "description": "Block A, B and C",
+            "location": "mazimbu",
+            "address": "mkabala na administration",
+            "image": "media/house_images/h7_esvfjs",
+            "is_available": true,
+            "created_at": "2026-06-25T09:28:09.532Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 5,
+        "fields": {
+            "landlord": [
+                "pro_"
+            ],
+            "title": "Six star",
+            "description": "tie",
+            "location": "mazimbu",
+            "address": "jirani",
+            "image": "media/house_images/H1_kn3xbl",
+            "is_available": true,
+            "created_at": "2026-06-25T10:19:34.782Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 6,
+        "fields": {
+            "landlord": [
+                "pro_"
+            ],
+            "title": "Mondo hostel",
+            "description": "ret6uiutf",
+            "location": "mazimbu",
+            "address": "mkabala na wetland",
+            "image": "media/house_images/h4_dkod5r",
+            "is_available": true,
+            "created_at": "2026-06-25T10:21:34.049Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 8,
+        "fields": {
+            "landlord": [
+                "Isack_"
+            ],
+            "title": "mwaitumule",
+            "description": "none",
+            "location": "kingolwira",
+            "address": "dragon hotel",
+            "image": "media/house_images/h9_qwp7kh",
+            "is_available": true,
+            "created_at": "2026-07-02T09:35:09.857Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 9,
+        "fields": {
+            "landlord": [
+                "Teddy"
+            ],
+            "title": "NEEMA",
+            "description": "INA VYUMBA 9\r\nSELF 3\r\nKAWAIDA 6\r\nNDANI YA GETI",
+            "location": "moringe",
+            "address": "NE",
+            "image": "media/house_images/h3_sgsd6g",
+            "is_available": true,
+            "created_at": "2026-07-06T08:33:42.585Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 10,
+        "fields": {
+            "landlord": [
+                "Debora"
+            ],
+            "title": "Sibwesa",
+            "description": "Msinjiri`s house",
+            "location": "town",
+            "address": "mkabala na kingaru",
+            "image": "media/house_images/h10_aox4bc",
+            "is_available": true,
+            "created_at": "2026-07-23T21:59:06.015Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 11,
+        "fields": {
+            "landlord": [
+                "Upendo"
+            ],
+            "title": "Dark_City Lodge",
+            "description": "msjhd fjhh",
+            "location": "town",
+            "address": "MAZIMBU DARAJANI",
+            "image": "media/house_images/h7_wwf1zt",
+            "is_available": true,
+            "created_at": "2026-07-23T23:31:34.734Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 12,
+        "fields": {
+            "landlord": [
+                "Yuvim"
+            ],
+            "title": "JUWATA LODGE",
+            "description": "MALIPO KUANZIA MIEZI SITA INA VYUMBA MASTER NA SINGLE",
+            "location": "town",
+            "address": "MKABALA NA VUNJA BEI",
+            "image": "media/house_images/h10_q9qedz",
+            "is_available": true,
+            "created_at": "2026-08-19T13:18:28.556Z"
+        }
+    },
+    {
+        "model": "houses.house",
+        "pk": 13,
+        "fields": {
+            "landlord": [
+                "crvcrvcrv"
+            ],
+            "title": "Cradob Mansion",
+            "description": "Nyumba ina vyumba 50, Wi-Fi na makablasha menginemengine.",
+            "location": "town",
+            "address": "Mazimbu",
+            "image": "media/house_images/h9_t8ovuo",
+            "is_available": true,
+            "created_at": "2026-08-31T09:52:21.216Z"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 1,
+        "fields": {
+            "house": 1,
+            "room_type": "master",
+            "price": 320000,
+            "room_image": "media/room_images/room1_gmn5pj",
+            "description": "Kina feni, vigae"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 2,
+        "fields": {
+            "house": 2,
+            "room_type": "single",
+            "price": 440000,
+            "room_image": "media/room_images/room3_wtpelg",
+            "description": "Kina feni"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 3,
+        "fields": {
+            "house": 1,
+            "room_type": "double",
+            "price": 220300,
+            "room_image": "media/room_images/room4_vrfu59",
+            "description": "Kina AC"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 4,
+        "fields": {
+            "house": 1,
+            "room_type": "single",
+            "price": 210000,
+            "room_image": "media/room_images/room2_ulwvcs",
+            "description": "No Air condition"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 5,
+        "fields": {
+            "house": 1,
+            "room_type": "master",
+            "price": 339500,
+            "room_image": "media/room_images/room5_lebd4w",
+            "description": "Air condition"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 6,
+        "fields": {
+            "house": 1,
+            "room_type": "master",
+            "price": 300400,
+            "room_image": "media/room_images/room3_uzad8u",
+            "description": "No Air condition"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 7,
+        "fields": {
+            "house": 3,
+            "room_type": "double",
+            "price": 5456777,
+            "room_image": "media/room_images/room7_bqhujd",
+            "description": "None"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 8,
+        "fields": {
+            "house": 3,
+            "room_type": "single",
+            "price": 3245,
+            "room_image": "media/room_images/room11_rebjbf",
+            "description": "AC"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 9,
+        "fields": {
+            "house": 4,
+            "room_type": "single",
+            "price": 198000,
+            "room_image": "media/room_images/room7_irxwcr",
+            "description": "Kina feni"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 10,
+        "fields": {
+            "house": 4,
+            "room_type": "double",
+            "price": 235421,
+            "room_image": "media/room_images/room3_lgnsot",
+            "description": "Kina AC"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 11,
+        "fields": {
+            "house": 5,
+            "room_type": "single",
+            "price": 59000,
+            "room_image": "media/room_images/room10_eyqpya",
+            "description": "None"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 12,
+        "fields": {
+            "house": 6,
+            "room_type": "master",
+            "price": 406888,
+            "room_image": "media/room_images/room9_dst1q5",
+            "description": "None"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 14,
+        "fields": {
+            "house": 8,
+            "room_type": "master",
+            "price": 17000,
+            "room_image": "media/room_images/room4_fgovbb",
+            "description": "ac"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 15,
+        "fields": {
+            "house": 9,
+            "room_type": "single",
+            "price": 60000,
+            "room_image": "media/room_images/room10_unneaa",
+            "description": null
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 16,
+        "fields": {
+            "house": 10,
+            "room_type": "double",
+            "price": 2500000,
+            "room_image": "media/room_images/room6_trtjid",
+            "description": "Kina feni, vigae pamoja na AC"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 17,
+        "fields": {
+            "house": 10,
+            "room_type": "master",
+            "price": 239000,
+            "room_image": "media/room_images/room7_vkgjln",
+            "description": "Kina AC"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 18,
+        "fields": {
+            "house": 10,
+            "room_type": "single",
+            "price": 246422,
+            "room_image": "media/room_images/room1_qhjoa2",
+            "description": "No Air condition"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 19,
+        "fields": {
+            "house": 11,
+            "room_type": "double",
+            "price": 436443,
+            "room_image": "media/room_images/room6_jij2ig",
+            "description": "None"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 20,
+        "fields": {
+            "house": 11,
+            "room_type": "single",
+            "price": 323000,
+            "room_image": "media/room_images/room3_thkarn",
+            "description": "Kina AC"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 21,
+        "fields": {
+            "house": 12,
+            "room_type": "master",
+            "price": 450000,
+            "room_image": "media/room_images/room5_wgqtvi",
+            "description": "TYRES, GYPSUM NA AIR CONDITION"
+        }
+    },
+    {
+        "model": "houses.room",
+        "pk": 22,
+        "fields": {
+            "house": 13,
+            "room_type": "single",
+            "price": 500000,
+            "room_image": "media/room_images/room12_jtntp7",
+            "description": "Cradob Mansion"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 1,
+        "fields": {
+            "action_time": "2026-06-23T15:19:45.660Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 320000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 2,
+        "fields": {
+            "action_time": "2026-06-23T15:29:38.003Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 320000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 3,
+        "fields": {
+            "action_time": "2026-06-23T15:32:18.188Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "2",
+            "object_repr": "Mton hostel",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Mton hostel (TZS 440000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 4,
+        "fields": {
+            "action_time": "2026-06-23T15:51:15.723Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Green hostel (TZS 220300)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 5,
+        "fields": {
+            "action_time": "2026-06-23T15:51:55.521Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Green hostel (TZS 210000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 6,
+        "fields": {
+            "action_time": "2026-06-23T15:54:24.624Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 339500)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 7,
+        "fields": {
+            "action_time": "2026-06-23T15:54:54.774Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 300400)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 8,
+        "fields": {
+            "action_time": "2026-06-24T10:33:47.439Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "3",
+            "object_repr": "Tumaini hostel",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Tumaini hostel (TZS 5456777)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 9,
+        "fields": {
+            "action_time": "2026-06-24T10:34:13.536Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "3",
+            "object_repr": "Tumaini hostel",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Tumaini hostel (TZS 3245)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 10,
+        "fields": {
+            "action_time": "2026-06-25T09:28:09.549Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "4",
+            "object_repr": "Unit 3",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Unit 3 (TZS 198000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 11,
+        "fields": {
+            "action_time": "2026-06-25T09:28:57.070Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "4",
+            "object_repr": "Unit 3",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Unit 3 (TZS 235421)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 12,
+        "fields": {
+            "action_time": "2026-06-25T09:33:41.723Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "1",
+            "object_repr": "pro_",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"First name\", \"Last name\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 13,
+        "fields": {
+            "action_time": "2026-06-25T09:37:10.718Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "1",
+            "object_repr": "pro_",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"First name\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 14,
+        "fields": {
+            "action_time": "2026-06-25T10:19:34.788Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "5",
+            "object_repr": "Six star",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Six star (TZS 59000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 15,
+        "fields": {
+            "action_time": "2026-06-25T10:21:34.054Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "6",
+            "object_repr": "Mondo hostel",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Mondo hostel (TZS 406888)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 16,
+        "fields": {
+            "action_time": "2026-06-27T12:38:51.952Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "2",
+            "object_repr": "baraka",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 17,
+        "fields": {
+            "action_time": "2026-06-27T12:39:22.052Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "2",
+            "object_repr": "baraka",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"First name\", \"Last name\", \"Email address\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 18,
+        "fields": {
+            "action_time": "2026-06-27T12:40:26.499Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "2",
+            "object_repr": "baraka",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 19,
+        "fields": {
+            "action_time": "2026-06-27T12:43:39.667Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "2",
+            "object_repr": "baraka",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 20,
+        "fields": {
+            "action_time": "2026-06-27T12:44:52.853Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "2",
+            "object_repr": "baraka",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Staff status\", \"Superuser status\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 21,
+        "fields": {
+            "action_time": "2026-06-27T12:46:30.432Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "2",
+            "object_repr": "baraka",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 23,
+        "fields": {
+            "action_time": "2026-07-02T07:05:40.055Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "5",
+            "object_repr": "putin",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 24,
+        "fields": {
+            "action_time": "2026-07-02T07:06:41.128Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "5",
+            "object_repr": "putin",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 25,
+        "fields": {
+            "action_time": "2026-07-02T07:13:46.909Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "5",
+            "object_repr": "putin",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"First name\", \"Last name\", \"Email address\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 26,
+        "fields": {
+            "action_time": "2026-07-02T07:49:53.284Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "9",
+            "object_repr": "Upendo",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"First name\", \"Last name\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 27,
+        "fields": {
+            "action_time": "2026-07-02T09:30:52.167Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "7",
+            "object_repr": "Mwaisa",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Mwaisa (TZS 4040000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 28,
+        "fields": {
+            "action_time": "2026-07-02T09:35:09.860Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "8",
+            "object_repr": "mwaitumule",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - mwaitumule (TZS 17000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 29,
+        "fields": {
+            "action_time": "2026-07-02T10:14:45.601Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "12",
+            "object_repr": "mwaitumule",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"First name\", \"Last name\", \"Email address\", \"Staff status\", \"Superuser status\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 30,
+        "fields": {
+            "action_time": "2026-07-02T10:16:03.621Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "12",
+            "object_repr": "mwaitumule",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 31,
+        "fields": {
+            "action_time": "2026-07-04T18:19:32.211Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "9",
+            "object_repr": "Upendo",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 32,
+        "fields": {
+            "action_time": "2026-07-04T18:25:56.574Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "9",
+            "object_repr": "Upendo",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 35,
+        "fields": {
+            "action_time": "2026-07-20T00:41:28.222Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "7",
+            "object_repr": "Mwaisa",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 36,
+        "fields": {
+            "action_time": "2026-07-23T21:59:06.028Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Sibwesa (TZS 2500000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 37,
+        "fields": {
+            "action_time": "2026-07-23T23:23:54.570Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Sibwesa (TZS 239000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 38,
+        "fields": {
+            "action_time": "2026-07-23T23:28:52.653Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Sibwesa (TZS 246422)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 39,
+        "fields": {
+            "action_time": "2026-07-23T23:31:34.741Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Dark_City Lodge (TZS 436443)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 40,
+        "fields": {
+            "action_time": "2026-07-24T09:33:57.609Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "4",
+            "object_repr": "Putin_",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 41,
+        "fields": {
+            "action_time": "2026-07-24T10:23:07.297Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Dark_City Lodge (TZS 323000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 42,
+        "fields": {
+            "action_time": "2026-07-24T18:11:18.471Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "36",
+            "object_repr": "joe_kuku",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Email address\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 43,
+        "fields": {
+            "action_time": "2026-07-24T18:38:53.730Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "40",
+            "object_repr": "Msinjiri",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 44,
+        "fields": {
+            "action_time": "2026-07-24T18:54:02.457Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "41",
+            "object_repr": "Msinjiri",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 45,
+        "fields": {
+            "action_time": "2026-07-25T16:19:10.299Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "42",
+            "object_repr": "Msinjiri",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 46,
+        "fields": {
+            "action_time": "2026-07-25T16:33:04.745Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "44",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 47,
+        "fields": {
+            "action_time": "2026-07-25T16:35:14.264Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "45",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 48,
+        "fields": {
+            "action_time": "2026-07-25T16:37:45.659Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "46",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 49,
+        "fields": {
+            "action_time": "2026-07-25T16:41:51.192Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "47",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 50,
+        "fields": {
+            "action_time": "2026-07-25T16:43:33.085Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "48",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 51,
+        "fields": {
+            "action_time": "2026-07-25T16:45:56.395Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "49",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 52,
+        "fields": {
+            "action_time": "2026-07-25T16:47:41.680Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "50",
+            "object_repr": "msi",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 53,
+        "fields": {
+            "action_time": "2026-07-25T16:49:04.407Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "43",
+            "object_repr": "tps",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 54,
+        "fields": {
+            "action_time": "2026-07-25T16:56:29.208Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "52",
+            "object_repr": "tech",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 55,
+        "fields": {
+            "action_time": "2026-07-25T20:10:11.191Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "51",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 56,
+        "fields": {
+            "action_time": "2026-07-25T22:23:07.416Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "54",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 57,
+        "fields": {
+            "action_time": "2026-07-25T22:24:28.962Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "55",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 58,
+        "fields": {
+            "action_time": "2026-07-26T00:07:46.782Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "56",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 59,
+        "fields": {
+            "action_time": "2026-07-26T00:17:21.250Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "57",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 60,
+        "fields": {
+            "action_time": "2026-07-26T00:22:44.819Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "58",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 61,
+        "fields": {
+            "action_time": "2026-07-26T00:40:19.189Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "59",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 62,
+        "fields": {
+            "action_time": "2026-07-26T00:44:27.277Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "60",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 63,
+        "fields": {
+            "action_time": "2026-07-26T17:42:31.517Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "61",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 64,
+        "fields": {
+            "action_time": "2026-07-29T18:05:19.449Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "63",
+            "object_repr": "CRV",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 65,
+        "fields": {
+            "action_time": "2026-07-29T18:10:10.276Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "64",
+            "object_repr": "CRV",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 66,
+        "fields": {
+            "action_time": "2026-07-29T18:14:12.146Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "65",
+            "object_repr": "CRV",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 67,
+        "fields": {
+            "action_time": "2026-07-29T18:16:38.188Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "66",
+            "object_repr": "CRV",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 68,
+        "fields": {
+            "action_time": "2026-07-29T18:27:39.333Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "62",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 69,
+        "fields": {
+            "action_time": "2026-08-03T18:25:31.451Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "68",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 70,
+        "fields": {
+            "action_time": "2026-08-04T17:26:42.402Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "70",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 71,
+        "fields": {
+            "action_time": "2026-08-19T13:18:28.573Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - JUWATA LODGE (TZS 75000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 72,
+        "fields": {
+            "action_time": "2026-08-19T13:21:43.408Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - JUWATA LODGE (TZS 450000)\", \"fields\": [\"Bei ya Chumba hiki\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 73,
+        "fields": {
+            "action_time": "2026-08-21T19:08:40.171Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 74,
+        "fields": {
+            "action_time": "2026-08-22T12:09:01.158Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - JUWATA LODGE (TZS 450000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 75,
+        "fields": {
+            "action_time": "2026-08-22T12:17:01.154Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 76,
+        "fields": {
+            "action_time": "2026-08-22T13:24:38.726Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "40",
+            "object_repr": "Yuvim",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 77,
+        "fields": {
+            "action_time": "2026-08-22T13:36:08.020Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "44",
+            "object_repr": "stela",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 78,
+        "fields": {
+            "action_time": "2026-08-22T13:38:30.119Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 79,
+        "fields": {
+            "action_time": "2026-08-22T13:39:12.523Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 80,
+        "fields": {
+            "action_time": "2026-08-22T14:11:09.666Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 81,
+        "fields": {
+            "action_time": "2026-08-22T14:11:26.359Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 82,
+        "fields": {
+            "action_time": "2026-08-22T14:11:56.567Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 83,
+        "fields": {
+            "action_time": "2026-08-22T14:12:10.956Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "9",
+            "object_repr": "NEEMA",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 84,
+        "fields": {
+            "action_time": "2026-08-22T14:18:18.811Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "8",
+            "object_repr": "mwaitumule",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 85,
+        "fields": {
+            "action_time": "2026-08-22T14:18:40.827Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "5",
+            "object_repr": "Six star",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 86,
+        "fields": {
+            "action_time": "2026-08-22T14:19:44.373Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "5",
+            "object_repr": "Six star",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 87,
+        "fields": {
+            "action_time": "2026-08-22T14:20:09.276Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 88,
+        "fields": {
+            "action_time": "2026-08-22T15:20:00.735Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 89,
+        "fields": {
+            "action_time": "2026-08-22T15:20:32.824Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - JUWATA LODGE (TZS 450000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 90,
+        "fields": {
+            "action_time": "2026-08-22T15:22:10.122Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Dark_City Lodge (TZS 436443)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Dark_City Lodge (TZS 323000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 91,
+        "fields": {
+            "action_time": "2026-08-22T15:23:09.612Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Sibwesa (TZS 2500000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Sibwesa (TZS 239000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Sibwesa (TZS 246422)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 92,
+        "fields": {
+            "action_time": "2026-08-22T15:23:38.504Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "9",
+            "object_repr": "NEEMA",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - NEEMA (TZS 60000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 93,
+        "fields": {
+            "action_time": "2026-08-22T15:24:12.483Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "8",
+            "object_repr": "mwaitumule",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - mwaitumule (TZS 17000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 94,
+        "fields": {
+            "action_time": "2026-08-22T15:24:55.032Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "6",
+            "object_repr": "Mondo hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Mondo hostel (TZS 406888)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 95,
+        "fields": {
+            "action_time": "2026-08-22T15:26:11.629Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "5",
+            "object_repr": "Six star",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Six star (TZS 59000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 96,
+        "fields": {
+            "action_time": "2026-08-22T15:27:13.323Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 320000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Green hostel (TZS 220300)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Green hostel (TZS 210000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 339500)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 300400)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 97,
+        "fields": {
+            "action_time": "2026-08-22T15:29:44.157Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "3",
+            "object_repr": "Tumaini hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Tumaini hostel (TZS 5456777)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Tumaini hostel (TZS 3245)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 98,
+        "fields": {
+            "action_time": "2026-08-25T10:17:06.254Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 99,
+        "fields": {
+            "action_time": "2026-08-25T10:18:10.280Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Dark_City Lodge (TZS 436443)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 100,
+        "fields": {
+            "action_time": "2026-08-25T10:21:15.090Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 101,
+        "fields": {
+            "action_time": "2026-08-27T14:52:02.157Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "2",
+            "object_repr": "pro_ (Landlord)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 102,
+        "fields": {
+            "action_time": "2026-08-27T15:11:57.212Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "41",
+            "object_repr": "Hacker",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 103,
+        "fields": {
+            "action_time": "2026-08-27T15:52:03.100Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "47",
+            "object_repr": "Hacker",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 104,
+        "fields": {
+            "action_time": "2026-08-27T15:56:15.038Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "48",
+            "object_repr": "Hacker",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 105,
+        "fields": {
+            "action_time": "2026-08-27T15:59:26.051Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "48",
+            "object_repr": "Hacker (Landlord)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 106,
+        "fields": {
+            "action_time": "2026-08-27T16:01:02.296Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "49",
+            "object_repr": "Hacker",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 107,
+        "fields": {
+            "action_time": "2026-08-27T16:12:52.392Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "46",
+            "object_repr": "bafedebreezy@gmail.com",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 108,
+        "fields": {
+            "action_time": "2026-08-27T16:17:11.513Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "49",
+            "object_repr": "Hacker",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 109,
+        "fields": {
+            "action_time": "2026-08-27T16:17:38.693Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "49",
+            "object_repr": "bafedebreezy@gmail.com (Landlord)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 110,
+        "fields": {
+            "action_time": "2026-08-29T13:57:31.961Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "4",
+            "object_repr": "putinio (Landlord)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 111,
+        "fields": {
+            "action_time": "2026-08-31T07:42:24.417Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "39",
+            "object_repr": "RV",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 112,
+        "fields": {
+            "action_time": "2026-08-31T07:42:38.755Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "38",
+            "object_repr": "CRV",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 113,
+        "fields": {
+            "action_time": "2026-08-31T09:31:33.360Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "53",
+            "object_repr": "RV (Student)",
+            "action_flag": 3,
+            "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 114,
+        "fields": {
+            "action_time": "2026-08-31T09:32:04.596Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "51",
+            "object_repr": "crvcrvcrv (Landlord)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 115,
+        "fields": {
+            "action_time": "2026-08-31T09:33:10.328Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "52",
+            "object_repr": "CRV (Landlord)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 116,
+        "fields": {
+            "action_time": "2026-08-31T09:45:05.040Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "52",
+            "object_repr": "crvcrvcrv",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Staff status\", \"Superuser status\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 117,
+        "fields": {
+            "action_time": "2026-08-31T09:46:02.499Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "1",
+            "object_repr": "pro_",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"First name\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 118,
+        "fields": {
+            "action_time": "2026-08-31T09:52:21.220Z",
+            "user": [
+                "crvcrvcrv"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "13",
+            "object_repr": "Cradob Mansion",
+            "action_flag": 1,
+            "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Cradob Mansion (TZS 500000)\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 119,
+        "fields": {
+            "action_time": "2026-08-31T10:02:37.687Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 120,
+        "fields": {
+            "action_time": "2026-08-31T10:04:09.347Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - JUWATA LODGE (TZS 450000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 121,
+        "fields": {
+            "action_time": "2026-08-31T10:16:25.855Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 122,
+        "fields": {
+            "action_time": "2026-08-31T10:19:25.191Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "13",
+            "object_repr": "Cradob Mansion",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 123,
+        "fields": {
+            "action_time": "2026-08-31T15:05:26.502Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 124,
+        "fields": {
+            "action_time": "2026-08-31T15:18:50.485Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "13",
+            "object_repr": "Cradob Mansion",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 125,
+        "fields": {
+            "action_time": "2026-08-31T15:30:54.873Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "9",
+            "object_repr": "NEEMA",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 126,
+        "fields": {
+            "action_time": "2026-08-31T21:07:37.223Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "13",
+            "object_repr": "Cradob Mansion",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 127,
+        "fields": {
+            "action_time": "2026-09-01T00:23:59.132Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "2",
+            "object_repr": "pro_ (Student)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 128,
+        "fields": {
+            "action_time": "2026-09-01T01:35:26.362Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - JUWATA LODGE (TZS 450000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 129,
+        "fields": {
+            "action_time": "2026-09-01T01:36:14.055Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Dark_City Lodge (TZS 436443)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Dark_City Lodge (TZS 323000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 130,
+        "fields": {
+            "action_time": "2026-09-01T01:37:15.581Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Sibwesa (TZS 2500000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Sibwesa (TZS 239000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Sibwesa (TZS 246422)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 131,
+        "fields": {
+            "action_time": "2026-09-01T01:37:46.838Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "9",
+            "object_repr": "NEEMA",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - NEEMA (TZS 60000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 132,
+        "fields": {
+            "action_time": "2026-09-01T01:38:18.208Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "8",
+            "object_repr": "mwaitumule",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - mwaitumule (TZS 17000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 133,
+        "fields": {
+            "action_time": "2026-09-01T01:38:59.155Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "6",
+            "object_repr": "Mondo hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Mondo hostel (TZS 406888)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 134,
+        "fields": {
+            "action_time": "2026-09-01T01:39:26.486Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "5",
+            "object_repr": "Six star",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Six star (TZS 59000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 135,
+        "fields": {
+            "action_time": "2026-09-01T01:40:07.837Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "4",
+            "object_repr": "Unit 3",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Unit 3 (TZS 198000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Unit 3 (TZS 235421)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 136,
+        "fields": {
+            "action_time": "2026-09-01T01:40:48.508Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "3",
+            "object_repr": "Tumaini hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Tumaini hostel (TZS 5456777)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Tumaini hostel (TZS 3245)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 137,
+        "fields": {
+            "action_time": "2026-09-01T01:41:27.999Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "2",
+            "object_repr": "Mton hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Mton hostel (TZS 440000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 138,
+        "fields": {
+            "action_time": "2026-09-01T01:42:30.839Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 320000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Green hostel (TZS 220300)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Green hostel (TZS 210000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 339500)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 300400)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 139,
+        "fields": {
+            "action_time": "2026-09-01T01:45:54.982Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "13",
+            "object_repr": "Cradob Mansion",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Cradob Mansion (TZS 500000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 140,
+        "fields": {
+            "action_time": "2026-09-01T01:58:21.126Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "49",
+            "object_repr": "bafedebreezy@gmail.com (Student)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 141,
+        "fields": {
+            "action_time": "2026-09-01T01:58:53.952Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "4",
+            "object_repr": "putinio (Student)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 142,
+        "fields": {
+            "action_time": "2026-09-01T01:59:06.467Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "51",
+            "object_repr": "crvcrvcrv (Student)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 143,
+        "fields": {
+            "action_time": "2026-09-01T01:59:16.465Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "52",
+            "object_repr": "CRV (Student)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 144,
+        "fields": {
+            "action_time": "2026-09-01T02:00:32.497Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "accounts",
+                "profile"
+            ],
+            "object_id": "2",
+            "object_repr": "pro_ (Landlord)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"User type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 145,
+        "fields": {
+            "action_time": "2026-09-01T05:02:30.295Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "auth",
+                "user"
+            ],
+            "object_id": "52",
+            "object_repr": "crvcrvcrv",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Staff status\", \"Superuser status\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 146,
+        "fields": {
+            "action_time": "2026-09-05T10:42:46.485Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "12",
+            "object_repr": "JUWATA LODGE",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - JUWATA LODGE (TZS 450000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 147,
+        "fields": {
+            "action_time": "2026-09-05T10:43:28.361Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "11",
+            "object_repr": "Dark_City Lodge",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Dark_City Lodge (TZS 436443)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Dark_City Lodge (TZS 323000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 148,
+        "fields": {
+            "action_time": "2026-09-05T10:44:17.522Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Sibwesa (TZS 2500000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Sibwesa (TZS 239000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Sibwesa (TZS 246422)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 149,
+        "fields": {
+            "action_time": "2026-09-05T10:44:53.790Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "10",
+            "object_repr": "Sibwesa",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 150,
+        "fields": {
+            "action_time": "2026-09-05T10:45:30.289Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "9",
+            "object_repr": "NEEMA",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - NEEMA (TZS 60000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 151,
+        "fields": {
+            "action_time": "2026-09-05T10:46:01.202Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "8",
+            "object_repr": "mwaitumule",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - mwaitumule (TZS 17000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 152,
+        "fields": {
+            "action_time": "2026-09-05T10:46:28.807Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "6",
+            "object_repr": "Mondo hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Mondo hostel (TZS 406888)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 153,
+        "fields": {
+            "action_time": "2026-09-05T20:51:18.904Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "5",
+            "object_repr": "Six star",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Six star (TZS 59000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 154,
+        "fields": {
+            "action_time": "2026-09-05T20:52:02.076Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "4",
+            "object_repr": "Unit 3",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Unit 3 (TZS 198000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Unit 3 (TZS 235421)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 155,
+        "fields": {
+            "action_time": "2026-09-05T20:52:43.338Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "3",
+            "object_repr": "Tumaini hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Tumaini hostel (TZS 5456777)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Tumaini hostel (TZS 3245)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 156,
+        "fields": {
+            "action_time": "2026-09-05T20:53:32.336Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "2",
+            "object_repr": "Mton hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Mton hostel (TZS 440000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 157,
+        "fields": {
+            "action_time": "2026-09-05T20:54:07.781Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "2",
+            "object_repr": "Mton hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Mton hostel (TZS 440000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 158,
+        "fields": {
+            "action_time": "2026-09-05T20:55:50.451Z",
+            "user": [
+                "pro_"
+            ],
+            "content_type": [
+                "houses",
+                "house"
+            ],
+            "object_id": "1",
+            "object_repr": "Green hostel",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Picha ya Nje ya Nyumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 320000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Double Room (Chumba kikubwa/Sebule) - Green hostel (TZS 220300)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Single Room (Kawaida - Choo cha nje) - Green hostel (TZS 210000)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 339500)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}, {\"changed\": {\"name\": \"room\", \"object\": \"Master Bedroom (Choo ndani) - Green hostel (TZS 300400)\", \"fields\": [\"Picha ya Ndani ya Chumba\"]}}]"
+        }
+    }
+]

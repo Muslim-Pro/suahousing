@@ -8,20 +8,20 @@ from django.db.models import Count, Min
 from django.contrib.auth.models import User
 from .models import House, Room
 from django.contrib.auth.decorators import login_required
-# kuhusu flutterwave, tutaongeza views.py hapa chini ili kuanzisha malipo na kudhibiti matokeo ya maplipo 
+# kuhusu flutterwave, kuanzisha malipo na kudhibitisha matokeo ya maplipo 
 import uuid
 import requests
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
-from .models import House  # Hakikisha model yako ya House imekuwa imported
+from .models import House
 
 
 def anzisha_malipo(request, house_id):
     house = get_object_or_404(House, id=house_id)
     
     if request.method == 'POST':
-        phone_number = request.POST.get('phone_number')  # Mfano: 0712345678
+        phone_number = request.POST.get('phone_number')  # Example: 0712345678
         amount = request.POST.get('amount')
         network = request.POST.get('network')  # MPS (M-Pesa), TIGO, au AIRTEL
 
@@ -58,7 +58,7 @@ def anzisha_malipo(request, house_id):
             if response.status_code == 200 and res_data.get('status') == 'success':
                 messages.success(
                     request, 
-                    f"Ombi la TZS {amount} limetumwa kwenda {phone_number} ({network}). Angalia simu yako kuweka PIN!"
+                    f"A payment request of TZS {amount} has been sent to {phone_number} ({network}). Please check your phone to enter your PIN!"
                 )
             else:
                 msg = res_data.get('message', 'Imeshindikana kutuma ombi la malipo.')

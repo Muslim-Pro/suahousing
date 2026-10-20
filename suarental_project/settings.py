@@ -36,10 +36,12 @@ DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
-# Flutterwave Keys (Kutumia python-decouple)
-FLUTTERWAVE_PUBLIC_KEY = config('FLUTTERWAVE_PUBLIC_KEY')
-FLUTTERWAVE_SECRET_KEY = config('FLUTTERWAVE_SECRET_KEY')
-FLUTTERWAVE_ENCRYPTION_KEY = config('FLUTTERWAVE_ENCRYPTION_KEY')
+# ==========================================
+# FLUTTERWAVE PAYMENT CONFIGURATION (BACKUP)
+# ==========================================
+# FLUTTERWAVE_PUBLIC_KEY = config('FLUTTERWAVE_PUBLIC_KEY')
+# FLUTTERWAVE_SECRET_KEY = config('FLUTTERWAVE_SECRET_KEY')
+# FLUTTERWAVE_ENCRYPTION_KEY = config('FLUTTERWAVE_ENCRYPTION_KEY')
 
 # Application definition
 
@@ -94,7 +96,7 @@ WSGI_APPLICATION = 'suarental_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# 
+
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL'),
@@ -203,3 +205,12 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+
+# ==========================================
+# CLICKPESA PAYMENT CONFIGURATION
+# ==========================================
+CLICKPESA_CLIENT_ID = config('CLICKPESA_CLIENT_ID') 
+CLICKPESA_API_KEY = config('CLICKPESA_API_KEY') 
+CLICKPESA_CHECKSUM = config('CLICKPESA_CHECKSUM')  # Optional, if required by ClickPesa API
+CLICKPESA_BASE_URL = config('CLICKPESA_BASE_URL')

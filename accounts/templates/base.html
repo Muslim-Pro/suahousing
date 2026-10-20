@@ -47,7 +47,7 @@
         to { opacity: 0; transform: translateX(24px); }
     }
 
-    /* Progress bar: upana unapungua kwa sekunde 4 */
+    /* Progress bar: inapungua sekunde 4 */
     @keyframes suaToastShrink {
         from { width: 100%; }
         to { width: 0%; }
@@ -191,7 +191,7 @@
                             {% endif %}
                         </span>
                         <p class="sua-toast-text">{{ message }}</p>
-                        {# X inafunga toast mara moja bila kusubiri sekunde 4 #}
+                        {# X inafunga toast#}
                         <button type="button" class="sua-toast-close" aria-label="Funga ujumbe">&times;</button>
                     </div>
                     {# Progress bar inapungua kwa sekunde 4; hover inaisimamisha #}
@@ -206,15 +206,15 @@
     <div class="container">
         <a class="navbar-brand fw-bold" href="{% if request.user.is_authenticated %}{% url 'house_list' %}{% else %}{% url 'home' %}{% endif %}">SSH</a>
         
-        <!-- Kitufe cha Simu (Responsive Toggler) ili isivurugike kwenye screen ndogo -->
+        <!-- Kitufe cha Simu (Responsive Toggler) -->
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#suaNavbarNav" aria-controls="suaNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Hapa ndipo viungo vikuu vya katikati vinapokaa ki-expert bila kuleta error -->
+        <!-- Hapa ndipo viungo vikuu vya katikati vinapokaa bila kuleta error -->
         <div class="collapse navbar-collapse" id="suaNavbarNav">
             
-            <!-- Hivi ndo vitakaa pale kwenye maduara myekundu katikati kabisa (mx-auto) -->
+            <!-- Hivi vitakaa kwenye maduara myekundu katikati (mx-auto) -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
                 {% if not request.user.is_authenticated %}
                 <li class="nav-item">
@@ -293,10 +293,6 @@
     {% endblock %}
 
 
-
-
-
-
 {% block footer %}
 <footer class="footer text-white" style="background-color: rgb(26, 140, 95); margin-top: 152px; padding-top: 60px; padding-bottom: 30px;">
     <div class="footer_top">
@@ -318,7 +314,7 @@
                                 <i class="fa fa-envelope me-2"></i> suahousinginfo@gmail.com
                             </a>
                         </p>
-                        <!-- Mitandao ya kijamii ikiwa na rangi nyeupe safi -->
+                        <!-- Mitandao ya kijamii ikiwa na rangi nyeupe -->
                         <div class="socail_links mt-3">
                             <ul class="list-inline mb-0">
                                 <li class="list-inline-item"><a href="#" class="text-white me-3" style="font-size: 18px;"><i class="fa fa-facebook"></i></a></li>
@@ -336,7 +332,7 @@
                         <h3 class="footer_title text-white fw-bold mb-3" style="font-size: 20px;">
                             Company
                         </h3>
-                        <!-- list-unstyled inaondoa vile vidoti vya kizembe vya li -->
+                        <!-- -->
                         <ul class="links list-unstyled">
                             <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Pricing</a></li>
                             <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">About Us</a></li>
@@ -346,7 +342,7 @@
                     </div>
                 </div>
 
-                <!-- SEHEMU YA MAENEO MAARUFU (Ondoa Indonesia weka Morogoro!) -->
+                <!-- SEHEMU YA MAENEO MAARUFU -->
                 <div class="col-xl-3 col-md-6 col-lg-3 mb-4">
                     <div class="footer_widget">
                         <h3 class="footer_title text-white fw-bold mb-3" style="font-size: 20px;">
@@ -394,7 +390,7 @@
         </div>
     </div>
 
-    <!-- SEHEMU YA COPYRIGHT (Imenyooka sasa hivi kwa jina la mradi wako) -->
+    <!-- SEHEMU YA COPYRIGHT -->
     <div class="copy-right_text mt-4 pt-4 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
         <div class="container">
             <div class="row">

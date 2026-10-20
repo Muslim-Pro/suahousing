@@ -39,15 +39,63 @@ urlpatterns = [
     path('available-rooms/', views.available_rooms, name='available_rooms'),
     path('houses/', views.house_list, name='house_list'),
     path('house/<int:pk>/', views.house_detail, name='house_detail'),
-    # anzisha malipo
+    
+    # Unganisha URLs zote za app ya houses hapa
+    path('houses/', include('houses.urls')),
+    
+    # Au kama badala ya include unataka kuweka direct path ya malipo:
     path('anzisha-malipo/<int:house_id>/', views.anzisha_malipo, name='anzisha_malipo'),
-    path('register', accounts_views.register, name='register'),
+
+    path('register/', accounts_views.register, name='register'),
     path('accounts/login/', accounts_views.CustomLoginView.as_view(), name='login'),
     path('accounts/logout/', accounts_views.CustomLogoutView.as_view(), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls')),
 ]
 
-# wezesha picha ziweze kufunguka kwenye brauza
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+#     path('', views.home, name='home'),
+#     path('dashboard/', accounts_views.landlord_dashboard, name='landlord_dashboard'),
+#     path('available-rooms/', views.available_rooms, name='available_rooms'),
+#     path('houses/', views.house_list, name='house_list'),
+#     path('house/<int:pk>/', views.house_detail, name='house_detail'),
+#     # anzisha malipo
+#     # path('anzisha-malipo/<int:house_id>/', views.anzisha_malipo, name='anzisha_malipo'),
+#     path('houses/', include('houses.urls')),
+#     path('register', accounts_views.register, name='register'),
+#     path('accounts/login/', accounts_views.CustomLoginView.as_view(), name='login'),
+#     path('accounts/logout/', accounts_views.CustomLogoutView.as_view(), name='logout'),
+#     path('accounts/', include('django.contrib.auth.urls')),
+#     path('accounts/', include('accounts.urls')),
+# ]
+
+# # wezesha picha ziweze kufunguka kwenye brauza
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

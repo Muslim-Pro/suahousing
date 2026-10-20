@@ -106,19 +106,9 @@
                         <input type="hidden" name="room_id" value="{{ room.id }}">
                         <input type="hidden" name="amount" value="{{ room.price }}">
                         
-                        <!-- 1. CHAGUA MTANDAO (Hii ndio sehemu mpya ya kuongeza) -->
                         <div class="mb-3 text-start">
-                            <label class="form-label fw-bold">Chagua Mtandao wa Simu</label>
-                            <select name="network" class="form-select" required>
-                                <option value="MPS">Vodacom (M-Pesa)</option>
-                                <option value="TIGO">Tigo Pesa</option>
-                                <option value="AIRTEL">Airtel Money</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3 text-start">
-                            <label class="form-label fw-bold">Phone Number for Payment (M-Pesa / TigoPesa):</label>
-                            <input type="text" name="phone_number" class="form-control" placeholder="Example: 0712345678" required>
+                            <label class="form-label fw-bold">Phone Number for Mobile Money Payment:</label>
+                            <input type="tel" name="phone_number" class="form-control" placeholder="0712345678 or 255712345678" required>
                         </div>
                         <button type="submit" class="btn btn-success w-100 rounded-pill py-2" onclick="this.querySelector('.spinner-border').classList.remove('d-none'); this.querySelector('.btn-txt').textContent=' Processing...';">
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>

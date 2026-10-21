@@ -122,7 +122,7 @@ def anzisha_malipo(request, house_id):
             else:
                 messages.error(
                     request,
-                    "Insufficient funds in your mobile money (Halopesa) account. Please recharge your account and try again."
+                    "Insufficient funds in your mobile money account. Please recharge your account and try again."
                 )
 
         except Exception as e:

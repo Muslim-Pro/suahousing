@@ -4,53 +4,45 @@
 
 {% block title %}Login - SUA Student Housing{% endblock %}
 
-{% block content %}
+{% block extra_css %}
+{% include 'accounts/partials/auth_shell_styles.html' %}
 <style>
-    .login-wrapper {
-        min-height: 80vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f4f6f9;
-        padding: 20px;
-    }
-
     .login-container {
         display: flex;
         width: 100%;
         max-width: 950px;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        background: #fff;
+        border-radius: 1.25rem;
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.1);
         overflow: hidden;
     }
-
-    /* Upande wa Kushoto: Sasa ni Carousel badala ya picha moja */
+    .login-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
     .login-carousel-side {
         flex: 1.2;
         display: none;
         position: relative;
+        background: #eaf4ed;
     }
-
     .carousel, .carousel-inner, .carousel-item {
         height: 100%;
         min-height: 450px;
     }
-
     .carousel-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-
     .login-form-side {
         flex: 1;
-        padding: 40px 35px;
+        padding: 44px 38px;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
-
     .sua-branding {
         text-align: center;
         margin-bottom: 25px;
@@ -69,11 +61,10 @@
         color: #6c757d;
         font-size: 14px;
     }
-
     .btn-sua-green {
         background-color: #006400 !important;
         border-color: #006400 !important;
-        color: white !important;
+        color: #fff !important;
         font-weight: bold;
         transition: all 0.3s ease;
     }
@@ -81,14 +72,30 @@
         background-color: #0d5c1d !important;
         border-color: #0d5c1d !important;
     }
-
     @media (min-width: 768px) {
         .login-carousel-side {
-            display: block; /* Inatokea kwenye PC pekee */
+            display: block;
+        }
+    }
+    @media (max-width: 575.98px) {
+        .login-form-side {
+            padding: 32px 24px;
         }
     }
 </style>
+{% endblock %}
 
+{% block navbar %}
+{% include 'accounts/partials/auth_navbar.html' %}
+{% endblock %}
+
+{% block page_container_class %}auth-main{% endblock %}
+
+{% block footer %}
+{% include 'accounts/partials/auth_footer.html' %}
+{% endblock %}
+
+{% block content %}
 <div class="login-wrapper">
     <div class="login-container">
         
@@ -280,27 +287,18 @@
                 <div class="sua-branding mb-4">
                     <img src="{% static 'images/sua-logo.png' %}" alt="SUA Logo" class="sua-logo mb-2" style="max-height: 80px;">
                     <h4 class="text-success fw-bold">SUA STUDENT HOUSING</h4>
-                    <p class="text-muted small">Enter your username and email to receive your new password</p>
+                    <p class="text-muted small">Enter the email address linked to your account to receive a secure reset link</p>
                 </div>
 
-                <!-- Hili ndilo boksi la Alert litakalotokea pale pale juu ya fomu -->
-                <div id="modalAlert" class="alert d-none py-2 mb-3 small" role="alert"></div>
-
-                <!-- Fomu yetu haina action ya HTML tena, tunaiendesha kwa JS -->
-                <form id="forgotPasswordForm" novalidate>
+                <form method="post" action="{% url 'forgot_password' %}">
                     {% csrf_token %}
-                    <div class="mb-3 text-start">
-                        <label for="reset_username" class="form-label fw-bold text-muted small mb-1">Username*</label>
-                        <input type="text" name="username" id="reset_username" class="form-control py-2" placeholder="Enter username" required>
-                    </div>
-
                     <div class="mb-4 text-start">
                         <label for="reset_email" class="form-label fw-bold text-muted small mb-1">Email Address*</label>
                         <input type="email" name="email" id="reset_email" class="form-control py-2" placeholder="Enter your registered email" required>
                     </div>
 
                     <div class="d-grid gap-2 mb-3">
-                        <button type="submit" id="forgotPasswordBtn" class="btn text-light bg-success btn-lg fw-bold" style="font-size: 16px;">Request New Password</button>
+                        <button type="submit" class="btn text-light bg-success btn-lg fw-bold" style="font-size: 16px;">Send Reset Link</button>
                     </div>
                 </form>
 
@@ -329,85 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. JS ya Forgot Password yenye Sekunde 28 na X Button
-    var fpForm = document.getElementById('forgotPasswordForm');
-    if (fpForm) {
-        fpForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Inazuia kabisa ukurasa usirefreshi wala kusepa!
-
-            var form = this;
-            var btn = document.getElementById('forgotPasswordBtn');
-            var alertBox = document.getElementById('modalAlert');
-
-            // Washa spinner na zima button
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending Request...';
-            
-            if (alertBox) {
-                alertBox.classList.add('d-none'); // Ficha alert ya zamani
-            }
-
-            var formData = new FormData(form);
-
-            // Tuma data kwenda backend kisiri kwa AJAX
-            fetch("{% url 'forgot_password' %}", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Zima spinner na rudisha button kawaida
-                btn.disabled = false;
-                btn.innerHTML = 'Request New Password';
-
-                if (alertBox) {
-                    alertBox.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-dismissible', 'fade', 'show');
-
-                    if (data.success) {
-                        // Alert ya Kijani ikiwa na X button
-                        alertBox.classList.add('alert-success', 'alert-dismissible', 'fade', 'show', 'text-start');
-                        alertBox.innerHTML = `
-                            <div>${data.message}</div>
-                            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
-                        `;
-                        form.reset(); // Safisha maboksi ya fomu
-
-                        // Muda umeongezwa kuwa sekunde 28 (28000ms), kisha modal ijifunge yenyewe
-                        setTimeout(function() {
-                            var fpModalEl = document.getElementById('forgotPasswordModal');
-                            var fpModal = bootstrap.Modal.getInstance(fpModalEl);
-                            if (fpModal) {
-                                fpModal.hide(); 
-                            }
-                        }, 28000);
-
-                    } else {
-                        // Alert ya Nyekundu ikiwa na X button pia (Haitajifunga yenyewe ili arekebishe makosa)
-                        alertBox.classList.add('alert-danger', 'alert-dismissible', 'fade', 'show', 'text-start');
-                        alertBox.innerHTML = `
-                            <div>${data.message}</div>
-                            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
-                        `;
-                    }
-                }
-            })
-            .catch(error => {
-                btn.disabled = false;
-                btn.innerHTML = 'Request New Password';
-                if (alertBox) {
-                    alertBox.classList.remove('d-none', 'alert-success');
-                    alertBox.classList.add('alert-danger', 'alert-dismissible', 'fade', 'show', 'text-start');
-                    alertBox.innerHTML = `
-                        <div>Something went wrong. Please try again.</div>
-                        <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
-                    `;
-                }
-            });
-        });
-    }
 });
 </script>
 {% endblock %}

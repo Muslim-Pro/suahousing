@@ -1,14 +1,63 @@
+import logging
 import re
+from smtplib import SMTPException
 
 from django import forms
+from django.contrib.auth.forms import (
+    PasswordChangeForm,
+    PasswordResetForm,
+    UserCreationForm,
+)
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+from houses.models import House, Room
 
 from .models import Profile
 
 
+logger = logging.getLogger(__name__)
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$')
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'autocomplete': 'email',
+        })
+
+    def send_mail(
+        self,
+        subject_template_name,
+        email_template_name,
+        context,
+        from_email,
+        to_email,
+        html_email_template_name=None,
+    ):
+        subject = ''.join(
+            render_to_string(subject_template_name, context).splitlines()
+        ).strip()
+        body = render_to_string(email_template_name, context)
+        email_message = EmailMultiAlternatives(
+            subject,
+            body,
+            from_email,
+            [to_email],
+        )
+        if html_email_template_name:
+            html_email = render_to_string(html_email_template_name, context)
+            email_message.attach_alternative(html_email, 'text/html')
+
+        try:
+            if not email_message.send():
+                logger.error('Password reset email was not accepted by the email backend.')
+        except (OSError, SMTPException):
+            logger.exception('Failed to deliver a password reset email.')
 
 
 class UserRegisterForm(UserCreationForm):
@@ -122,3 +171,64 @@ class LandlordPasswordChangeForm(PasswordChangeForm):
             'autocomplete': 'new-password',
         })
         self.fields['new_password2'].label = 'Confirm new password'
+
+
+class LandlordHouseForm(forms.ModelForm):
+    class Meta:
+        model = House
+        fields = ['title', 'description', 'location', 'address', 'image']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g. Green View Hostel',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Describe the property and its facilities',
+            }),
+            'location': forms.Select(attrs={'class': 'form-select'}),
+            'address': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Street, landmark or nearby campus',
+            }),
+            'image': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+            }),
+        }
+
+
+# Bei ya chumba inakubali namba chanya pekee, na orodha ya nyumba huchujwa
+# kulingana na mwenye akaunti ili landlord asiongeze chumba kwenye nyumba ya mtu mwingine.
+class LandlordRoomForm(forms.ModelForm):
+    price = forms.IntegerField(
+        min_value=1,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'min': 1,
+            'placeholder': 'Price in TZS',
+        }),
+    )
+
+    class Meta:
+        model = Room
+        fields = ['house', 'room_type', 'price', 'room_image', 'description']
+        widgets = {
+            'house': forms.Select(attrs={'class': 'form-select'}),
+            'room_type': forms.Select(attrs={'class': 'form-select'}),
+            'room_image': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Optional details about the room',
+            }),
+        }
+
+    def __init__(self, *args, landlord, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['house'].queryset = House.objects.filter(
+            landlord=landlord,
+        ).order_by('title')

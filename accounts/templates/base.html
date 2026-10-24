@@ -167,6 +167,25 @@
     .navbar-profile-menu .dropdown-item.text-danger i {
         color: #dc3545;
     }
+    @media (max-width: 991.98px) {
+        .navbar-profile-actions,
+        .profile-dropdown {
+            display: flex;
+            width: 100%;
+            justify-content: flex-start;
+        }
+        .navbar-profile-menu,
+        .profile-menu {
+            width: min(250px, calc(100vw - 2rem));
+            min-width: min(250px, calc(100vw - 2rem));
+            max-width: calc(100vw - 2rem);
+        }
+        .navbar-profile-menu.dropdown-menu-end,
+        .profile-menu.dropdown-menu-end {
+            right: auto;
+            left: 0;
+        }
+    }
 </style>
 {% block extra_css %}{% endblock %}
 </head>
@@ -230,12 +249,12 @@
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}#support">Help & Support</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}#support">Help &amp; Support</a>
                 </li>
             </ul>
 
             <!-- Upande wa Kulia: picha ya profile + first name (si username) -->
-            <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+            <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0 navbar-profile-actions">
                 {% if request.user.is_authenticated %}
                     <div class="dropdown">
                         <button class="btn btn-link navbar-profile-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -257,6 +276,18 @@
                             </li>
                             <li>
                                 <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'landlord_dashboard' %}">
+                                    <i class="fa-solid fa-key"></i> Change Password
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% else %}
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'account_settings' %}?section=profile_picture&amp;next={{ request.get_full_path|urlencode }}">
+                                    <i class="fa-regular fa-user"></i> Update Profile Picture
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'account_settings' %}?section=change_password&amp;next={{ request.get_full_path|urlencode }}">
                                     <i class="fa-solid fa-key"></i> Change Password
                                 </a>
                             </li>
@@ -286,7 +317,8 @@
     {% block full_width %}{% endblock %}
 
     {% block page_wrapper %}
-    <div class="container mt-4">
+    {# Ruhusu login/usajili kubadili container bila kurudia muundo wa ukurasa mzima. #}
+    <div class="{% block page_container_class %}container mt-4{% endblock %}">
         {% block content %}
         {% endblock %}
     </div>

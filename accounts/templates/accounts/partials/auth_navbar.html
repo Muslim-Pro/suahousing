@@ -1,0 +1,23 @@
+{% load static %}
+<header class="auth-navbar">
+    {# Header nyepesi kwa login/usajili: chapa na njia za kurudi au kuvinjari tu. #}
+    <nav class="container d-flex align-items-center justify-content-between gap-3 py-2" aria-label="Main navigation">
+        <a href="{% url 'home' %}" class="auth-brand d-flex align-items-center gap-2 text-decoration-none">
+            <img src="{% static 'images/sua-logo.png' %}" alt="" class="auth-brand-logo">
+            <span>
+                <strong class="d-block">SUA Student Housing</strong>
+                <small class="text-muted">Find a place to call home</small>
+            </span>
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{% url 'available_rooms' %}" class="auth-nav-link d-none d-sm-inline">
+                Browse rooms
+            </a>
+            <a href="{% url 'home' %}" class="auth-home-link">
+                <i class="fa-solid fa-arrow-left me-1"></i>
+                <span class="d-none d-sm-inline">Back to home</span>
+                <span class="d-sm-none">Home</span>
+            </a>
+        </div>
+    </nav>
+</header>

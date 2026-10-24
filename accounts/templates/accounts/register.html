@@ -3,8 +3,21 @@
 
 {% block title %}Create New Account - SUA Student Housing{% endblock %}
 
-{% block content %}
+{% block extra_css %}
+{% include 'accounts/partials/auth_shell_styles.html' %}
 <style>
+    .register-card {
+        width: 100%;
+        max-width: 680px;
+        border-radius: 1.25rem;
+        border: 1px solid #edf1ee;
+    }
+    .register-heading {
+        color: #183b2d;
+    }
+    #emailHelp {
+        display: block !important;
+    }
     .email-alert {
         display: none;
         border-left: 4px solid #dc3545;
@@ -22,13 +35,33 @@
         from { opacity: 0; transform: translateY(-6px); }
         to   { opacity: 1; transform: translateY(0); }
     }
+    @media (max-width: 575.98px) {
+        .register-card {
+            padding: 1.5rem !important;
+        }
+    }
 </style>
+{% endblock %}
 
-<div class="row justify-content-center my-5">
-    <div class="col-11 col-sm-10 col-md-8 col-lg-6">
-        <div class="card shadow-sm p-4" style="border-radius: 10px; border: none; background-color: #ffffff;">
-            <h3 class="text-center mb-2 text-success fw-bold">Register Here</h3>
-            <p class="text-center text-muted small mb-4">Join SUA Student Housing and find your room near campus.</p>
+{% block navbar %}
+{% include 'accounts/partials/auth_navbar.html' %}
+{% endblock %}
+
+{% block page_container_class %}auth-main{% endblock %}
+
+{% block footer %}
+{% include 'accounts/partials/auth_footer.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="register-card card shadow-sm p-4 p-md-5">
+            <div class="text-center mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10 text-success mb-3" style="width: 48px; height: 48px;">
+                    <i class="fa-solid fa-user-plus"></i>
+                </span>
+                <h1 class="register-heading h3 mb-2 fw-bold">Create your account</h1>
+                <p class="text-muted small mb-0">Join SUA Student Housing and find a room near campus.</p>
+            </div>
 
             <div id="emailAlert" class="alert alert-danger email-alert py-2 small mb-3" role="alert">
                 <strong>Invalid email:</strong> <span id="emailAlertText">Please enter a valid email address.</span>
@@ -38,7 +71,7 @@
                 {% csrf_token %}
 
                 {% if form.non_field_errors %}
-                    <div class="alert alert-danger py-2 small">
+                    <div class="alert alert-danger py-2 small" role="alert">
                         {% for error in form.non_field_errors %}
                             {{ error }}
                         {% endfor %}
@@ -46,7 +79,7 @@
                 {% endif %}
 
                 <div class="mb-3">
-                    <label for="{{ form.username.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold small mb-1">{{ form.username.label }}</label>
                     {{ form.username }}
                     {% if form.username.errors %}
                         <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
@@ -54,15 +87,15 @@
                 </div>
 
                 <div class="row mb-3 gx-3">
-                    <div class="col-6">
-                        <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    <div class="col-12 col-sm-6">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold small mb-1">{{ form.first_name.label }}</label>
                         {{ form.first_name }}
                         {% if form.first_name.errors %}
                             <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    <div class="col-6">
-                        <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    <div class="col-12 col-sm-6">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold small mb-1">{{ form.last_name.label }}</label>
                         {{ form.last_name }}
                         {% if form.last_name.errors %}
                             <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
@@ -71,24 +104,24 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="{{ form.email.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold small mb-1">{{ form.email.label }}</label>
                     {{ form.email }}
                     <div id="emailServerError" class="text-danger small mt-1 {% if not form.email.errors %}d-none{% endif %}">
                         {% if form.email.errors %}{{ form.email.errors.0 }}{% endif %}
                     </div>
-                    <div id="emailHelp" class="form-text text-muted small">itakutuma email ya kukaribisha kwenye anwani hii.</div>
+                    <div id="emailHelp" class="form-text text-muted small">We'll send a welcome email to this address.</div>
                 </div>
 
                 <div class="row mb-3 gx-3">
-                    <div class="col-6">
-                        <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    <div class="col-12 col-sm-6">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold small mb-1">{{ form.password1.label }}</label>
                         {{ form.password1 }}
                         {% if form.password1.errors %}
                             <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    <div class="col-6">
-                        <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold text-muted small mb-1"></label>
+                    <div class="col-12 col-sm-6">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold small mb-1">{{ form.password2.label }}</label>
                         {{ form.password2 }}
                         {% if form.password2.errors %}
                             <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
@@ -97,15 +130,13 @@
                 </div>
 
                 <div class="d-grid gap-2 mt-4">
-                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg fw-bold">Register Now</button>
+                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg fw-bold rounded-3">Create account</button>
                 </div>
             </form>
 
             <p class="text-center mt-3 text-muted small mb-0">
                 Already have an account? <a href="{% url 'login' %}" class="text-decoration-none fw-bold text-success">Sign In</a>
             </p>
-        </div>
-    </div>
 </div>
 {% endblock %}
 

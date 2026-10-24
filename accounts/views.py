@@ -1,24 +1,37 @@
-import random
-import re
-import string
 import threading
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
-from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.template.loader import render_to_string
 
 from houses.models import House, Room
 
-from .forms import LandlordPasswordChangeForm, ProfilePicForm, UserRegisterForm
+from .forms import (
+    CustomPasswordResetForm,
+    LandlordHouseForm,
+    LandlordPasswordChangeForm,
+    LandlordRoomForm,
+    ProfilePicForm,
+    UserRegisterForm,
+)
 from .models import Profile
+
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+    template_name = 'registration/password_reset_form.html'
+    email_template_name = 'registration/password_reset_email.txt'
+    html_email_template_name = 'registration/password_reset_email.html'
+    subject_template_name = 'registration/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
 
 
 def _send_email_background(subject, text_content, html_content, recipient_list):
@@ -34,69 +47,6 @@ def _send_email_background(subject, text_content, html_content, recipient_list):
         msg.send(fail_silently=True)
     except Exception:
         pass
-
-
-def forgot_password(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-
-        if not username or not email:
-            return JsonResponse({
-                'success': False,
-                'message': 'Please fill in all fields!'
-            })
-
-        try:
-            user = User.objects.get(username=username, email=email)
-
-            characters = string.ascii_letters + string.digits
-            new_password = ''.join(random.choice(characters) for _ in range(8))
-
-            user.set_password(new_password)
-            user.save()
-
-            subject = 'Your New Password - SUA Student Housing'
-            recipient_list = [email]
-            context = {
-                'username': user.username,
-                'first_name': user.first_name or user.username,
-                'new_password': new_password,
-                'login_url': request.build_absolute_uri('/accounts/login/'),
-                'support_email': settings.SUPPORT_EMAIL,
-            }
-
-            html_content = render_to_string('emails/new_password.html', context)
-            text_content = (
-                f"Hello {context['first_name']},\n"
-                f"Your new password is: {new_password}\n"
-                f"Login: {context['login_url']}"
-            )
-
-            # Usisubiri Gmail: tuma email nyuma ili Render isitoe timeout/500
-            threading.Thread(
-                target=_send_email_background,
-                args=(subject, text_content, html_content, recipient_list),
-                daemon=True,
-            ).start()
-
-            return JsonResponse({
-                'success': True,
-                'message': 'A new password has been sent to your email address. Check inbox or spam.'
-            })
-
-        except User.DoesNotExist:
-            return JsonResponse({
-                'success': False,
-                'message': 'No user found with that username and email combination.'
-            })
-        except Exception:
-            return JsonResponse({
-                'success': False,
-                'message': 'Something went wrong. Please try again.'
-            })
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 
 def register(request):
@@ -207,19 +157,105 @@ def landlord_dashboard(request):
         'password_form': LandlordPasswordChangeForm(user=request.user),
         'houses': houses[:10],
         'total_properties': houses.count(),
-        'vacant_rooms': rooms.filter(house__is_available=True).count(),
-        'occupied_rooms': rooms.filter(house__is_available=False).count(),
-        'total_inquiries': 0,
+        'available_property_rooms': rooms.filter(house__is_available=True).count(),
+        'unavailable_property_rooms': rooms.filter(house__is_available=False).count(),
         'open_password_modal': False,
     }
     return render(request, 'accounts/landlord_dashboard.html', context)
 
 
 @login_required
-def update_profile_pic(request):
+def landlord_add_property(request):
     profile = _ensure_landlord(request)
     if profile is None:
         return redirect('home')
+
+    form = LandlordHouseForm(
+        request.POST if request.method == 'POST' else None,
+        request.FILES if request.method == 'POST' else None,
+    )
+    if request.method == 'POST' and form.is_valid():
+        # Weka mwenye nyumba kutoka kwenye akaunti iliyoingia, si kwenye data ya form.
+        house = form.save(commit=False)
+        house.landlord = request.user
+        house.save()
+        messages.success(request, f'"{house.title}" has been added.')
+        return redirect('landlord_dashboard')
+
+    return render(request, 'accounts/landlord_form.html', {
+        'form': form,
+        'page_title': 'Add a property',
+        'page_description': 'Add your property details so students can discover it.',
+        'submit_label': 'Save property',
+        'has_properties': True,
+    })
+
+
+@login_required
+def landlord_add_room(request):
+    profile = _ensure_landlord(request)
+    if profile is None:
+        return redirect('home')
+
+    form = LandlordRoomForm(
+        request.POST if request.method == 'POST' else None,
+        request.FILES if request.method == 'POST' else None,
+        landlord=request.user,
+    )
+    if request.method == 'POST' and form.is_valid():
+        room = form.save()
+        messages.success(request, f'{room.get_room_type_display()} has been added.')
+        return redirect('landlord_dashboard')
+
+    return render(request, 'accounts/landlord_form.html', {
+        'form': form,
+        'page_title': 'Add a room',
+        'page_description': 'Choose one of your properties and add its room details.',
+        'submit_label': 'Save room',
+        'has_properties': House.objects.filter(landlord=request.user).exists(),
+    })
+
+
+@login_required
+def account_settings(request):
+    # Tumia profile ya mtumiaji aliyeingia pekee kwa mipangilio yake binafsi.
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    section = request.GET.get('section', 'profile_picture')
+    if section not in {'profile_picture', 'change_password'}:
+        return redirect('account_settings')
+
+    return render(request, 'accounts/account_settings.html', {
+        'profile': profile,
+        'profile_form': ProfilePicForm(instance=profile),
+        'password_form': LandlordPasswordChangeForm(user=request.user),
+        'section': section,
+        'return_url': _account_return_url(request, profile),
+    })
+
+
+def _account_return_url(request, profile):
+    candidate = (
+        request.POST.get('next')
+        or request.GET.get('next')
+        or request.META.get('HTTP_REFERER')
+    )
+    if candidate and url_has_allowed_host_and_scheme(
+        candidate,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return candidate
+
+    if profile.user_type == 'landlord':
+        return reverse('landlord_dashboard')
+    return reverse('house_list')
+
+
+@login_required
+def update_profile_pic(request):
+    # Fomu inaunganishwa na profile ya session ya sasa, si profile iliyotumwa na browser.
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    return_url = _account_return_url(request, profile)
 
     if request.method == 'POST':
         form = ProfilePicForm(request.POST, request.FILES, instance=profile)
@@ -229,7 +265,7 @@ def update_profile_pic(request):
         else:
             messages.error(request, 'Please choose a valid image file.')
 
-    return redirect('landlord_dashboard')
+    return redirect(return_url)
 
 
 @login_required
@@ -249,12 +285,11 @@ def landlord_delete_house(request, pk):
 
 @login_required
 def landlord_change_password(request):
-    profile = _ensure_landlord(request)
-    if profile is None:
-        return redirect('home')
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    return_url = _account_return_url(request, profile)
 
     if request.method != 'POST':
-        return redirect('landlord_dashboard')
+        return redirect(return_url)
 
     password_form = LandlordPasswordChangeForm(user=request.user, data=request.POST)
     if password_form.is_valid():
@@ -264,7 +299,16 @@ def landlord_change_password(request):
             request,
             'Password changed successfully. Use the new password next time you sign in.',
         )
-        return redirect('landlord_dashboard')
+        return redirect(return_url)
+
+    if profile.user_type != 'landlord':
+        return render(request, 'accounts/account_settings.html', {
+            'profile': profile,
+            'profile_form': ProfilePicForm(instance=profile),
+            'password_form': password_form,
+            'section': 'change_password',
+            'return_url': return_url,
+        })
 
     houses = (
         House.objects.filter(landlord=request.user)
@@ -278,9 +322,8 @@ def landlord_change_password(request):
         'password_form': password_form,
         'houses': houses[:10],
         'total_properties': houses.count(),
-        'vacant_rooms': rooms.filter(house__is_available=True).count(),
-        'occupied_rooms': rooms.filter(house__is_available=False).count(),
-        'total_inquiries': 0,
+        'available_property_rooms': rooms.filter(house__is_available=True).count(),
+        'unavailable_property_rooms': rooms.filter(house__is_available=False).count(),
         'open_password_modal': True,
     }
     return render(request, 'accounts/landlord_dashboard.html', context)

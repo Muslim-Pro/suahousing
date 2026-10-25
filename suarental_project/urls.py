@@ -33,7 +33,7 @@ from django.conf.urls.static import static
 from accounts import views as accounts_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('theboss/', admin.site.urls),
     path('', views.home, name='home'),
     path('dashboard/', accounts_views.landlord_dashboard, name='landlord_dashboard'),
     path('available-rooms/', views.available_rooms, name='available_rooms'),

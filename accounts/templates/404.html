@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - SUA Student Housing{% endblock %}
+
+{% block extra_css %}
+<style>
+    .not-found-spinner {
+        position: relative;
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 0.75rem;
+        animation: not-found-spin 1.8s linear infinite;
+    }
+
+    .not-found-spinner span {
+        position: absolute;
+        top: 0;
+        left: 30px;
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #198754;
+        transform-origin: 4px 34px;
+    }
+
+    .not-found-spinner span:nth-child(1) { transform: rotate(0deg); opacity: 1; }
+    .not-found-spinner span:nth-child(2) { transform: rotate(36deg); opacity: 0.9; }
+    .not-found-spinner span:nth-child(3) { transform: rotate(72deg); opacity: 0.8; }
+    .not-found-spinner span:nth-child(4) { transform: rotate(108deg); opacity: 0.7; }
+    .not-found-spinner span:nth-child(5) { transform: rotate(144deg); opacity: 0.6; }
+    .not-found-spinner span:nth-child(6) { transform: rotate(180deg); opacity: 0.5; }
+    .not-found-spinner span:nth-child(7) { transform: rotate(216deg); opacity: 0.4; }
+    .not-found-spinner span:nth-child(8) { transform: rotate(252deg); opacity: 0.3; }
+    .not-found-spinner span:nth-child(9) { transform: rotate(288deg); opacity: 0.2; }
+    .not-found-spinner span:nth-child(10) { transform: rotate(324deg); opacity: 0.1; }
+
+    @keyframes not-found-spin {
+        to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .not-found-spinner { animation: none; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm text-center">
+            <div class="card-body p-5">
+                <div class="not-found-spinner" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <p class="display-1 fw-semibold text-success mb-0">404</p>
+                <h1 class="h3 fw-bold mb-3">Page Not Found</h1>
+                <p class="text-muted mb-4">The address you entered is incorrect or the page has been moved.</p>
+                <a href="{% url 'home' %}" class="btn btn-success">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

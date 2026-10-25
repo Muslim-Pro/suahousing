@@ -97,6 +97,39 @@
         height: 100%;
     }
 
+    .support-card {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        background: #fff;
+        border: 1px solid #e7eee9;
+        border-radius: 1.25rem;
+        box-shadow: 0 12px 36px rgba(15, 23, 42, 0.06);
+    }
+    .support-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-height: 52px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #dce9e0;
+        border-radius: 0.75rem;
+        color: #176b43;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+    .support-option:hover {
+        background: #f0f8f3;
+        border-color: #198754;
+        color: #125b38;
+        transform: translateY(-2px);
+    }
+    .support-option:focus-visible {
+        outline: 3px solid rgba(25, 135, 84, 0.35);
+        outline-offset: 2px;
+    }
+
     .guide-step {
         width: 44px;
         height: 44px;
@@ -162,7 +195,7 @@
     </div>
     {% else %}
         <div class="d-flex justify-content-center">
-            <a href="{% url 'house_list' %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom">
+            <a href="{% if request.user.user_type == 'landlord' %}{% url 'landlord_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}" class="btn btn-light btn-lg rounded-pill fw-bold text-success px-4 btn-cta-custom">
                 Go to Dashboard
             </a>
         </div>
@@ -457,12 +490,25 @@
 </section> -->
 
 <!-- SUPPORT -->
-<section id="support" class="text-center pb-5 reveal">
-    <h3 class="fw-bold mb-3">Need Help Choosing a Room?</h3>
-    <p class="text-muted mb-0">
-        Email <a href="mailto:suahousinginfo@gmail.com" class="text-success fw-bold">suahousinginfo@gmail.com</a>
-        or WhatsApp <a href="https://wa.me/255614504540" target="_blank" class="fw-bold text-success">+255 614 504 540</a>.
-    </p>
+<section id="support" class="pb-5 reveal" aria-labelledby="support-heading">
+    <div class="support-card text-center">
+        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10 text-success mb-3" style="width: 52px; height: 52px;">
+            <i class="fa-regular fa-circle-question fs-4" aria-hidden="true"></i>
+        </span>
+        <h2 id="support-heading" class="h3 fw-bold mb-2">How can we help?</h2>
+        <p class="text-muted mb-4">Contact our support team by email or WhatsApp. Choose whichever works best for you.</p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+            <a href="mailto:suahousinginfo@gmail.com" class="support-option">
+                <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                <span>Email support</span>
+            </a>
+            <a href="https://wa.me/255614504540" target="_blank" rel="noopener noreferrer" class="support-option">
+                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                <span>WhatsApp support</span>
+            </a>
+        </div>
+        <p class="small text-muted mt-3 mb-0">Email: suahousinginfo@gmail.com <span class="mx-1">·</span> Phone/WhatsApp: +255 614 504 540</p>
+    </div>
 </section>
 
 <script>

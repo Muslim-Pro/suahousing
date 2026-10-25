@@ -1,0 +1,464 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - SUA Student Housing{% endblock %}
+
+{% block extra_css %}
+<style>
+    .student-dashboard {
+        padding-top: 1.5rem;
+        padding-bottom: 2rem;
+    }
+    .student-welcome {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #dcefe3;
+        border-radius: 1.25rem;
+        background: linear-gradient(120deg, #fff 0%, #eef9f1 100%);
+    }
+    .student-welcome::after {
+        position: absolute;
+        top: -5rem;
+        right: -3rem;
+        width: 16rem;
+        height: 16rem;
+        border-radius: 50%;
+        background: rgba(25, 135, 84, 0.07);
+        content: "";
+        pointer-events: none;
+    }
+    .student-stat-card,
+    .student-listing-card,
+    .student-action-card {
+        height: 100%;
+        border: 0;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.055);
+    }
+    .student-stat-icon {
+        display: inline-flex;
+        width: 48px;
+        height: 48px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: #e7f5ec;
+        color: #198754;
+        font-size: 1.15rem;
+    }
+    .student-listing-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+    .student-listing-placeholder {
+        display: flex;
+        width: 100%;
+        height: 180px;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #d1e7dd, #f0f8f2);
+        color: #198754;
+        font-size: 2rem;
+    }
+    .student-profile-avatar {
+        width: 64px;
+        height: 64px;
+        flex-shrink: 0;
+        object-fit: cover;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        .student-listing-card {
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .student-listing-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="student-dashboard">
+    {# Sehemu hii inakaribisha mwanafunzi na kumpa njia ya kuanza kutafuta malazi. #}
+    <section class="student-welcome p-4 p-lg-5 mb-4">
+        <div class="row align-items-center g-4 position-relative" style="z-index: 1;">
+            <div class="col-lg">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    {% if profile.profile_pic %}
+                        <img src="{{ profile.profile_pic.url }}" alt="Profile picture" class="student-profile-avatar rounded-circle border border-3 border-white shadow-sm">
+                    {% else %}
+                        <span class="student-profile-avatar rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center fw-bold fs-3">
+                            {{ user.first_name|first|default:user.username|first|upper }}
+                        </span>
+                    {% endif %}
+                    <div>
+                        <p class="text-success text-uppercase fw-bold small mb-1">Student dashboard</p>
+                        <h1 class="h3 fw-bold mb-0">Welcome, {{ user.first_name|default:user.username }}!</h1>
+                    </div>
+                </div>
+                <p class="text-secondary mb-0">
+                    Find accommodation that suits you near SUA. Listings are updated using information provided by landlords.
+                </p>
+            </div>
+            <div class="col-lg-auto">
+                <a href="{% url 'available_rooms' %}" class="btn btn-success rounded-pill fw-bold px-4 py-2">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i>Find accommodation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section aria-label="Housing availability" class="row g-3 mb-4">
+        <div class="col-md-6 col-xl">
+            <article class="card student-stat-card">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <span class="student-stat-icon"><i class="fa-solid fa-house"></i></span>
+                    <div>
+                        <p class="text-muted small fw-semibold mb-1">Available properties</p>
+                        <p class="h3 fw-bold mb-0">{{ available_house_count }}</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-6 col-xl">
+            <article class="card student-stat-card">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <span class="student-stat-icon"><i class="fa-solid fa-door-open"></i></span>
+                    <div>
+                        <p class="text-muted small fw-semibold mb-1">Rooms listed</p>
+                        <p class="h3 fw-bold mb-0">{{ available_room_count }}</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-6 col-xl">
+            <article class="card student-stat-card">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <span class="student-stat-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                    <div>
+                        <p class="text-muted small fw-semibold mb-1">Active bookings</p>
+                        <p class="h3 fw-bold mb-0">{{ active_booking_count }}</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-6 col-xl">
+            <article class="card student-stat-card">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <span class="student-stat-icon"><i class="fa-solid fa-heart"></i></span>
+                    <div>
+                        <p class="text-muted small fw-semibold mb-1">Saved properties</p>
+                        <p class="h3 fw-bold mb-0">{{ saved_house_count }}</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-6 col-xl">
+            <article class="card student-stat-card">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <span class="student-stat-icon"><i class="fa-regular fa-life-ring"></i></span>
+                    <div>
+                        <p class="text-muted small fw-semibold mb-1">Open support requests</p>
+                        <p class="h3 fw-bold mb-0">{{ open_support_request_count }}</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-6 col-xl">
+            <a href="#notifications" class="card student-stat-card text-decoration-none text-reset">
+                <div class="card-body p-4 d-flex align-items-center gap-3">
+                    <span class="student-stat-icon"><i class="fa-regular fa-bell"></i></span>
+                    <div>
+                        <p class="text-muted small fw-semibold mb-1">Unread notifications</p>
+                        <p class="h3 fw-bold mb-0">{{ unread_notification_count }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="row g-4 mb-5" aria-label="Student shortcuts">
+        <div class="col-md-6">
+            <article class="card student-action-card">
+                <div class="card-body p-4 d-flex align-items-start gap-3">
+                    <span class="student-stat-icon"><i class="fa-solid fa-map-location-dot"></i></span>
+                    <div>
+                        <h2 class="h5 fw-bold">Browse by location</h2>
+                        <p class="text-muted small mb-3">Explore properties and rooms around SUA and Morogoro.</p>
+                        <a href="{% url 'available_rooms' %}" class="link-success fw-bold text-decoration-none">
+                            Explore locations <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-md-6">
+            <article class="card student-action-card">
+                <div class="card-body p-4 d-flex align-items-start gap-3">
+                    <span class="student-stat-icon"><i class="fa-solid fa-user-gear"></i></span>
+                    <div>
+                        <h2 class="h5 fw-bold">Account settings</h2>
+                        <p class="text-muted small mb-3">Update your profile picture or change your password.</p>
+                        <a href="{% url 'account_settings' %}?section=account_options&amp;next={% url 'student_dashboard' %}" class="link-success fw-bold text-decoration-none">
+                            Update my details <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="recent-listings-title">
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-2 mb-3">
+            <div>
+                <p class="text-success text-uppercase fw-bold small mb-1">A great place to start</p>
+                <h2 class="h4 fw-bold mb-0" id="recent-listings-title">Recently added properties</h2>
+            </div>
+            <a href="{% url 'available_rooms' %}" class="link-success fw-semibold text-decoration-none">
+                View all listings <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            {# Orodha hii inaonyesha nyumba zinazopatikana na bei halisi ya chini kabisa. #}
+            {% for house in recent_houses %}
+            <div class="col-md-6 col-xl-4">
+                <article class="card student-listing-card overflow-hidden">
+                    {% if house.image %}
+                        <img src="{{ house.image.url }}" alt="{{ house.title }}" class="student-listing-image" loading="lazy">
+                    {% else %}
+                        <div class="student-listing-placeholder" aria-hidden="true"><i class="fa-solid fa-house"></i></div>
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <span class="badge rounded-pill bg-success bg-opacity-10 text-success mb-2">{{ house.get_location_display }}</span>
+                        <h3 class="h5 fw-bold mb-2">{{ house.title }}</h3>
+                        <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-1"></i>{{ house.address }}</p>
+                        <div class="d-flex justify-content-between align-items-center gap-2">
+                            <span class="small text-muted">
+                                {% if house.room_count == 1 %}1 room{% else %}{{ house.room_count }} rooms{% endif %}
+                            </span>
+                            {% if house.minimum_price %}
+                                <span class="small fw-bold text-success">From TZS {{ house.minimum_price }}</span>
+                            {% else %}
+                                <span class="small text-muted">Price not listed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0 px-4 pb-4 pt-0">
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'house_detail' house.pk %}" class="btn btn-outline-success flex-grow-1 rounded-pill fw-semibold">
+                                View details
+                            </a>
+                            <form method="post" action="{% url 'save_house' house.pk %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{% url 'student_dashboard' %}#saved-homes">
+                                <button type="submit" class="btn btn-outline-danger rounded-pill" aria-label="Save {{ house.title }}">
+                                    <i class="fa-{% if house.pk in saved_house_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="card border-0 rounded-4 text-center p-4 p-lg-5">
+                    <span class="text-success fs-1 mb-3"><i class="fa-regular fa-building"></i></span>
+                    <h3 class="h5 fw-bold">No properties listed yet</h3>
+                    <p class="text-muted mb-3">Please check back later or contact us for support.</p>
+                    <a href="{% url 'home' %}#support" class="btn btn-outline-success rounded-pill px-4 align-self-center">
+                        <i class="fa-regular fa-life-ring me-2"></i>Support
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {# Maelezo haya yanaweza kuhaririwa kupitia mipangilio ya wasifu wa mwanafunzi. #}
+    <section class="mt-5" id="my-profile" aria-labelledby="my-profile-title">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <p class="text-success text-uppercase fw-bold small mb-1">Your information</p>
+                <h2 class="h4 fw-bold mb-0" id="my-profile-title">My Profile / Student Details</h2>
+            </div>
+            <a href="{% url 'account_settings' %}?section=student_details&amp;next={% url 'student_dashboard' %}#my-profile" class="btn btn-outline-success rounded-pill px-3">
+                <i class="fa-solid fa-pen me-1"></i>Edit details
+            </a>
+        </div>
+        <div class="card border-0 rounded-4 shadow-sm">
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-sm-6 col-lg-4"><span class="small text-muted d-block">Full name</span><strong>{{ user.get_full_name|default:user.username }}</strong></div>
+                    <div class="col-sm-6 col-lg-4"><span class="small text-muted d-block">Phone number</span><strong>{{ profile.phone|default:"Not provided" }}</strong></div>
+                    <div class="col-sm-6 col-lg-4"><span class="small text-muted d-block">University / college</span><strong>{{ profile.university|default:"Not provided" }}</strong></div>
+                    <div class="col-sm-6 col-lg-4"><span class="small text-muted d-block">Year of study</span><strong>{{ profile.year_of_study|default:"Not provided" }}</strong></div>
+                    <div class="col-sm-6 col-lg-4"><span class="small text-muted d-block">Emergency contact</span><strong>{{ profile.emergency_contact_name|default:"Not provided" }}</strong></div>
+                    <div class="col-sm-6 col-lg-4"><span class="small text-muted d-block">Emergency phone</span><strong>{{ profile.emergency_contact_phone|default:"Not provided" }}</strong></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Nyumba zilizohifadhiwa na maombi ya booking hutumia rekodi halisi za mwanafunzi. #}
+    <section class="mt-5" id="saved-homes" aria-labelledby="saved-homes-title">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <p class="text-success text-uppercase fw-bold small mb-1">Your shortlist</p>
+                <h2 class="h4 fw-bold mb-0" id="saved-homes-title">Saved Homes</h2>
+            </div>
+            <a href="{% url 'available_rooms' %}" class="link-success fw-semibold text-decoration-none">Find more homes <i class="fa-solid fa-arrow-right ms-1"></i></a>
+        </div>
+        <div class="row g-3">
+            {% for saved in saved_houses %}
+            <div class="col-md-6 col-xl-4">
+                <article class="card h-100 border-0 rounded-4 shadow-sm overflow-hidden">
+                    {% if saved.house.image %}
+                        <img src="{{ saved.house.image.url }}" alt="{{ saved.house.title }}" class="student-listing-image" loading="lazy">
+                    {% else %}
+                        <div class="student-listing-placeholder" aria-hidden="true"><i class="fa-solid fa-house"></i></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge bg-success bg-opacity-10 text-success mb-2">{{ saved.house.get_location_display }}</span>
+                        {% if not saved.house.is_available %}<span class="badge text-bg-secondary mb-2">Unavailable</span>{% endif %}
+                        <h3 class="h5 fw-bold">{{ saved.house.title }}</h3>
+                        <p class="small text-muted">{{ saved.house.address }}</p>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'house_detail' saved.house.pk %}" class="btn btn-success flex-grow-1 rounded-pill">{% if saved.house.is_available %}View / Book{% else %}View listing{% endif %}</a>
+                            <form method="post" action="{% url 'save_house' saved.house.pk %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{% url 'student_dashboard' %}#saved-homes">
+                                <button type="submit" class="btn btn-outline-danger rounded-pill" aria-label="Remove {{ saved.house.title }} from saved homes">
+                                    <i class="fa-solid fa-heart-crack"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {% empty %}
+            <div class="col-12"><div class="card border-0 rounded-4 p-4 text-center text-muted">You have not saved any homes yet. Use the heart button on a listing to save it.</div></div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mt-5" id="my-bookings" aria-labelledby="my-bookings-title">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <p class="text-success text-uppercase fw-bold small mb-1">Applications and payment status</p>
+                <h2 class="h4 fw-bold mb-0" id="my-bookings-title">My Bookings</h2>
+            </div>
+            <span class="badge rounded-pill text-bg-light">{{ pending_booking_count }} pending</span>
+        </div>
+        <div class="d-flex flex-column gap-3">
+            {% for booking in bookings %}
+            <article class="card border-0 rounded-4 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                        <div>
+                            <h3 class="h5 fw-bold mb-1">{{ booking.room.house.title }}</h3>
+                            <p class="small text-muted mb-2">{{ booking.room.get_room_type_display }} · TZS {{ booking.room.price }} / semester</p>
+                            <span class="badge rounded-pill {% if booking.status == 'approved' %}text-bg-success{% elif booking.status == 'rejected' %}text-bg-danger{% else %}text-bg-warning{% endif %}">{{ booking.get_status_display }}</span>
+                            <span class="badge rounded-pill {% if booking.payment_status == 'paid' %}text-bg-success{% else %}text-bg-secondary{% endif %}">Payment: {{ booking.get_payment_status_display }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{% url 'house_detail' booking.room.house.pk %}" class="btn btn-sm btn-outline-success rounded-pill">View</a>
+                            {% if booking.landlord_whatsapp %}
+                                <a href="https://wa.me/{{ booking.landlord_whatsapp }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-success rounded-pill"><i class="fa-brands fa-whatsapp me-1"></i>Contact landlord</a>
+                            {% endif %}
+                            {% if booking.room.house.landlord.email %}
+                                <a href="mailto:{{ booking.room.house.landlord.email }}" class="btn btn-sm btn-outline-secondary rounded-pill"><i class="fa-regular fa-envelope me-1"></i>Email</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if booking.student_message %}
+                        <p class="small mb-0 mt-3"><strong>Your message:</strong> {{ booking.student_message }}</p>
+                    {% endif %}
+                    {% if booking.status == 'approved' and booking.payment_status != 'paid' %}
+                        <p class="alert alert-warning small mt-3 mb-0">Payment has not been confirmed. Contact the landlord for payment instructions.</p>
+                    {% endif %}
+                </div>
+            </article>
+            {% empty %}
+            <div class="card border-0 rounded-4 p-4 text-center text-muted">You have not requested a room yet. Open a listing and select Book now.</div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mt-5" id="notifications" aria-labelledby="notifications-title">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h4 fw-bold mb-0" id="notifications-title">Notifications &amp; Recent Activity</h2>
+            {% if unread_notification_count %}<span class="badge rounded-pill text-bg-success">{{ unread_notification_count }} unread</span>{% endif %}
+        </div>
+        <div class="card border-0 rounded-4 shadow-sm">
+            <div class="list-group list-group-flush rounded-4">
+                {% for notification in recent_activity %}
+                <div class="list-group-item px-4 py-3 {% if not notification.is_read %}bg-success bg-opacity-10{% endif %}">
+                    <div class="d-flex justify-content-between gap-3">
+                        <div>
+                            <strong>{{ notification.title }}</strong>
+                            <p class="small text-muted mb-1">{{ notification.message }}</p>
+                            <span class="small text-muted">{{ notification.created_at|date:"M j, Y g:i A" }}</span>
+                        </div>
+                        {% if not notification.is_read %}
+                        <form method="post" action="{% url 'mark_notification_read' notification.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-success text-nowrap">Mark read</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="list-group-item px-4 py-4 text-muted">No notifications yet. Booking updates and landlord messages will appear here.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="mt-5 mb-4" id="help-support" aria-labelledby="help-support-title">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <p class="text-success text-uppercase fw-bold small mb-1">We are here to help</p>
+                <h2 class="h4 fw-bold mb-0" id="help-support-title">Help &amp; Support</h2>
+            </div>
+            <span class="badge rounded-pill text-bg-light">{{ open_support_request_count }} open requests</span>
+        </div>
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="card border-0 rounded-4 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h3 class="h5 fw-bold">Contact support</h3>
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            <a href="https://wa.me/255614504540" target="_blank" rel="noopener noreferrer" class="btn btn-success rounded-pill"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
+                            <a href="mailto:suahousinginfo@gmail.com" class="btn btn-outline-success rounded-pill"><i class="fa-regular fa-envelope me-1"></i>Email us</a>
+                        </div>
+                        <form method="post" action="{% url 'submit_support_request' %}">
+                            {% csrf_token %}
+                            <label for="{{ support_form.message.id_for_label }}" class="form-label fw-semibold">{{ support_form.message.label }}</label>
+                            {{ support_form.message }}
+                            <button type="submit" class="btn btn-success rounded-pill mt-3">Submit support request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 rounded-4 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h3 class="h5 fw-bold">Your support requests</h3>
+                        {% for support_request in support_requests %}
+                            <div class="border-bottom py-2">
+                                <p class="small mb-1">{{ support_request.message }}</p>
+                                <span class="badge rounded-pill {% if support_request.status == 'open' %}text-bg-warning{% else %}text-bg-secondary{% endif %}">{{ support_request.get_status_display }}</span>
+                                <span class="small text-muted ms-2">{{ support_request.created_at|date:"M j, Y" }}</span>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted mb-0">You have not submitted any support requests.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+{% endblock %}

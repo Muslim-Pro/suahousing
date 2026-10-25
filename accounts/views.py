@@ -7,6 +7,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
+from django.db import IntegrityError, transaction
+from django.db.models import Count, Min
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -16,13 +18,24 @@ from houses.models import House, Room
 
 from .forms import (
     CustomPasswordResetForm,
+    BookingMessageForm,
     LandlordHouseForm,
     LandlordPasswordChangeForm,
     LandlordRoomForm,
     ProfilePicForm,
+    StudentDetailsForm,
+    SupportRequestForm,
     UserRegisterForm,
 )
-from .models import Profile
+from .models import (
+    Booking,
+    BookingMessage,
+    Profile,
+    SavedHouse,
+    StudentNotification,
+    SupportRequest,
+)
+from .utils import tanzania_whatsapp_number
 
 
 class CustomPasswordResetView(PasswordResetView):
@@ -101,7 +114,7 @@ def register(request):
 
 
 class CustomLoginView(LoginView):
-    """Baada ya login, landlord anaenda dashboard; student anaenda houses."""
+    """Baada ya login, mpeleke mtumiaji kwenye dashboard ya aina yake."""
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -113,12 +126,10 @@ class CustomLoginView(LoginView):
         next_url = self.get_redirect_url()
         if next_url:
             return next_url
-        try:
-            if self.request.user.profile.user_type == 'landlord':
-                return reverse('landlord_dashboard')
-        except Exception:
-            pass
-        return reverse('house_list')
+        profile, _ = Profile.objects.get_or_create(user=self.request.user)
+        if profile.user_type == 'landlord':
+            return reverse('landlord_dashboard')
+        return reverse('student_dashboard')
 
 
 class CustomLogoutView(LogoutView):
@@ -150,6 +161,10 @@ def landlord_dashboard(request):
         .order_by('-created_at')
     )
     rooms = Room.objects.filter(house__landlord=request.user)
+    landlord_bookings = Booking.objects.filter(
+        room__house__landlord=request.user,
+        status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
+    ).select_related('student', 'student__profile', 'room', 'room__house')
 
     context = {
         'profile': profile,
@@ -160,8 +175,73 @@ def landlord_dashboard(request):
         'available_property_rooms': rooms.filter(house__is_available=True).count(),
         'unavailable_property_rooms': rooms.filter(house__is_available=False).count(),
         'open_password_modal': False,
+        'pending_bookings': landlord_bookings.filter(status=Booking.STATUS_PENDING)[:20],
+        'landlord_bookings': landlord_bookings[:50],
+        'pending_booking_count': landlord_bookings.filter(status=Booking.STATUS_PENDING).count(),
     }
     return render(request, 'accounts/landlord_dashboard.html', context)
+
+
+@login_required
+def student_dashboard(request):
+    # Kusanya listings, bookings, saved homes na taarifa kwa mwanafunzi huyu pekee.
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type == 'landlord':
+        return redirect('landlord_dashboard')
+
+    available_houses = House.objects.filter(is_available=True)
+    recent_houses = (
+        available_houses.annotate(
+            room_count=Count('rooms'),
+            minimum_price=Min('rooms__price'),
+        )
+        .order_by('-created_at')[:3]
+    )
+    bookings = (
+        Booking.objects.filter(student=request.user)
+        .select_related('room', 'room__house', 'room__house__landlord', 'room__house__landlord__profile')
+        .prefetch_related('messages')
+    )
+    booking_list = list(bookings[:10])
+    for booking in booking_list:
+        landlord_phone = booking.room.house.landlord.profile.phone
+        booking.landlord_whatsapp = tanzania_whatsapp_number(landlord_phone)
+    saved_houses = SavedHouse.objects.filter(
+        student=request.user,
+    ).select_related('house')
+    notifications = StudentNotification.objects.filter(
+        recipient=request.user,
+    )
+    support_requests = SupportRequest.objects.filter(student=request.user)
+    context = {
+        'profile': profile,
+        'available_house_count': available_houses.count(),
+        'available_room_count': Room.objects.filter(
+            house__is_available=True,
+        ).count(),
+        'recent_houses': recent_houses,
+        'saved_houses': saved_houses[:6],
+        'saved_house_count': saved_houses.count(),
+        'bookings': booking_list,
+        'saved_house_ids': list(
+            saved_houses.values_list('house_id', flat=True),
+        ),
+        'active_booking_count': bookings.filter(
+            status=Booking.STATUS_APPROVED,
+        ).count(),
+        'pending_booking_count': bookings.filter(
+            status=Booking.STATUS_PENDING,
+        ).count(),
+        'notifications': notifications[:8],
+        'unread_notification_count': notifications.filter(is_read=False).count(),
+        'recent_activity': notifications[:5],
+        'support_requests': support_requests[:5],
+        'open_support_request_count': support_requests.filter(
+            status=SupportRequest.STATUS_OPEN,
+        ).count(),
+        'support_form': SupportRequestForm(),
+    }
+    return render(request, 'accounts/student_dashboard.html', context)
 
 
 @login_required
@@ -220,13 +300,28 @@ def landlord_add_room(request):
 def account_settings(request):
     # Tumia profile ya mtumiaji aliyeingia pekee kwa mipangilio yake binafsi.
     profile, _ = Profile.objects.get_or_create(user=request.user)
-    section = request.GET.get('section', 'profile_picture')
-    if section not in {'profile_picture', 'change_password'}:
+    section = request.POST.get(
+        'section',
+        request.GET.get('section', 'profile_picture'),
+    )
+    if section not in {'account_options', 'profile_picture', 'change_password', 'student_details'}:
         return redirect('account_settings')
+
+    student_details_form = StudentDetailsForm(
+        request.POST if request.method == 'POST' and section == 'student_details' else None,
+        user=request.user,
+        profile=profile,
+    )
+    if request.method == 'POST' and section == 'student_details':
+        if student_details_form.is_valid():
+            student_details_form.save()
+            messages.success(request, 'Student details updated successfully.')
+            return redirect(_account_return_url(request, profile))
 
     return render(request, 'accounts/account_settings.html', {
         'profile': profile,
         'profile_form': ProfilePicForm(instance=profile),
+        'student_details_form': student_details_form,
         'password_form': LandlordPasswordChangeForm(user=request.user),
         'section': section,
         'return_url': _account_return_url(request, profile),
@@ -266,6 +361,216 @@ def update_profile_pic(request):
             messages.error(request, 'Please choose a valid image file.')
 
     return redirect(return_url)
+
+
+@login_required
+def save_house(request, pk):
+    # Kitufe kimoja huongeza au kuondoa nyumba kwenye orodha ya mwanafunzi.
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type != 'student':
+        messages.error(request, 'Only students can save properties.')
+        return redirect('landlord_dashboard')
+    if request.method != 'POST':
+        return redirect('house_detail', pk=pk)
+
+    house = get_object_or_404(House, pk=pk)
+    saved_house = SavedHouse.objects.filter(
+        student=request.user,
+        house=house,
+    ).first()
+    if saved_house:
+        saved_house.delete()
+        messages.info(request, f'"{house.title}" was removed from your saved homes.')
+    elif house.is_available:
+        SavedHouse.objects.create(student=request.user, house=house)
+        messages.success(request, f'"{house.title}" was added to your saved homes.')
+    else:
+        messages.error(request, 'This property is no longer available to save.')
+    return redirect(_account_return_url(request, profile))
+
+
+@login_required
+def apply_for_room(request, pk):
+    # Mwanafunzi anatuma ombi moja hai kwa chumba na mwenye nyumba anapokea taarifa.
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type != 'student':
+        messages.error(request, 'Only students can request a room booking.')
+        return redirect('landlord_dashboard')
+    room = get_object_or_404(
+        Room.objects.select_related('house', 'house__landlord'),
+        pk=pk,
+        house__is_available=True,
+    )
+    if request.method != 'POST':
+        return redirect('house_detail', pk=room.house_id)
+
+    form = BookingMessageForm(request.POST)
+    if not form.is_valid():
+        messages.error(request, 'Please enter a valid message for the landlord.')
+        return redirect('house_detail', pk=room.house_id)
+
+    existing_booking = Booking.objects.filter(
+        student=request.user,
+        room=room,
+        status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
+    ).first()
+    if existing_booking:
+        messages.info(request, 'You already have an active request for this room.')
+        return redirect('student_dashboard')
+
+    try:
+        with transaction.atomic():
+            booking = Booking.objects.create(
+                student=request.user,
+                room=room,
+                student_message=form.cleaned_data['message'].strip(),
+            )
+    except IntegrityError:
+        messages.info(request, 'You already have an active request for this room.')
+        return redirect('student_dashboard')
+    StudentNotification.objects.create(
+        recipient=room.house.landlord,
+        booking=booking,
+        notification_type=StudentNotification.TYPE_BOOKING,
+        title='New room booking request',
+        message=f'{request.user.get_full_name() or request.user.username} requested {room.get_room_type_display()} at {room.house.title}.',
+    )
+    messages.success(request, 'Your booking request was sent to the landlord.')
+    return redirect('student_dashboard')
+
+
+@login_required
+def landlord_update_booking(request, pk):
+    # Ruhusu mwenye nyumba husika pekee kusimamia maombi na mawasiliano ya booking.
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type != 'landlord':
+        messages.error(request, 'This action is available to landlords only.')
+        return redirect('student_dashboard')
+    if request.method != 'POST':
+        return redirect('landlord_dashboard')
+
+    booking = get_object_or_404(
+        Booking.objects.select_related('student', 'room', 'room__house'),
+        pk=pk,
+        room__house__landlord=request.user,
+    )
+    action = request.POST.get('action')
+
+    if action in {'approve', 'reject'}:
+        if booking.status != Booking.STATUS_PENDING:
+            messages.error(request, 'Only pending booking requests can be reviewed.')
+            return redirect('landlord_dashboard')
+        if action == 'approve':
+            with transaction.atomic():
+                Room.objects.select_for_update().get(pk=booking.room_id)
+                booking.refresh_from_db()
+                if not booking.room.house.is_available:
+                    messages.error(request, 'This property is no longer available.')
+                    return redirect('landlord_dashboard')
+                another_approved_booking = Booking.objects.filter(
+                    room=booking.room,
+                    status=Booking.STATUS_APPROVED,
+                ).exclude(pk=booking.pk).exists()
+                if another_approved_booking:
+                    messages.error(request, 'This room already has an approved booking.')
+                    return redirect('landlord_dashboard')
+                booking.status = Booking.STATUS_APPROVED
+                booking.save(update_fields=['status', 'updated_at'])
+                title = 'Booking request approved'
+                body = f'Your request for {booking.room.get_room_type_display()} at {booking.room.house.title} was approved.'
+        else:
+            booking.status = Booking.STATUS_REJECTED
+            title = 'Booking request declined'
+            body = f'Your request for {booking.room.get_room_type_display()} at {booking.room.house.title} was declined.'
+            booking.save(update_fields=['status', 'updated_at'])
+        StudentNotification.objects.create(
+            recipient=booking.student,
+            booking=booking,
+            notification_type=StudentNotification.TYPE_BOOKING,
+            title=title,
+            message=body,
+        )
+        messages.success(request, 'Booking request updated.')
+    elif action == 'message':
+        form = BookingMessageForm(request.POST)
+        if not form.is_valid():
+            messages.error(request, 'Please enter a message before sending.')
+            return redirect('landlord_dashboard')
+        message = form.cleaned_data['message'].strip()
+        BookingMessage.objects.create(
+            booking=booking,
+            sender=request.user,
+            message=message,
+        )
+        StudentNotification.objects.create(
+            recipient=booking.student,
+            booking=booking,
+            notification_type=StudentNotification.TYPE_MESSAGE,
+            title='New message from your landlord',
+            message=message,
+        )
+        messages.success(request, 'Your message was sent to the student.')
+    elif action == 'payment_reminder':
+        if booking.status != Booking.STATUS_APPROVED:
+            messages.error(request, 'Payment reminders are available for approved bookings.')
+            return redirect('landlord_dashboard')
+        StudentNotification.objects.create(
+            recipient=booking.student,
+            booking=booking,
+            notification_type=StudentNotification.TYPE_PAYMENT,
+            title='Payment reminder',
+            message=f'Please contact your landlord about payment for {booking.room.house.title}. Payment is recorded as unpaid until confirmed.',
+        )
+        messages.success(request, 'Payment reminder sent.')
+    elif action == 'confirm_payment':
+        if booking.status != Booking.STATUS_APPROVED:
+            messages.error(request, 'Only approved bookings can have payment confirmed.')
+            return redirect('landlord_dashboard')
+        booking.payment_status = Booking.PAYMENT_PAID
+        booking.save(update_fields=['payment_status', 'updated_at'])
+        StudentNotification.objects.create(
+            recipient=booking.student,
+            booking=booking,
+            notification_type=StudentNotification.TYPE_PAYMENT,
+            title='Payment confirmed',
+            message=f'Your landlord confirmed payment for {booking.room.house.title}.',
+        )
+        messages.success(request, 'Payment was marked as received based on your confirmation.')
+    else:
+        messages.error(request, 'Unknown booking action.')
+
+    return redirect('landlord_dashboard')
+
+
+@login_required
+def mark_notification_read(request, pk):
+    # Mmiliki wa notification pekee ndiye anayeruhusiwa kuisoma au kuifunga.
+    if request.method == 'POST':
+        notification = get_object_or_404(
+            StudentNotification,
+            pk=pk,
+            recipient=request.user,
+        )
+        notification.is_read = True
+        notification.save(update_fields=['is_read'])
+    return redirect('student_dashboard')
+
+
+@login_required
+def submit_support_request(request):
+    # Hifadhi ombi la msaada kwenye akaunti ya mwanafunzi aliyeingia.
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type != 'student':
+        messages.error(request, 'This support form is available to students only.')
+        return redirect('landlord_dashboard')
+    if request.method == 'POST':
+        form = SupportRequestForm(request.POST)
+        if form.is_valid():
+            form.save(student=request.user)
+            messages.success(request, 'Your support request was submitted.')
+        else:
+            messages.error(request, 'Please enter a valid support request.')
+    return redirect('student_dashboard')
 
 
 @login_required
@@ -316,6 +621,10 @@ def landlord_change_password(request):
         .order_by('-created_at')
     )
     rooms = Room.objects.filter(house__landlord=request.user)
+    landlord_bookings = Booking.objects.filter(
+        room__house__landlord=request.user,
+        status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
+    ).select_related('student', 'student__profile', 'room', 'room__house')
     context = {
         'profile': profile,
         'profile_form': ProfilePicForm(instance=profile),
@@ -325,5 +634,8 @@ def landlord_change_password(request):
         'available_property_rooms': rooms.filter(house__is_available=True).count(),
         'unavailable_property_rooms': rooms.filter(house__is_available=False).count(),
         'open_password_modal': True,
+        'pending_bookings': landlord_bookings.filter(status=Booking.STATUS_PENDING)[:20],
+        'landlord_bookings': landlord_bookings[:50],
+        'pending_booking_count': landlord_bookings.filter(status=Booking.STATUS_PENDING).count(),
     }
     return render(request, 'accounts/landlord_dashboard.html', context)

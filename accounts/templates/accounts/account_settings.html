@@ -4,18 +4,46 @@
 
 {% block extra_css %}
 <style>
-    /* Ukurasa mmoja unaonyesha form moja kulingana na chaguo la mtumiaji. */
     .account-settings-card {
         border: 0;
         border-radius: 1.1rem;
         box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
         scroll-margin-top: 6rem;
     }
+    .account-option-card {
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .account-option-card:hover,
+    .account-option-card:focus-visible {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 34px rgba(15, 23, 42, 0.13);
+    }
+    .account-option-card:focus-visible {
+        outline: 3px solid rgba(25, 135, 84, 0.45);
+        outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .account-option-card {
+            transition: none;
+        }
+    }
     .account-settings-avatar {
         width: 92px;
         height: 92px;
         object-fit: cover;
         border: 3px solid #e2f2e8;
+    }
+    .account-option-icon {
+        display: inline-flex;
+        width: 48px;
+        height: 48px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: #e7f5ec;
+        color: #198754;
+        font-size: 1.15rem;
     }
 </style>
 {% endblock %}
@@ -26,16 +54,43 @@
         <a href="{{ return_url }}" class="small text-success text-decoration-none fw-semibold">
             <i class="fa-solid fa-arrow-left me-1"></i> Back
         </a>
-        {% if section == 'profile_picture' %}
+        {% if section == 'account_options' %}
+            <h1 class="h3 fw-bold mt-3 mb-1">Account settings</h1>
+            <p class="text-muted mb-0">Choose what you would like to update.</p>
+        {% elif section == 'profile_picture' %}
             <h1 class="h3 fw-bold mt-3 mb-1">Update profile picture</h1>
             <p class="text-muted mb-0">Choose a clear image to help identify your account.</p>
+        {% elif section == 'student_details' %}
+            <h1 class="h3 fw-bold mt-3 mb-1">My student details</h1>
+            <p class="text-muted mb-0">Keep your contact and emergency information up to date.</p>
         {% else %}
             <h1 class="h3 fw-bold mt-3 mb-1">Change password</h1>
             <p class="text-muted mb-0">Enter your current password before choosing a new one.</p>
         {% endif %}
     </div>
 
-    {% if section == 'profile_picture' %}
+    {% if section == 'account_options' %}
+    <section class="row g-4" aria-label="Account settings options">
+        <div class="col-md-6">
+            <a href="{% url 'account_settings' %}?section=profile_picture&amp;next={{ return_url|urlencode }}" class="card account-settings-card account-option-card text-decoration-none text-reset h-100">
+                <div class="card-body p-4 p-lg-5">
+                    <span class="account-option-icon mb-3" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+                    <h2 class="h5 fw-bold">Update profile picture</h2>
+                    <p class="text-muted mb-0">Choose a new picture to help identify your account.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{% url 'account_settings' %}?section=change_password&amp;next={{ return_url|urlencode }}" class="card account-settings-card account-option-card text-decoration-none text-reset h-100">
+                <div class="card-body p-4 p-lg-5">
+                    <span class="account-option-icon mb-3" aria-hidden="true"><i class="fa-solid fa-key"></i></span>
+                    <h2 class="h5 fw-bold">Change password</h2>
+                    <p class="text-muted mb-0">Update the password you use to sign in.</p>
+                </div>
+            </a>
+        </div>
+    </section>
+    {% elif section == 'profile_picture' %}
     <section class="card account-settings-card" id="profile-picture" aria-labelledby="profile-picture-title">
         <div class="card-body p-4 p-lg-5">
             <div class="d-flex align-items-center gap-3 mb-4">
@@ -65,6 +120,32 @@
                 <button type="submit" class="btn btn-success rounded-pill fw-bold px-4 mt-3">
                     Save profile picture
                 </button>
+            </form>
+        </div>
+    </section>
+    {% elif section == 'student_details' %}
+    <section class="card account-settings-card" id="student-details" aria-labelledby="student-details-title">
+        <div class="card-body p-4 p-lg-5">
+            <h2 class="h5 fw-bold mb-4" id="student-details-title">Student profile</h2>
+            <form method="post" action="{% url 'account_settings' %}?section=student_details">
+                {% csrf_token %}
+                <input type="hidden" name="section" value="student_details">
+                <input type="hidden" name="next" value="{{ return_url }}">
+                <div class="row">
+                    {% for field in student_details_form %}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="small text-muted mt-1">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-success rounded-pill fw-bold px-4">Save student details</button>
             </form>
         </div>
     </section>

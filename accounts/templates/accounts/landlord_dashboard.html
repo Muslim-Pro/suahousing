@@ -426,27 +426,98 @@
         </div>
 
         <div class="card border-0 shadow-sm rounded-4 mt-4 dashboard-section" id="inquiries">
-            <div class="card-body p-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <div class="d-flex align-items-start gap-3">
-                    <div class="stat-icon bg-info bg-opacity-10 text-info flex-shrink-0">
-                        <i class="fa-solid fa-comments"></i>
-                    </div>
-                    <div>
-                        <h2 class="h5 fw-bold mb-1">Tenant inquiries</h2>
-                        <p class="text-muted mb-0">Inquiry tracking is not connected yet, so messages from prospective tenants will not appear here.</p>
-                    </div>
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">Booking requests</h2>
+                    <p class="text-muted small mb-0">{{ pending_booking_count }} requests need your review.</p>
                 </div>
-                <span class="feature-status">Not available yet</span>
+                <span class="feature-status">{{ pending_booking_count }} pending</span>
+            </div>
+            <div class="card-body px-4 pb-4">
+                <div class="d-flex flex-column gap-3">
+                    {% for booking in landlord_bookings %}
+                    <article class="border rounded-4 p-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                            <div>
+                                <h3 class="h6 fw-bold mb-1">{{ booking.room.house.title }} · {{ booking.room.get_room_type_display }}</h3>
+                                <p class="small text-muted mb-1">{{ booking.student.get_full_name|default:booking.student.username }} · TZS {{ booking.room.price }} / semester</p>
+                                <span class="badge rounded-pill {% if booking.status == 'approved' %}text-bg-success{% else %}text-bg-warning{% endif %}">{{ booking.get_status_display }}</span>
+                                <div class="small text-muted mt-2">
+                                    <strong>Student details:</strong>
+                                    <span class="d-block">Phone: {{ booking.student.profile.phone|default:"Not provided" }}</span>
+                                    <span class="d-block">University / college: {{ booking.student.profile.university|default:"Not provided" }}</span>
+                                    <span class="d-block">Year of study: {{ booking.student.profile.year_of_study|default:"Not provided" }}</span>
+                                    <span class="d-block">Emergency contact: {{ booking.student.profile.emergency_contact_name|default:"Not provided" }} · {{ booking.student.profile.emergency_contact_phone|default:"Not provided" }}</span>
+                                </div>
+                                {% if booking.student_message %}<p class="small mb-0"><strong>Student's message:</strong> {{ booking.student_message }}</p>{% endif %}
+                            </div>
+                            {% if booking.status == 'pending' %}
+                            <div class="d-flex gap-2">
+                                <form method="post" action="{% url 'landlord_update_booking' booking.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit" class="btn btn-sm btn-success rounded-pill">Approve</button>
+                                </form>
+                                <form method="post" action="{% url 'landlord_update_booking' booking.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="reject">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">Reject</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <form method="post" action="{% url 'landlord_update_booking' booking.pk %}" class="mt-3">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="message">
+                            <label for="booking-message-{{ booking.pk }}" class="form-label small fw-semibold">Message the student</label>
+                            <div class="input-group">
+                                <input id="booking-message-{{ booking.pk }}" name="message" class="form-control" maxlength="2000" required placeholder="Ask a question or share details">
+                                <button type="submit" class="btn btn-outline-success">Send</button>
+                            </div>
+                        </form>
+                    </article>
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fa-regular fa-circle-check d-block fs-2 mb-2 text-success"></i>
+                        No pending booking requests.
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
         <div class="card border-0 shadow-sm rounded-4 mt-4 dashboard-section" id="payments">
             <div class="card-body p-4">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
-                    <h2 class="h5 fw-bold mb-0">Payments</h2>
-                    <span class="feature-status">Coming soon</span>
+                    <h2 class="h5 fw-bold mb-0">Booking payments</h2>
+                    <span class="feature-status">Manual confirmation</span>
                 </div>
-                <p class="text-muted mb-0">Payment tracking for tenant rent will appear here once the module is connected.</p>
+                <p class="text-muted mb-0">Students see payments as unpaid until you confirm that payment has been received. Use each approved booking to send a reminder or record your confirmation.</p>
+                <div class="d-flex flex-column gap-2 mt-3">
+                    {% for booking in landlord_bookings %}
+                        {% if booking.status == 'approved' %}
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded-3 p-3">
+                            <span>{{ booking.student.get_full_name|default:booking.student.username }} · {{ booking.room.house.title }} · {{ booking.get_payment_status_display }}</span>
+                            <div class="d-flex gap-2">
+                                <form method="post" action="{% url 'landlord_update_booking' booking.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="payment_reminder">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill">Send reminder</button>
+                                </form>
+                                {% if booking.payment_status != 'paid' %}
+                                <form method="post" action="{% url 'landlord_update_booking' booking.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="confirm_payment">
+                                    <button type="submit" class="btn btn-sm btn-success rounded-pill">Confirm received</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                        <p class="text-muted small mb-0">Approved bookings and payment actions will appear here.</p>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </main>

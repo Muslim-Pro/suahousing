@@ -12,7 +12,14 @@ from PIL import Image
 
 from houses.models import House, Room
 
-from .models import Profile
+from .models import (
+    Booking,
+    BookingMessage,
+    Profile,
+    SavedHouse,
+    StudentNotification,
+    SupportRequest,
+)
 
 
 def _image_upload(name):
@@ -141,6 +148,36 @@ class LandlordDashboardActionsTests(TestCase):
 
         self.assertRedirects(response, reverse('home'))
 
+    def test_property_and_room_forms_use_english_labels(self):
+        property_response = self.client.get(reverse('landlord_add_property'))
+
+        self.assertContains(property_response, 'Property name')
+        self.assertContains(property_response, 'Property description')
+        self.assertContains(property_response, 'Location')
+        self.assertContains(property_response, 'Nearby address')
+        self.assertContains(property_response, 'Property exterior photo')
+        self.assertNotContains(property_response, 'Jina la Nyumba/Hosteli')
+        self.assertNotContains(property_response, 'Eneo Ilipo')
+
+        house = House.objects.create(
+            landlord=self.landlord,
+            title='Green View',
+            description='Student accommodation.',
+            location='mazimbu',
+            address='Near the main gate',
+            image='house_images/green-view.png',
+        )
+        room_response = self.client.get(reverse('landlord_add_room'))
+
+        self.assertContains(room_response, 'Property')
+        self.assertContains(room_response, 'Room type')
+        self.assertContains(room_response, 'Room price')
+        self.assertContains(room_response, 'Room photo')
+        self.assertContains(room_response, 'Master bedroom (private bathroom)')
+        self.assertContains(room_response, 'Single room (shared bathroom)')
+        self.assertNotContains(room_response, 'Aina ya Chumba')
+        self.assertTrue(House.objects.filter(pk=house.pk).exists())
+
     def test_landlord_can_create_a_property_owned_by_their_account(self):
         with tempfile.TemporaryDirectory() as media_root:
             with override_settings(MEDIA_ROOT=media_root):
@@ -258,6 +295,13 @@ class AuthenticationPageLayoutTests(TestCase):
         self.assertContains(response, 'href="mailto:suahousinginfo@gmail.com"')
         self.assertContains(response, 'href="https://wa.me/255614504540"')
 
+    def test_footer_developer_credit_is_not_a_link(self):
+        response = self.client.get(reverse('home'))
+
+        self.assertContains(response, 'Developed by <strong class="text-white fw-bold">Pro_</strong>')
+        self.assertNotContains(response, 'Pro_!')
+        self.assertNotContains(response, 'href="/admin/"')
+
 
 class StudentAccountSettingsTests(TestCase):
     def setUp(self):
@@ -280,12 +324,27 @@ class StudentAccountSettingsTests(TestCase):
         self.assertContains(response, 'id="profile-picture"')
         self.assertNotContains(response, 'id="change-password"')
 
+        details_response = self.client.get(
+            reverse('account_settings'),
+            {'section': 'student_details'},
+        )
+        self.assertEqual(details_response.status_code, 200)
+        self.assertContains(details_response, 'id="student-details"')
+        self.assertContains(details_response, 'Save student details')
+        self.assertContains(details_response, 'Emergency contact phone')
+        for year in range(1, 6):
+            self.assertContains(details_response, f'<option value="Year {year}">Year {year}</option>')
+        self.assertContains(details_response, 'Enter the name of a trusted person')
+        self.assertContains(details_response, '+255 712 345 678')
+        self.assertNotContains(details_response, 'id="change-password"')
+
         password_response = self.client.get(
             reverse('account_settings'),
             {'section': 'change_password'},
         )
         self.assertContains(password_response, 'id="change-password"')
         self.assertNotContains(password_response, 'id="profile-picture"')
+        self.assertNotContains(password_response, 'id="student-details"')
 
         home_response = self.client.get(reverse('home'))
         self.assertContains(
@@ -359,3 +418,388 @@ class StudentAccountSettingsTests(TestCase):
         )
 
         self.assertRedirects(response, reverse('house_list'))
+
+
+class StudentDashboardTests(TestCase):
+    def setUp(self):
+        self.student = User.objects.create_user(
+            username='dashboard-student',
+            first_name='Amina',
+            email='amina@example.com',
+            password='Strong-password-123!',
+        )
+        self.client.force_login(self.student)
+
+    def test_dashboard_shows_real_available_listings_and_student_actions(self):
+        landlord = User.objects.create_user(username='dashboard-landlord')
+        available_house = House.objects.create(
+            landlord=landlord,
+            title='Campus View',
+            description='Near SUA.',
+            location='mazimbu',
+            address='Near the main gate',
+            image='house_images/campus-view.png',
+        )
+        Room.objects.create(
+            house=available_house,
+            room_type='single',
+            price=150000,
+            room_image='room_images/campus-view.png',
+        )
+        unavailable_house = House.objects.create(
+            landlord=landlord,
+            title='Unavailable House',
+            description='Not open.',
+            location='town',
+            address='Town center',
+            image='house_images/unavailable.png',
+            is_available=False,
+        )
+        Room.objects.create(
+            house=unavailable_house,
+            room_type='single',
+            price=100000,
+            room_image='room_images/unavailable.png',
+        )
+
+        response = self.client.get(reverse('student_dashboard'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['available_house_count'], 1)
+        self.assertEqual(response.context['available_room_count'], 1)
+        self.assertContains(response, 'Welcome, Amina!')
+        self.assertContains(response, 'Campus View')
+        self.assertContains(response, '150000')
+        self.assertNotContains(response, 'Unavailable House')
+        self.assertContains(response, reverse('student_dashboard'))
+        self.assertContains(response, reverse('available_rooms'))
+        self.assertContains(response, reverse('account_settings'))
+
+    def test_student_login_redirects_to_student_dashboard(self):
+        self.client.logout()
+
+        response = self.client.post(
+            reverse('login'),
+            {
+                'username': 'dashboard-student',
+                'password': 'Strong-password-123!',
+            },
+        )
+
+        self.assertRedirects(response, reverse('student_dashboard'))
+
+    def test_profile_update_opens_two_account_options(self):
+        response = self.client.get(reverse('student_dashboard'))
+
+        self.assertContains(
+            response,
+            f'href="{reverse("account_settings")}?section=account_options&amp;next={reverse("student_dashboard")}"',
+        )
+        self.assertNotContains(response, 'accountOptionsModal')
+
+        options_response = self.client.get(
+            reverse('account_settings'),
+            {'section': 'account_options', 'next': reverse('student_dashboard')},
+        )
+        self.assertContains(options_response, 'Update profile picture')
+        self.assertContains(options_response, 'Change password')
+        self.assertContains(
+            options_response,
+            f'href="{reverse("account_settings")}?section=profile_picture&amp;next={reverse("student_dashboard")}',
+        )
+        self.assertContains(
+            options_response,
+            f'href="{reverse("account_settings")}?section=change_password&amp;next={reverse("student_dashboard")}',
+        )
+        self.assertNotContains(options_response, '<div class="modal')
+
+    def test_landlord_is_redirected_to_landlord_dashboard(self):
+        landlord = User.objects.create_user(username='dashboard-landlord')
+        landlord.profile.user_type = 'landlord'
+        landlord.profile.save(update_fields=['user_type'])
+        self.client.force_login(landlord)
+
+        response = self.client.get(reverse('student_dashboard'))
+
+        self.assertRedirects(response, reverse('landlord_dashboard'))
+
+    def _create_room(self, landlord=None):
+        landlord = landlord or User.objects.create_user(username='booking-landlord')
+        landlord.profile.user_type = 'landlord'
+        landlord.profile.save(update_fields=['user_type'])
+        house = House.objects.create(
+            landlord=landlord,
+            title='Booking House',
+            description='Near campus.',
+            location='mazimbu',
+            address='SUA main gate',
+            image='house_images/booking-house.png',
+        )
+        room = Room.objects.create(
+            house=house,
+            room_type='single',
+            price=175000,
+            room_image='room_images/booking-room.png',
+        )
+        return house, room, landlord
+
+    def test_student_can_update_all_student_details(self):
+        response = self.client.post(
+            reverse('account_settings') + '?section=student_details',
+            {
+                'section': 'student_details',
+                'first_name': 'Amina',
+                'last_name': 'Student',
+                'phone': '0712345678',
+                'university': 'Sokoine University of Agriculture',
+                'year_of_study': 'Year 2',
+                'emergency_contact_name': 'Fatuma',
+                'emergency_contact_phone': '+255 754 123 456',
+                'next': reverse('student_dashboard'),
+            },
+        )
+
+        self.assertRedirects(response, reverse('student_dashboard'))
+        self.student.refresh_from_db()
+        self.student.profile.refresh_from_db()
+        self.assertEqual(self.student.get_full_name(), 'Amina Student')
+        self.assertEqual(self.student.profile.phone, '0712345678')
+        self.assertEqual(self.student.profile.university, 'Sokoine University of Agriculture')
+        self.assertEqual(self.student.profile.year_of_study, 'Year 2')
+        self.assertEqual(self.student.profile.emergency_contact_name, 'Fatuma')
+        self.assertEqual(self.student.profile.emergency_contact_phone, '+255 754 123 456')
+
+    def test_student_details_reject_years_outside_the_selection(self):
+        response = self.client.post(
+            reverse('account_settings') + '?section=student_details',
+            {
+                'section': 'student_details',
+                'first_name': 'Amina',
+                'last_name': 'Student',
+                'phone': '',
+                'university': '',
+                'year_of_study': 'Year 6',
+                'emergency_contact_name': '',
+                'emergency_contact_phone': '',
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Select a valid choice')
+        self.student.profile.refresh_from_db()
+        self.assertEqual(self.student.profile.year_of_study, '')
+
+    def test_student_can_save_and_remove_a_home(self):
+        house, _, _ = self._create_room()
+        save_url = reverse('save_house', args=[house.pk])
+
+        response = self.client.post(
+            save_url,
+            {'next': reverse('student_dashboard') + '#saved-homes'},
+        )
+        self.assertRedirects(
+            response,
+            reverse('student_dashboard') + '#saved-homes',
+            fetch_redirect_response=False,
+        )
+        self.assertTrue(SavedHouse.objects.filter(student=self.student, house=house).exists())
+        dashboard = self.client.get(reverse('student_dashboard'))
+        self.assertContains(dashboard, house.title)
+
+        self.client.post(save_url, {'next': reverse('student_dashboard') + '#saved-homes'})
+        self.assertFalse(SavedHouse.objects.filter(student=self.student, house=house).exists())
+
+    def test_room_details_offer_save_and_booking_actions(self):
+        house, room, _ = self._create_room()
+
+        response = self.client.get(reverse('house_detail', args=[house.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, reverse('save_house', args=[house.pk]))
+        self.assertContains(response, reverse('apply_for_room', args=[room.pk]))
+        self.assertContains(response, 'Book now')
+
+    def test_booking_request_reaches_landlord_and_can_be_approved(self):
+        _, room, landlord = self._create_room()
+        self.student.profile.phone = '0712345678'
+        self.student.profile.university = 'Sokoine University of Agriculture'
+        self.student.profile.year_of_study = 'Year 2'
+        self.student.profile.emergency_contact_name = 'Fatuma Student'
+        self.student.profile.emergency_contact_phone = '+255 754 123 456'
+        self.student.profile.save()
+
+        response = self.client.post(
+            reverse('apply_for_room', args=[room.pk]),
+            {'message': 'I am interested in viewing this room.'},
+        )
+
+        booking = Booking.objects.get(student=self.student, room=room)
+        self.assertRedirects(response, reverse('student_dashboard'))
+        self.assertEqual(booking.status, Booking.STATUS_PENDING)
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_UNPAID)
+        self.assertTrue(
+            StudentNotification.objects.filter(
+                recipient=landlord,
+                booking=booking,
+                notification_type=StudentNotification.TYPE_BOOKING,
+            ).exists()
+        )
+
+        self.client.force_login(landlord)
+        dashboard = self.client.get(reverse('landlord_dashboard'))
+        self.assertContains(dashboard, 'Student details:')
+        self.assertContains(dashboard, '0712345678')
+        self.assertContains(dashboard, 'Sokoine University of Agriculture')
+        self.assertContains(dashboard, 'Year 2')
+        self.assertContains(dashboard, 'Fatuma Student')
+        self.assertContains(dashboard, '+255 754 123 456')
+
+        response = self.client.post(
+            reverse('landlord_update_booking', args=[booking.pk]),
+            {'action': 'approve'},
+        )
+
+        self.assertRedirects(response, reverse('landlord_dashboard'))
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, Booking.STATUS_APPROVED)
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_UNPAID)
+        self.assertTrue(
+            StudentNotification.objects.filter(
+                recipient=self.student,
+                booking=booking,
+                title='Booking request approved',
+            ).exists()
+        )
+
+    def test_student_cannot_create_a_second_active_booking_for_the_same_room(self):
+        _, room, _ = self._create_room()
+        booking_url = reverse('apply_for_room', args=[room.pk])
+
+        self.client.post(booking_url, {'message': 'First request.'})
+        self.client.post(booking_url, {'message': 'Duplicate request.'})
+
+        self.assertEqual(Booking.objects.filter(student=self.student, room=room).count(), 1)
+
+    def test_landlord_message_payment_reminder_and_confirmation_are_recorded(self):
+        _, room, landlord = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+        self.client.force_login(landlord)
+
+        response = self.client.post(
+            reverse('landlord_update_booking', args=[booking.pk]),
+            {'action': 'message', 'message': 'Please call me to arrange a viewing.'},
+        )
+        self.assertRedirects(response, reverse('landlord_dashboard'))
+        self.assertTrue(BookingMessage.objects.filter(booking=booking, sender=landlord).exists())
+        self.assertTrue(
+            StudentNotification.objects.filter(
+                recipient=self.student,
+                notification_type=StudentNotification.TYPE_MESSAGE,
+            ).exists()
+        )
+
+        self.client.post(
+            reverse('landlord_update_booking', args=[booking.pk]),
+            {'action': 'payment_reminder'},
+        )
+        self.assertTrue(
+            StudentNotification.objects.filter(
+                recipient=self.student,
+                notification_type=StudentNotification.TYPE_PAYMENT,
+                title='Payment reminder',
+            ).exists()
+        )
+        booking.refresh_from_db()
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_UNPAID)
+
+        self.client.post(
+            reverse('landlord_update_booking', args=[booking.pk]),
+            {'action': 'confirm_payment'},
+        )
+        booking.refresh_from_db()
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_PAID)
+
+    def test_landlord_cannot_update_another_landlords_booking(self):
+        _, room, owner = self._create_room()
+        self.student.profile.emergency_contact_phone = '+255 700 111 222'
+        self.student.profile.save(update_fields=['emergency_contact_phone'])
+        booking = Booking.objects.create(student=self.student, room=room)
+        other_landlord = User.objects.create_user(username='other-booking-landlord')
+        other_landlord.profile.user_type = 'landlord'
+        other_landlord.profile.save(update_fields=['user_type'])
+        self.client.force_login(other_landlord)
+
+        response = self.client.post(
+            reverse('landlord_update_booking', args=[booking.pk]),
+            {'action': 'approve'},
+        )
+
+        self.assertEqual(response.status_code, 404)
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, Booking.STATUS_PENDING)
+        self.assertNotEqual(owner, other_landlord)
+        dashboard = self.client.get(reverse('landlord_dashboard'))
+        self.assertNotContains(dashboard, self.student.username)
+        self.assertNotContains(dashboard, self.student.profile.emergency_contact_phone)
+
+    def test_system_admin_can_view_student_emergency_details(self):
+        self.student.profile.phone = '0712345678'
+        self.student.profile.university = 'Sokoine University of Agriculture'
+        self.student.profile.year_of_study = 'Year 2'
+        self.student.profile.emergency_contact_name = 'Fatuma Student'
+        self.student.profile.emergency_contact_phone = '+255 754 123 456'
+        self.student.profile.save()
+        admin_user = User.objects.create_superuser(
+            username='system-admin',
+            email='admin@example.com',
+            password='Strong-admin-password-123!',
+        )
+        self.client.force_login(admin_user)
+
+        response = self.client.get(
+            reverse('admin:accounts_profile_changelist'),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sokoine University of Agriculture')
+        self.assertContains(response, 'Fatuma Student')
+        self.assertContains(response, '+255 754 123 456')
+
+    def test_student_can_submit_support_request_and_view_dashboard_sections(self):
+        response = self.client.post(
+            reverse('submit_support_request'),
+            {'message': 'I need help contacting a landlord.'},
+        )
+
+        self.assertRedirects(response, reverse('student_dashboard'))
+        support_request = SupportRequest.objects.get(student=self.student)
+        self.assertEqual(support_request.status, SupportRequest.STATUS_OPEN)
+
+        dashboard = self.client.get(reverse('student_dashboard'))
+        self.assertContains(dashboard, 'My Profile / Student Details')
+        self.assertContains(dashboard, 'Saved Homes')
+        self.assertContains(dashboard, 'My Bookings')
+        self.assertContains(dashboard, 'Notifications &amp; Recent Activity')
+        self.assertContains(dashboard, 'Help &amp; Support')
+        self.assertContains(dashboard, 'I need help contacting a landlord.')
+
+    def test_student_cannot_mark_another_users_notification_read(self):
+        other_student = User.objects.create_user(username='another-student')
+        notification = StudentNotification.objects.create(
+            recipient=other_student,
+            notification_type=StudentNotification.TYPE_BOOKING,
+            title='Private notification',
+            message='Only the recipient should see this.',
+        )
+
+        response = self.client.post(
+            reverse('mark_notification_read', args=[notification.pk]),
+        )
+
+        self.assertEqual(response.status_code, 404)
+        notification.refresh_from_db()
+        self.assertFalse(notification.is_read)

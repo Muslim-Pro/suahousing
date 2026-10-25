@@ -19,6 +19,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from .models import House
 import json
 from django.http import JsonResponse
+from accounts.models import Booking, SavedHouse
+from accounts.utils import tanzania_whatsapp_number
 
 
 def _format_tanzania_phone_number(phone_number):
@@ -191,5 +193,32 @@ def house_list(request):
 # 2. Ukurasa wa Maelezo ya Ndani (Picha kubwa + Vyumba na Bei zake)
 @login_required
 def house_detail(request, pk):
-    house = get_object_or_404(House, pk=pk)
-    return render(request, 'houses/house_detail.html', {'house': house})
+    house = get_object_or_404(
+        House.objects.select_related('landlord', 'landlord__profile').annotate(
+            room_count=Count('rooms'),
+        ),
+        pk=pk,
+    )
+    is_student = request.user.user_type == 'student'
+    can_book = is_student and house.is_available
+    context = {
+        'house': house,
+        'is_student': is_student,
+        'can_book': can_book,
+        'is_saved': can_book and SavedHouse.objects.filter(
+            student=request.user,
+            house=house,
+        ).exists(),
+        'active_booking_room_ids': (
+            Booking.objects.filter(
+                student=request.user,
+                room__house=house,
+                status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
+            ).values_list('room_id', flat=True)
+            if can_book else []
+        ),
+        'landlord_whatsapp': tanzania_whatsapp_number(
+            house.landlord.profile.phone,
+        ),
+    }
+    return render(request, 'houses/house_detail.html', context)

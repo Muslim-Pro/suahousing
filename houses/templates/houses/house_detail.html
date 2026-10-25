@@ -18,6 +18,13 @@
         height: 100%;
         object-fit: cover;
     }
+    .hero-location {
+        width: max-content;
+        font-size: 14px;
+    }
+    .hero-address {
+        overflow-wrap: anywhere;
+    }
     .hero-overlay {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -27,6 +34,109 @@
     .room-img {
         height: 200px;
         object-fit: cover;
+    }
+    .room-type-badge {
+        font-size: 12px;
+    }
+    .landlord-contact-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .landlord-contact-name {
+        display: inline-flex;
+        align-items: center;
+        height: 31px;
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.5;
+        text-transform: uppercase;
+    }
+    .landlord-contact-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 31px;
+        padding: 0 1rem;
+        font-size: 0.75rem;
+        line-height: 1;
+        white-space: nowrap;
+    }
+    @media (max-width: 767.98px) {
+        .hero-banner {
+            height: 360px;
+        }
+        .hero-overlay h1 {
+            font-size: clamp(2.25rem, 6vw, 3rem);
+        }
+        .hero-address {
+            font-size: 1.25rem !important;
+        }
+    }
+    @media (max-width: 575.98px) {
+        .hero-banner {
+            height: 300px;
+        }
+        .hero-overlay .btn {
+            margin-bottom: 1rem !important;
+        }
+        .hero-location {
+            font-size: 12px;
+        }
+        .hero-overlay h1 {
+            font-size: clamp(1.75rem, 8vw, 2.4rem);
+            overflow-wrap: anywhere;
+        }
+        .hero-address {
+            font-size: 1rem !important;
+            line-height: 1.4;
+            margin-bottom: 0;
+        }
+        .house-about-card {
+            padding: 1rem !important;
+        }
+        .house-about-card h4 {
+            font-size: 1.2rem;
+        }
+        .room-section-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem !important;
+        }
+        .room-img {
+            height: 160px;
+        }
+        .room-type-badge {
+            font-size: 11px;
+        }
+        .room-card-body {
+            padding: 1rem;
+        }
+        .room-price {
+            font-size: 1.4rem;
+        }
+        .house-room-count {
+            padding: 0.65rem !important;
+        }
+        .landlord-contact-card {
+            padding: 0.75rem !important;
+        }
+        .landlord-contact-row {
+            gap: 0.4rem;
+        }
+        .landlord-contact-name {
+            height: auto;
+            min-height: 31px;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            text-align: center;
+        }
+        .landlord-contact-button {
+            padding-right: 0.65rem;
+            padding-left: 0.65rem;
+        }
     }
 </style>
 {% endblock %}
@@ -39,9 +149,9 @@
     <div class="hero-overlay d-flex align-items-center">
         <div class="container text-white">
             <a href="{% url 'house_list' %}" class="btn btn-outline-light btn-sm mb-4 rounded-pill px-3">Return To House List</a>
-            <span class="badge bg-success d-block mb-2" style="width: max-content; font-size: 14px;">{{ house.get_location_display }}</span>
+            <span class="badge bg-success d-block mb-2 hero-location">{{ house.get_location_display }}</span>
             <h1 class="display-3 fw-bold mb-2">{{ house.title }}</h1>
-            <p class="lead fs-4"><i class="bi bi-geo-alt-fill"></i> Actual Address: {{ house.address }}</p>
+            <p class="lead fs-4 hero-address"><i class="bi bi-geo-alt-fill"></i> Actual Address: {{ house.address }}</p>
         </div>
     </div>
 </div>
@@ -50,19 +160,52 @@
 {% block content %}
 <div class="row">
     <div class="col-lg-4 mb-4">
-        <div class="card p-4 border-0 shadow-sm rounded-3 bg-white">
+        <div class="card p-4 border-0 shadow-sm rounded-3 bg-white house-about-card">
             <h4 class="fw-bold text-success mb-3">About This House</h4>
             <p class="text-secondary" style="white-space: pre-line; line-height: 1.7;">{{ house.description }}</p>
+            <div class="d-flex align-items-center justify-content-between gap-2 rounded-3 bg-success bg-opacity-10 border border-success-subtle p-3 mt-3 house-room-count" aria-label="{{ house.room_count }} {% if house.room_count == 1 %}room{% else %}rooms{% endif %} listed for this property">
+                <span class="fw-semibold text-success">
+                    <i class="fa-solid fa-door-open me-2" aria-hidden="true"></i>Rooms listed
+                </span>
+                <span class="badge bg-success rounded-pill fs-6">
+                    {{ house.room_count }} {% if house.room_count == 1 %}room{% else %}rooms{% endif %}
+                </span>
+            </div>
             <hr>
-            <div class="alert alert-info text-center mb-0 rounded-3">
+            <div class="alert alert-info text-center mb-0 rounded-3 landlord-contact-card">
                 <span class="small d-block text-muted">Contacts (Landlord):</span>
-                <strong class="fs-5 text-dark">{{ house.landlord.username }}</strong>
+                <div class="landlord-contact-row mt-1">
+                    <strong class="text-dark landlord-contact-name">{{ house.landlord.get_full_name|default:house.landlord.username }}</strong>
+                    {% if landlord_whatsapp %}
+                        <a href="https://wa.me/{{ landlord_whatsapp }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-success rounded-pill landlord-contact-button">
+                            <i class="fa-brands fa-whatsapp me-1"></i>Contact landlord
+                        </a>
+                    {% endif %}
+                    {% if house.landlord.email %}
+                        <a href="mailto:{{ house.landlord.email }}" class="btn btn-sm btn-outline-success rounded-pill landlord-contact-button">
+                            <i class="fa-regular fa-envelope me-1"></i>Email landlord
+                        </a>
+                    {% endif %}
+                </div>
+                {% if house.landlord.profile.phone %}
+                    <a href="tel:{{ house.landlord.profile.phone }}" class="d-block mt-2">{{ house.landlord.profile.phone }}</a>
+                {% endif %}
+                {% if can_book %}
+                    <form method="post" action="{% url 'save_house' house.pk %}" class="mt-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'house_detail' house.pk %}">
+                        <button type="submit" class="btn btn-sm {% if is_saved %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill landlord-contact-button">
+                            <i class="fa-{% if is_saved %}solid{% else %}regular{% endif %} fa-heart me-1"></i>
+                            {% if is_saved %}Remove from saved homes{% else %}Save this home{% endif %}
+                        </button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <div class="col-lg-8">
-        <h3 class="fw-bold text-success mb-4">Rooms, Prices and Their Features</h3>
+        <h3 class="fw-bold text-success mb-4 room-section-title">Rooms, Prices and Their Features</h3>
 
         <div class="row">
             {% for room in house.rooms.all %}
@@ -71,54 +214,35 @@
                     {% if room.room_image %}
                         <img src="{{ room.room_image.url }}" class="card-img-top room-img" alt="{{ room.get_room_type_display }}">
                     {% endif %}
-                    <div class="card-body d-flex flex-column justify-content-between">
+                    <div class="card-body d-flex flex-column justify-content-between room-card-body">
                         <div>
-                            <span class="badge bg-secondary mb-2" style="font-size: 12px;">{{ room.get_room_type_display }}</span>
-                            <h3 class="text-danger fw-bold my-2">TZS {{ room.price }} <small class="text-muted fs-6">/ Semester</small></h3>
+                            <span class="badge bg-secondary mb-2 room-type-badge">{{ room.get_room_type_display }}</span>
+                            <h3 class="text-danger fw-bold my-2 room-price">TZS {{ room.price }} <small class="text-muted fs-6">/ Semester</small></h3>
                             {% if room.description %}
                                 <p class="card-text text-muted small mt-2 bg-light p-2 rounded">{{ room.description }}</p>
                             {% endif %}
                         </div>
                     </div>
                     <div class="card-footer bg-white border-0 pb-3">
-                        <!-- Button inayofungua Pop-Up ya Malipo badala ya link ya tel: -->
-                        <button type="button" class="btn btn-success w-100 rounded-pill" data-bs-toggle="modal" data-bs-target="#paymentModal{{ room.id }}">
-                            Order / Contact
-                        </button>
+                        {% if can_book %}
+                            {% if room.pk in active_booking_room_ids %}
+                                <a href="{% url 'student_dashboard' %}#my-bookings" class="btn btn-outline-success w-100 rounded-pill">View booking request</a>
+                            {% else %}
+                                {# Mwanafunzi anatuma ombi kwanza; malipo hufanyika baada ya mwenye nyumba kujibu. #}
+                                <form method="post" action="{% url 'apply_for_room' room.pk %}">
+                                    {% csrf_token %}
+                                    <label class="form-label small fw-semibold" for="booking-message-{{ room.pk }}">Message to landlord</label>
+                                    <textarea id="booking-message-{{ room.pk }}" name="message" class="form-control form-control-sm mb-2" rows="2" maxlength="2000" required placeholder="Introduce yourself or ask a question"></textarea>
+                                    <button type="submit" class="btn btn-success w-100 rounded-pill">Book now</button>
+                                </form>
+                            {% endif %}
+                        {% elif is_student %}
+                            <span class="small text-muted d-block text-center">This property is currently unavailable.</span>
+                        {% else %}
+                            <span class="small text-muted d-block text-center">Booking requests are available to student accounts.</span>
+                        {% endif %}
                     </div>
                 </div>
-            </div>
-
-            <!-- Pop-up Window (Modal) ya Malipo kwa kila Chumba -->
-            <div class="modal fade" id="paymentModal{{ room.id }}" tabindex="-1" aria-labelledby="modalLabel{{ room.id }}" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content rounded-3 border-0 shadow">
-                  <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title fw-bold" id="modalLabel{{ room.id }}">Pay Room: {{ room.get_room_type_display }}</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body p-4">
-                    <p class="mb-1 text-muted">House: <strong>{{ house.title }}</strong></p>
-                    <p class="fs-4 fw-bold text-danger mb-3">Amount: TZS {{ room.price }}</p>
-                    
-                    <form action="{% url 'anzisha_malipo' house.id %}" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="room_id" value="{{ room.id }}">
-                        <input type="hidden" name="amount" value="{{ room.price }}">
-                        
-                        <div class="mb-3 text-start">
-                            <label class="form-label fw-bold">Phone Number for Mobile Money Payment:</label>
-                            <input type="tel" name="phone_number" class="form-control" placeholder="0712345678 or 255712345678" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100 rounded-pill py-2" onclick="this.querySelector('.spinner-border').classList.remove('d-none'); this.querySelector('.btn-txt').textContent=' Processing...';">
-                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                            <span class="btn-txt">Pay Now with Phone</span>
-                        </button>
-                        <!-- <button type="submit" class="btn btn-success w-100 rounded-pill py-2 fw-bold">Pay Now with Phone</button> -->
-                    </form>
-                  </div>
-                </div>
-              </div>
             </div>
             {% empty %}
             <div class="col-12">

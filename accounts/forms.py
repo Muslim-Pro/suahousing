@@ -15,7 +15,7 @@ from django.template.loader import render_to_string
 
 from houses.models import House, Room
 
-from .models import Profile
+from .models import Profile, SupportRequest
 
 
 logger = logging.getLogger(__name__)
@@ -150,6 +150,132 @@ class ProfilePicForm(forms.ModelForm):
         fields = ['profile_pic']
 
 
+class StudentDetailsForm(forms.Form):
+    first_name = forms.CharField(
+        max_length=150,
+        label='First name',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'given-name'}),
+    )
+    last_name = forms.CharField(
+        max_length=150,
+        label='Last name',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'family-name'}),
+    )
+    phone = forms.CharField(
+        max_length=20,
+        required=False,
+        label='Phone number',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'tel'}),
+    )
+    university = forms.CharField(
+        max_length=150,
+        required=False,
+        label='University / college',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'organization'}),
+    )
+    # Chaguo za mwaka zinatoka kwenye uchaguzi rasmi wa Profile.
+    year_of_study = forms.ChoiceField(
+        choices=[('', 'Select your year'), *Profile.YEAR_OF_STUDY_CHOICES],
+        required=False,
+        label='Year of study',
+        help_text='Choose your current year of study.',
+        widget=forms.Select(attrs={'class': 'form-select'}),
+    )
+    emergency_contact_name = forms.CharField(
+        max_length=150,
+        required=False,
+        label='Emergency contact name',
+        help_text='Enter the name of a trusted person we can contact in an emergency.',
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    emergency_contact_phone = forms.CharField(
+        max_length=20,
+        required=False,
+        label='Emergency contact phone',
+        help_text='Enter their phone number, including country code if needed (e.g. +255 712 345 678).',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'tel'}),
+    )
+
+    def __init__(self, *args, user, profile, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.profile = profile
+        if not self.is_bound:
+            self.initial.update({
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone': profile.phone,
+                'university': profile.university,
+                'year_of_study': profile.year_of_study,
+                'emergency_contact_name': profile.emergency_contact_name,
+                'emergency_contact_phone': profile.emergency_contact_phone,
+            })
+
+    def clean_phone(self):
+        return self._clean_phone('phone')
+
+    def clean_emergency_contact_phone(self):
+        return self._clean_phone('emergency_contact_phone')
+
+    def _clean_phone(self, field_name):
+        phone = self.cleaned_data[field_name].strip()
+        if phone and not re.fullmatch(r'\+?[0-9\s()\-]{7,20}', phone):
+            raise forms.ValidationError('Enter a valid phone number.')
+        return phone
+
+    def save(self):
+        # Hifadhi maelezo ya akaunti na ya mwanafunzi kwa mtumiaji aliyeingia pekee.
+        self.user.first_name = self.cleaned_data['first_name'].strip()
+        self.user.last_name = self.cleaned_data['last_name'].strip()
+        self.user.save(update_fields=['first_name', 'last_name'])
+        for field in (
+            'phone',
+            'university',
+            'year_of_study',
+            'emergency_contact_name',
+            'emergency_contact_phone',
+        ):
+            setattr(self.profile, field, self.cleaned_data[field].strip())
+        self.profile.save(update_fields=[
+            'phone',
+            'university',
+            'year_of_study',
+            'emergency_contact_name',
+            'emergency_contact_phone',
+        ])
+
+
+class SupportRequestForm(forms.Form):
+    message = forms.CharField(
+        max_length=2000,
+        label='How can we help?',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Describe the help you need',
+        }),
+    )
+
+    def save(self, *, student):
+        # Ombi linahusishwa na akaunti iliyothibitishwa badala ya data ya fomu.
+        return SupportRequest.objects.create(
+            student=student,
+            message=self.cleaned_data['message'].strip(),
+        )
+
+
+class BookingMessageForm(forms.Form):
+    message = forms.CharField(
+        max_length=2000,
+        label='Message',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 2,
+            'placeholder': 'Write a message about this room',
+        }),
+    )
+
+
 class LandlordPasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -204,6 +330,7 @@ class LandlordHouseForm(forms.ModelForm):
 class LandlordRoomForm(forms.ModelForm):
     price = forms.IntegerField(
         min_value=1,
+        label='Room price',
         widget=forms.NumberInput(attrs={
             'class': 'form-control',
             'min': 1,

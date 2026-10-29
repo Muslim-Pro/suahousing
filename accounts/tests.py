@@ -1,5 +1,6 @@
 import re
 import tempfile
+import uuid
 from io import BytesIO
 from unittest.mock import patch
 
@@ -11,6 +12,7 @@ from django.urls import reverse
 from PIL import Image
 
 from houses.models import House, Room
+from houses.payments import ClickPesaError
 
 from .models import (
     Booking,
@@ -619,6 +621,102 @@ class StudentDashboardTests(TestCase):
         self.assertContains(response, reverse('apply_for_room', args=[room.pk]))
         self.assertContains(response, 'Book now')
 
+    def test_paid_booking_can_download_pdf_receipt_from_dashboard_and_room(self):
+        house, room, _ = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_PAID,
+            payment_reference='SUA123ABC',
+            payment_phone_number='255712345678',
+        )
+
+        dashboard_response = self.client.get(reverse('student_dashboard'))
+        self.assertContains(
+            dashboard_response,
+            reverse('booking_payment_receipt', args=[booking.pk]),
+        )
+        self.assertContains(dashboard_response, 'Download PDF receipt')
+
+        room_response = self.client.get(reverse('house_detail', args=[house.pk]))
+        self.assertContains(
+            room_response,
+            reverse('booking_payment_receipt', args=[booking.pk]),
+        )
+
+        receipt_response = self.client.get(
+            reverse('booking_payment_receipt', args=[booking.pk]),
+        )
+        self.assertEqual(receipt_response.status_code, 200)
+        self.assertEqual(receipt_response['Content-Type'], 'application/pdf')
+        self.assertIn('attachment; filename="payment-receipt-SUA123ABC.pdf"', receipt_response['Content-Disposition'])
+        self.assertTrue(receipt_response.content.startswith(b'%PDF-'))
+        booking.refresh_from_db()
+        self.assertIsNotNone(booking.receipt_verification_token)
+
+        verify_url = reverse(
+            'verify_payment_receipt',
+            kwargs={'token': booking.receipt_verification_token},
+        )
+        self.client.logout()
+        verification_response = self.client.get(verify_url)
+        self.assertContains(verification_response, 'Verified · Payment confirmed')
+        self.assertContains(verification_response, 'SUA123ABC')
+        self.assertContains(verification_response, 'Booking House')
+        self.assertNotContains(verification_response, 'Amina')
+        self.assertNotContains(verification_response, '255712345678')
+
+    def test_unpaid_booking_cannot_download_receipt(self):
+        _, room, _ = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_UNPAID,
+        )
+
+        response = self.client.get(
+            reverse('booking_payment_receipt', args=[booking.pk]),
+        )
+
+        self.assertRedirects(response, reverse('student_dashboard'))
+
+    def test_student_cannot_download_another_students_receipt(self):
+        _, room, _ = self._create_room()
+        other_student = User.objects.create_user(username='other-receipt-student')
+        booking = Booking.objects.create(
+            student=other_student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_PAID,
+        )
+
+        response = self.client.get(
+            reverse('booking_payment_receipt', args=[booking.pk]),
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_receipt_verification_token_does_not_verify_unpaid_booking(self):
+        _, room, _ = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            payment_status=Booking.PAYMENT_UNPAID,
+        )
+        booking.receipt_verification_token = uuid.uuid4()
+        booking.save(update_fields=['receipt_verification_token'])
+
+        response = self.client.get(
+            reverse(
+                'verify_payment_receipt',
+                kwargs={'token': booking.receipt_verification_token},
+            ),
+        )
+
+        self.assertEqual(response.status_code, 404)
+
     def test_booking_request_reaches_landlord_and_can_be_approved(self):
         _, room, landlord = self._create_room()
         self.student.profile.phone = '0712345678'
@@ -679,6 +777,126 @@ class StudentDashboardTests(TestCase):
         self.client.post(booking_url, {'message': 'Duplicate request.'})
 
         self.assertEqual(Booking.objects.filter(student=self.student, room=room).count(), 1)
+
+    @patch('accounts.services.send_clickpesa_ussd_push')
+    def test_approved_booking_starts_ussd_for_database_room_price(self, send_push):
+        house, room, _ = self._create_room()
+        house.is_available = False
+        house.save(update_fields=['is_available'])
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+
+        detail_response = self.client.get(reverse('house_detail', args=[house.pk]))
+        self.assertContains(detail_response, 'Pay with USSD')
+        self.assertContains(detail_response, f'id="room-{room.pk}"')
+
+        response = self.client.post(
+            reverse('initiate_booking_payment', args=[booking.pk]),
+            {'phone_number': '0712 345 678'},
+        )
+
+        booking.refresh_from_db()
+        self.assertRedirects(
+            response,
+            f'{reverse("house_detail", args=[house.pk])}#room-{room.pk}',
+            fetch_redirect_response=False,
+        )
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_PENDING)
+        self.assertEqual(booking.payment_phone_number, '255712345678')
+        self.assertTrue(booking.payment_reference.startswith('SUA'))
+        send_push.assert_called_once_with(
+            phone_number='255712345678',
+            amount=room.price,
+            order_reference=booking.payment_reference,
+        )
+        self.assertTrue(
+            StudentNotification.objects.filter(
+                recipient=self.student,
+                booking=booking,
+                title='USSD payment request sent',
+            ).exists()
+        )
+
+    @patch('accounts.services.send_clickpesa_ussd_push')
+    def test_student_cannot_pay_for_another_students_booking(self, send_push):
+        _, room, _ = self._create_room()
+        other_student = User.objects.create_user(username='other-payment-student')
+        booking = Booking.objects.create(
+            student=other_student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+
+        response = self.client.post(
+            reverse('initiate_booking_payment', args=[booking.pk]),
+            {'phone_number': '0712345678'},
+        )
+
+        self.assertEqual(response.status_code, 404)
+        send_push.assert_not_called()
+
+    @patch('accounts.services.send_clickpesa_ussd_push')
+    def test_unapproved_booking_cannot_start_payment(self, send_push):
+        _, room, _ = self._create_room()
+        booking = Booking.objects.create(student=self.student, room=room)
+
+        self.client.post(
+            reverse('initiate_booking_payment', args=[booking.pk]),
+            {'phone_number': '0712345678'},
+        )
+
+        booking.refresh_from_db()
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_UNPAID)
+        send_push.assert_not_called()
+
+    @patch(
+        'accounts.services.send_clickpesa_ussd_push',
+        side_effect=ClickPesaError('Payment request rejected.'),
+    )
+    def test_definite_provider_rejection_resets_payment_state(self, send_push):
+        _, room, _ = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+
+        self.client.post(
+            reverse('initiate_booking_payment', args=[booking.pk]),
+            {'phone_number': '0712345678'},
+        )
+
+        booking.refresh_from_db()
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_UNPAID)
+        self.assertEqual(booking.payment_reference, '')
+        self.assertEqual(booking.payment_phone_number, '')
+        send_push.assert_called_once()
+
+    @patch(
+        'accounts.services.send_clickpesa_ussd_push',
+        side_effect=ClickPesaError(
+            'Push outcome unknown.',
+            request_may_have_been_sent=True,
+        ),
+    )
+    def test_unknown_provider_outcome_stays_pending_to_prevent_duplicate_push(self, send_push):
+        _, room, _ = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+        payment_url = reverse('initiate_booking_payment', args=[booking.pk])
+
+        self.client.post(payment_url, {'phone_number': '0712345678'})
+        self.client.post(payment_url, {'phone_number': '0712345678'})
+
+        booking.refresh_from_db()
+        self.assertEqual(booking.payment_status, Booking.PAYMENT_PENDING)
+        send_push.assert_called_once()
 
     def test_landlord_message_payment_reminder_and_confirmation_are_recorded(self):
         _, room, landlord = self._create_room()

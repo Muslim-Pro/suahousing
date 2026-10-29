@@ -103,6 +103,14 @@ class Booking(models.Model):
         choices=PAYMENT_STATUS_CHOICES,
         default=PAYMENT_UNPAID,
     )
+    payment_reference = models.CharField(max_length=32, blank=True)
+    payment_phone_number = models.CharField(max_length=12, blank=True)
+    receipt_verification_token = models.UUIDField(
+        blank=True,
+        null=True,
+        unique=True,
+        editable=False,
+    )
     student_message = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

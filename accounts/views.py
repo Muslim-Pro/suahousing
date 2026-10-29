@@ -1,4 +1,5 @@
 import threading
+import uuid
 
 from django.conf import settings
 from django.contrib import messages
@@ -9,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Min
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -18,6 +20,7 @@ from houses.models import House, Room
 
 from .forms import (
     CustomPasswordResetForm,
+    BookingPaymentForm,
     BookingMessageForm,
     LandlordHouseForm,
     LandlordPasswordChangeForm,
@@ -35,6 +38,8 @@ from .models import (
     StudentNotification,
     SupportRequest,
 )
+from .receipts import build_payment_receipt_pdf
+from .services import BookingPaymentError, initiate_booking_payment
 from .utils import tanzania_whatsapp_number
 
 
@@ -245,6 +250,67 @@ def student_dashboard(request):
 
 
 @login_required
+def booking_payment_receipt(request, pk):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type == 'landlord':
+        return redirect('landlord_dashboard')
+
+    with transaction.atomic():
+        booking = get_object_or_404(
+            Booking.objects.select_for_update().select_related(
+                'student',
+                'room',
+                'room__house',
+                'room__house__landlord',
+            ),
+            pk=pk,
+            student=request.user,
+        )
+        if booking.payment_status != Booking.PAYMENT_PAID:
+            messages.info(
+                request,
+                'Receipt is available only after the landlord confirms that payment has been received.',
+            )
+            return redirect('student_dashboard')
+
+        if booking.receipt_verification_token is None:
+            booking.receipt_verification_token = uuid.uuid4()
+            booking.save(update_fields=['receipt_verification_token'])
+
+    receipt_number = booking.payment_reference or f'SUA-{booking.pk:04d}'
+    verification_url = request.build_absolute_uri(
+        reverse(
+            'verify_payment_receipt',
+            kwargs={'token': booking.receipt_verification_token},
+        ),
+    )
+    response = HttpResponse(
+        build_payment_receipt_pdf(
+            booking=booking,
+            receipt_number=receipt_number,
+            verification_url=verification_url,
+        ),
+        content_type='application/pdf',
+    )
+    response['Content-Disposition'] = (
+        f'attachment; filename="payment-receipt-{receipt_number}.pdf"'
+    )
+    return response
+
+
+def verify_payment_receipt(request, token):
+    booking = get_object_or_404(
+        Booking.objects.select_related('room', 'room__house'),
+        receipt_verification_token=token,
+        payment_status=Booking.PAYMENT_PAID,
+    )
+    return render(request, 'accounts/verify_payment_receipt.html', {
+        'booking': booking,
+        'receipt_number': booking.payment_reference or f'SUA-{booking.pk:04d}',
+    })
+
+
+@login_required
 def landlord_add_property(request):
     profile = _ensure_landlord(request)
     if profile is None:
@@ -437,6 +503,58 @@ def apply_for_room(request, pk):
     )
     messages.success(request, 'Your booking request was sent to the landlord.')
     return redirect('student_dashboard')
+
+
+@login_required
+def initiate_booking_payment_view(request, pk):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type != 'student':
+        messages.error(request, 'Only students can pay for an approved room booking.')
+        return redirect('landlord_dashboard')
+    if request.method != 'POST':
+        return redirect('student_dashboard')
+
+    booking = get_object_or_404(
+        Booking.objects.select_related('room'),
+        pk=pk,
+        student=request.user,
+    )
+    return_url = f'{reverse("house_detail", args=[booking.room.house_id])}#room-{booking.room_id}'
+    form = BookingPaymentForm(request.POST)
+    if not form.is_valid():
+        messages.error(request, form.errors['phone_number'][0])
+        return redirect(return_url)
+
+    try:
+        order_reference = initiate_booking_payment(
+            booking_id=booking.pk,
+            student=request.user,
+            phone_number=form.cleaned_data['phone_number'],
+        )
+    except BookingPaymentError as error:
+        if error.request_may_have_been_sent:
+            messages.warning(request, str(error))
+        else:
+            messages.error(request, str(error))
+        return redirect(return_url)
+
+    StudentNotification.objects.create(
+        recipient=request.user,
+        booking=booking,
+        notification_type=StudentNotification.TYPE_PAYMENT,
+        title='USSD payment request sent',
+        message=(
+            f'A USSD request for TZS {booking.room.price} was sent to '
+            f'{form.cleaned_data["phone_number"]}. Reference: {order_reference}. '
+            'Payment remains pending until the landlord confirms receipt.'
+        ),
+    )
+    messages.success(
+        request,
+        'USSD payment request sent. Enter your mobile money PIN on your phone. '
+        'Your booking will remain pending until the landlord confirms receipt.',
+    )
+    return redirect(return_url)
 
 
 @login_required

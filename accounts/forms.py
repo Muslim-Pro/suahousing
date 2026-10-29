@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 
 from houses.models import House, Room
 
+from .utils import normalize_tanzania_phone_number
 from .models import Profile, SupportRequest
 
 
@@ -274,6 +275,28 @@ class BookingMessageForm(forms.Form):
             'placeholder': 'Write a message about this room',
         }),
     )
+
+
+class BookingPaymentForm(forms.Form):
+    phone_number = forms.CharField(
+        max_length=20,
+        label='Mobile money phone number',
+        widget=forms.TelInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'tel',
+            'placeholder': '0712 345 678',
+        }),
+    )
+
+    def clean_phone_number(self):
+        phone_number = normalize_tanzania_phone_number(
+            self.cleaned_data['phone_number'],
+        )
+        if not phone_number:
+            raise forms.ValidationError(
+                'Enter a valid Tanzania mobile number, e.g. 0712 345 678.',
+            )
+        return phone_number
 
 
 class LandlordPasswordChangeForm(PasswordChangeForm):

@@ -492,12 +492,17 @@
                     <h2 class="h5 fw-bold mb-0">Booking payments</h2>
                     <span class="feature-status">Manual confirmation</span>
                 </div>
-                <p class="text-muted mb-0">Students see payments as unpaid until you confirm that payment has been received. Use each approved booking to send a reminder or record your confirmation.</p>
+                <p class="text-muted mb-0">A USSD request is not proof of payment. Confirm receipt only after you verify the funds; students see the booking as paid only after your confirmation.</p>
                 <div class="d-flex flex-column gap-2 mt-3">
                     {% for booking in landlord_bookings %}
                         {% if booking.status == 'approved' %}
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded-3 p-3">
-                            <span>{{ booking.student.get_full_name|default:booking.student.username }} · {{ booking.room.house.title }} · {{ booking.get_payment_status_display }}</span>
+                            <div>
+                                <span class="d-block">{{ booking.student.get_full_name|default:booking.student.username }} · {{ booking.room.house.title }} · {{ booking.get_payment_status_display }}</span>
+                                {% if booking.payment_reference %}
+                                    <span class="small text-muted d-block">USSD reference: {{ booking.payment_reference }} · Phone: {{ booking.payment_phone_number }}</span>
+                                {% endif %}
+                            </div>
                             <div class="d-flex gap-2">
                                 <form method="post" action="{% url 'landlord_update_booking' booking.pk %}">
                                     {% csrf_token %}

@@ -369,13 +369,26 @@
                             {% if booking.room.house.landlord.email %}
                                 <a href="mailto:{{ booking.room.house.landlord.email }}" class="btn btn-sm btn-outline-secondary rounded-pill"><i class="fa-regular fa-envelope me-1"></i>Email</a>
                             {% endif %}
+                            {% if booking.payment_status == 'paid' %}
+                                <a href="{% url 'booking_payment_receipt' booking.pk %}" class="btn btn-sm btn-outline-success rounded-pill"><i class="fa-solid fa-download me-1" aria-hidden="true"></i>Download PDF receipt</a>
+                            {% elif booking.status == 'approved' and booking.payment_status == 'unpaid' %}
+                                <a href="{% url 'house_detail' booking.room.house.pk %}#room-{{ booking.room.pk }}" class="btn btn-sm btn-success rounded-pill">Pay with USSD</a>
+                            {% endif %}
                         </div>
                     </div>
                     {% if booking.student_message %}
                         <p class="small mb-0 mt-3"><strong>Your message:</strong> {{ booking.student_message }}</p>
                     {% endif %}
-                    {% if booking.status == 'approved' and booking.payment_status != 'paid' %}
-                        <p class="alert alert-warning small mt-3 mb-0">Payment has not been confirmed. Contact the landlord for payment instructions.</p>
+                    {% if booking.payment_status == 'paid' %}
+                        <p class="alert alert-success small mt-3 mb-0">
+                            Payment confirmed. You can download your receipt below or view it from the payment action.
+                        </p>
+                    {% elif booking.status == 'approved' and booking.payment_status == 'pending' %}
+                        <p class="alert alert-warning small mt-3 mb-0">
+                            USSD payment request sent{% if booking.payment_reference %}. Reference: {{ booking.payment_reference }}{% endif %}. Complete it on your phone. The landlord must confirm receipt before this booking is marked as paid.
+                        </p>
+                    {% elif booking.status == 'approved' and booking.payment_status == 'unpaid' %}
+                        <p class="alert alert-info small mt-3 mb-0">Your booking is approved. Use “Pay with USSD” or open the room page to start payment.</p>
                     {% endif %}
                 </div>
             </article>

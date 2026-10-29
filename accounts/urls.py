@@ -5,6 +5,11 @@ from . import views
 
 urlpatterns = [
     path(
+        'receipts/verify/<uuid:token>/',
+        views.verify_payment_receipt,
+        name='verify_payment_receipt',
+    ),
+    path(
         'forgot-password/',
         views.CustomPasswordResetView.as_view(),
         name='forgot_password',
@@ -16,6 +21,16 @@ urlpatterns = [
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
     path('student/houses/<int:pk>/save/', views.save_house, name='save_house'),
     path('student/rooms/<int:pk>/book/', views.apply_for_room, name='apply_for_room'),
+    path(
+        'student/bookings/<int:pk>/pay/',
+        views.initiate_booking_payment_view,
+        name='initiate_booking_payment',
+    ),
+    path(
+        'student/bookings/<int:pk>/receipt/',
+        views.booking_payment_receipt,
+        name='booking_payment_receipt',
+    ),
     path('student/notifications/<int:pk>/read/', views.mark_notification_read, name='mark_notification_read'),
     path('student/support/', views.submit_support_request, name='submit_support_request'),
     path('landlord/bookings/<int:pk>/', views.landlord_update_booking, name='landlord_update_booking'),

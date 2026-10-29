@@ -208,9 +208,9 @@
         <h3 class="fw-bold text-success mb-4 room-section-title">Rooms, Prices and Their Features</h3>
 
         <div class="row">
-            {% for room in house.rooms.all %}
+            {% for room in rooms %}
             <div class="col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden bg-white">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden bg-white" id="room-{{ room.pk }}">
                     {% if room.room_image %}
                         <img src="{{ room.room_image.url }}" class="card-img-top room-img" alt="{{ room.get_room_type_display }}">
                     {% endif %}
@@ -224,7 +224,35 @@
                         </div>
                     </div>
                     <div class="card-footer bg-white border-0 pb-3">
-                        {% if can_book %}
+                        {% if room.approved_booking %}
+                            {% if room.approved_booking.payment_status == 'paid' %}
+                                <span class="badge text-bg-success d-block mb-2">Payment confirmed</span>
+                                <a href="{% url 'booking_payment_receipt' room.approved_booking.pk %}" class="btn btn-outline-success w-100 rounded-pill"><i class="fa-solid fa-download me-1" aria-hidden="true"></i>Download PDF receipt</a>
+                            {% elif room.approved_booking.payment_status == 'pending' %}
+                                <div class="alert alert-warning small py-2 mb-2">
+                                    USSD request sent{% if room.approved_booking.payment_reference %}. Reference: {{ room.approved_booking.payment_reference }}{% endif %}. Complete it on your phone, then wait for the landlord to confirm.
+                                </div>
+                                <a href="{% url 'student_dashboard' %}#my-bookings" class="btn btn-outline-success w-100 rounded-pill">View payment status</a>
+                            {% else %}
+                                <form method="post" action="{% url 'initiate_booking_payment' room.approved_booking.pk %}">
+                                    {% csrf_token %}
+                                    <label class="form-label small fw-semibold" for="payment-phone-{{ room.pk }}">Mobile money phone number</label>
+                                    <input
+                                        id="payment-phone-{{ room.pk }}"
+                                        type="tel"
+                                        name="phone_number"
+                                        class="form-control form-control-sm mb-2"
+                                        autocomplete="tel"
+                                        inputmode="tel"
+                                        placeholder="0712 345 678"
+                                        value="{{ room.approved_booking.payment_phone_number|default:student_phone }}"
+                                        required
+                                    >
+                                    <p class="small text-muted mb-2">You will receive a USSD prompt to pay TZS {{ room.price }}. Your payment remains pending until the landlord confirms receipt.</p>
+                                    <button type="submit" class="btn btn-success w-100 rounded-pill">Pay with USSD</button>
+                                </form>
+                            {% endif %}
+                        {% elif can_book %}
                             {% if room.pk in active_booking_room_ids %}
                                 <a href="{% url 'student_dashboard' %}#my-bookings" class="btn btn-outline-success w-100 rounded-pill">View booking request</a>
                             {% else %}

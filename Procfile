@@ -1,1 +1,1 @@
-web: python manage.py collectstatic --noinput --upload-unhashed-files && gunicorn suarental_project.wsgi
+web: python manage.py migrate --noinput && python manage.py collectstatic --noinput --upload-unhashed-files && gunicorn suarental_project.wsgi

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Landlord Application - SUA Student Housing{% endblock %}
+
+{% block content %}
+<main class="container py-4 py-lg-5" style="max-width: 760px;">
+    <a href="{% url 'student_dashboard' %}" class="link-success text-decoration-none small fw-semibold">
+        <i class="fa-solid fa-arrow-left me-1" aria-hidden="true"></i>Back to dashboard
+    </a>
+
+    {% if application.status == 'pending' %}
+    <section class="border rounded-3 bg-white p-4 p-md-5 mt-3">
+        <span class="badge text-bg-warning mb-3">Awaiting review</span>
+        <h1 class="h3 fw-bold">Landlord application</h1>
+        <p class="text-muted">An admin will review your request and contact you to verify your authority to list the property.</p>
+        <dl class="row mb-0">
+            <dt class="col-sm-5">Phone number</dt>
+            <dd class="col-sm-7">{{ application.profile.phone }}</dd>
+            <dt class="col-sm-5">Property address</dt>
+            <dd class="col-sm-7">{{ application.property_address }}</dd>
+            <dt class="col-sm-5">Relationship to property</dt>
+            <dd class="col-sm-7">{{ application.get_applicant_type_display }}</dd>
+            <dt class="col-sm-5">Verification details</dt>
+            <dd class="col-sm-7">{{ application.verification_details }}</dd>
+        </dl>
+        {% if application.admin_note %}
+            <div class="alert alert-info mt-3 mb-0"><strong>Admin note:</strong> {{ application.admin_note }}</div>
+        {% endif %}
+    </section>
+    {% else %}
+    <section class="border rounded-3 bg-white p-4 p-md-5 mt-3">
+        {% if application.status == 'rejected' %}
+            <div class="alert alert-warning">
+                <strong>More information is needed.</strong>
+                {% if application.admin_note %}<span class="d-block mt-1">{{ application.admin_note }}</span>{% else %}<span class="d-block mt-1">Update your details and submit the application again.</span>{% endif %}
+            </div>
+        {% endif %}
+        <h1 class="h3 fw-bold">Apply as a landlord</h1>
+        <p class="text-muted">Provide a contact number and one property address. An admin will review your request before landlord access is enabled.</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            {% endfor %}
+            <div class="alert alert-light border small">
+                Do not enter national ID numbers or upload identity documents here. The admin can contact you to check proof separately.
+            </div>
+            <button type="submit" class="btn btn-success fw-semibold">Submit application</button>
+        </form>
+    </section>
+    {% endif %}
+</main>
+{% endblock %}

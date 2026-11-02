@@ -20,6 +20,56 @@ class AvailableRoomsSupportTests(TestCase):
         self.assertNotContains(response, 'Need Help Choosing a Room?')
 
 
+class AvailableRoomsFilterTests(TestCase):
+    def test_room_type_and_price_filters_match_the_same_room(self):
+        landlord = User.objects.create_user(username='filter-landlord')
+        mixed_house = House.objects.create(
+            landlord=landlord,
+            title='Mixed Price House',
+            description='Contains differently priced room types.',
+            location='mazimbu',
+            address='Near SUA',
+            image='house_images/mixed.png',
+        )
+        Room.objects.create(
+            house=mixed_house,
+            room_type='single',
+            price=80000,
+            room_image='room_images/mixed-single.png',
+        )
+        Room.objects.create(
+            house=mixed_house,
+            room_type='master',
+            price=300000,
+            room_image='room_images/mixed-master.png',
+        )
+        matching_house = House.objects.create(
+            landlord=landlord,
+            title='Matching Price House',
+            description='A single room in the selected price range.',
+            location='mazimbu',
+            address='By the main gate',
+            image='house_images/matching.png',
+        )
+        matching_room = Room.objects.create(
+            house=matching_house,
+            room_type='single',
+            price=250000,
+            room_image='room_images/matching-single.png',
+        )
+
+        response = self.client.get(
+            reverse('available_rooms'),
+            {'room_type': 'single', 'min_price': '200000', 'max_price': '275000'},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(response.context['houses']), [matching_house])
+        self.assertEqual(response.context['houses'][0].matching_rooms, [matching_room])
+        self.assertContains(response, 'Matching Price House')
+        self.assertNotContains(response, 'Mixed Price House')
+
+
 class HouseDetailContactLayoutTests(TestCase):
     def test_landlord_name_and_contact_buttons_share_a_flexible_row(self):
         landlord = User.objects.create_user(

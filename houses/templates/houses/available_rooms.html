@@ -214,12 +214,37 @@
             All Areas
         </a>
         {% for loc_code, loc_name in locations %}
-        <a href="{% url 'available_rooms' %}?location={{ loc_code }}#listings"
+        <a href="{% url 'available_rooms' %}?location={{ loc_code }}&amp;room_type={{ selected_room_type }}&amp;min_price={{ min_price|default_if_none:'' }}&amp;max_price={{ max_price|default_if_none:'' }}#listings"
            class="btn btn-sm filter-btn {% if selected_location == loc_code %}btn-success{% else %}btn-outline-success{% endif %} m-1 rounded-pill px-3">
             {{ loc_name }}
         </a>
         {% endfor %}
     </div>
+
+    <form method="get" action="{% url 'available_rooms' %}#listings" class="row g-3 align-items-end mb-4 p-3 border rounded-3 bg-white">
+        <input type="hidden" name="location" value="{{ selected_location }}">
+        <div class="col-sm-6 col-lg-3">
+            <label for="filter-room-type" class="form-label fw-semibold">Room type</label>
+            <select id="filter-room-type" name="room_type" class="form-select">
+                <option value="">Any room type</option>
+                {% for room_code, room_name in room_types %}
+                <option value="{{ room_code }}" {% if selected_room_type == room_code %}selected{% endif %}>{{ room_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <label for="filter-min-price" class="form-label fw-semibold">Minimum price (TZS)</label>
+            <input id="filter-min-price" type="number" name="min_price" min="0" step="1000" class="form-control" value="{{ min_price|default_if_none:'' }}">
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <label for="filter-max-price" class="form-label fw-semibold">Maximum price (TZS)</label>
+            <input id="filter-max-price" type="number" name="max_price" min="0" step="1000" class="form-control" value="{{ max_price|default_if_none:'' }}">
+        </div>
+        <div class="col-sm-6 col-lg-3 d-flex gap-2">
+            <button type="submit" class="btn btn-success flex-grow-1"><i class="fa-solid fa-filter me-1" aria-hidden="true"></i>Apply filters</button>
+            <a href="{% url 'available_rooms' %}#listings" class="btn btn-outline-secondary" aria-label="Clear all filters" title="Clear filters"><i class="fa-solid fa-xmark" aria-hidden="true"></i></a>
+        </div>
+    </form>
 
     <!-- HOUSES + ROOMS FROM DATABASE -->
     <div class="row g-4">
@@ -235,7 +260,7 @@
                 <div class="p-4">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <span class="badge bg-success">{{ house.get_location_display }}</span>
-                        <small class="text-muted fw-semibold">{{ house.room_count }} room{{ house.room_count|pluralize }}</small>
+                        <small class="text-muted fw-semibold">{{ house.matching_rooms|length }} room{{ house.matching_rooms|length|pluralize }}</small>
                     </div>
 
                     <h4 class="fw-bold mb-2">{{ house.title }}</h4>
@@ -246,10 +271,10 @@
                         <p class="text-success fw-bold mb-3">From TZS {{ house.min_price|floatformat:0 }} / semester</p>
                     {% endif %}
 
-                    {% if house.rooms.all %}
+                    {% if house.matching_rooms %}
                         <h6 class="fw-bold text-dark mb-3">Rooms Available</h6>
                         <div class="d-flex flex-column gap-2 mb-3">
-                            {% for room in house.rooms.all %}
+                            {% for room in house.matching_rooms %}
                             <div class="room-chip d-flex align-items-center gap-3">
                                 {% if room.room_image %}
                                     <img src="{{ room.room_image.url }}" alt="{{ room.get_room_type_display }}">

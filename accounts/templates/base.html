@@ -170,6 +170,9 @@
         color: #dc3545;
     }
     @media (max-width: 991.98px) {
+        .mobile-nav-host {
+            z-index: 1050;
+        }
         .navbar-profile-actions,
         .profile-dropdown {
             display: flex;
@@ -186,6 +189,109 @@
         .profile-menu.dropdown-menu-end {
             right: auto;
             left: 0;
+        }
+        .mobile-nav-panel {
+            top: 72px;
+            bottom: 8px;
+            left: 0;
+            width: min(280px, 68vw);
+            max-width: 68vw;
+            max-height: calc(100vh - 80px);
+            border-radius: 0 0 8px 0;
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.24);
+            overflow: hidden;
+            background-color: #fff !important;
+            color: #173b2c !important;
+        }
+        #suaNavbarPanel,
+        #landlordNavbarPanel {
+            --bs-offcanvas-width: min(280px, 68vw);
+            top: 72px;
+            bottom: 8px;
+            left: 0;
+            right: auto;
+            height: auto;
+            max-height: calc(100vh - 80px);
+        }
+        .mobile-nav-panel .offcanvas-body {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0;
+            padding: 1rem 0.75rem;
+            overflow-y: auto;
+        }
+        .mobile-nav-panel .offcanvas-header {
+            display: none !important;
+        }
+        .mobile-nav-panel .navbar-nav {
+            width: 100%;
+            gap: 0.35rem !important;
+            margin: 0 !important;
+        }
+        .mobile-nav-panel .navbar-nav .nav-link {
+            display: flex;
+            align-items: center;
+            min-height: 48px;
+            padding: 0.75rem 0.85rem;
+            border: 0;
+            border-radius: 8px;
+            color: #173b2c !important;
+            font-size: 0.98rem;
+        }
+        .mobile-nav-panel .navbar-nav .nav-link:hover,
+        .mobile-nav-panel .navbar-nav .nav-link:focus-visible {
+            background: #eaf5ee;
+            color: #125b38 !important;
+        }
+        .mobile-nav-panel .navbar-nav .nav-link i {
+            width: 24px;
+            color: #198754;
+            text-align: center;
+        }
+        .mobile-menu-actions {
+            align-items: stretch !important;
+            flex-direction: column;
+            gap: 0.6rem !important;
+            margin-top: auto !important;
+            padding-top: 1rem;
+            border-top: 1px solid #e4eee7;
+        }
+        .mobile-menu-actions > a.btn {
+            display: flex;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+            margin: 0 !important;
+        }
+        .mobile-menu-actions > a.btn-outline-light {
+            border-color: #198754;
+            color: #198754 !important;
+        }
+        .mobile-menu-actions > a.btn-light {
+            background: #198754;
+            color: #fff !important;
+        }
+        .mobile-menu-actions .navbar-profile-toggle,
+        .mobile-menu-actions .profile-dropdown-toggle {
+            width: 100%;
+            min-height: 44px;
+            justify-content: space-between;
+            padding: 0.45rem 0.65rem !important;
+            border: 1px solid #dce9e0;
+            border-radius: 8px;
+            color: #173b2c !important;
+        }
+        .mobile-menu-actions .navbar-profile-toggle:hover,
+        .mobile-menu-actions .profile-dropdown-toggle:hover {
+            background: #eaf5ee;
+        }
+    }
+    @media (min-width: 992px) {
+        .mobile-nav-panel {
+            border-radius: 0;
+            background-color: transparent !important;
+            box-shadow: none;
         }
     }
 </style>
@@ -223,44 +329,47 @@
     </div>
 
     {% block navbar %}
-    <nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top shadow-sm py-3">
+    <nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top shadow-sm py-3 mobile-nav-host">
     <div class="container">
         <a class="navbar-brand fw-bold" href="{% if request.user.is_authenticated %}{% url 'house_list' %}{% else %}{% url 'home' %}{% endif %}">SSH</a>
         
         <!-- Kitufe cha Simu (Responsive Toggler) -->
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#suaNavbarNav" aria-controls="suaNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler border-0 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#suaNavbarPanel" aria-controls="suaNavbarPanel" aria-label="Open navigation menu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Hapa ndipo viungo vikuu vya katikati vinapokaa bila kuleta error -->
-        <div class="collapse navbar-collapse" id="suaNavbarNav">
+        <div class="offcanvas offcanvas-lg offcanvas-start bg-white text-dark mobile-nav-panel" tabindex="-1" id="suaNavbarPanel" aria-labelledby="suaNavbarPanelLabel" data-bs-backdrop="true" data-bs-scroll="false">
+            <div class="offcanvas-header d-lg-none bg-success text-white">
+                <h2 class="offcanvas-title h5 fw-bold mb-0" id="suaNavbarPanelLabel">SUA Student Housing</h2>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close navigation"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column flex-lg-row align-items-lg-center">
             
-            <!-- Hivi vitakaa kwenye maduara myekundu katikati (mx-auto) -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
                 {% if not request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}" data-close-mobile-nav><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}">Available Rooms</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}" data-close-mobile-nav><i class="fa-solid fa-bed" aria-hidden="true"></i>Available Rooms</a>
                 </li>
                 {% if request.user.is_authenticated and request.user.user_type == 'landlord' %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'landlord_dashboard' %}">Dashboard</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'landlord_dashboard' %}" data-close-mobile-nav><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Dashboard</a>
                 </li>
                 {% elif request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'student_dashboard' %}">Student Dashboard</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'student_dashboard' %}" data-close-mobile-nav><i class="fa-solid fa-user-graduate" aria-hidden="true"></i>Student Dashboard</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}#support">Help &amp; Support</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}#support" data-close-mobile-nav><i class="fa-regular fa-circle-question" aria-hidden="true"></i>Help &amp; Support</a>
                 </li>
             </ul>
 
             <!-- Upande wa Kulia: picha ya profile + first name (si username) -->
-            <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0 navbar-profile-actions">
+            <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0 navbar-profile-actions mobile-menu-actions">
                 {% if request.user.is_authenticated %}
                     <div class="dropdown">
                         <button class="btn btn-link navbar-profile-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -315,6 +424,7 @@
                 {% endif %}
             </div>
 
+            </div>
         </div>
     </div>
 </nav>
@@ -444,6 +554,16 @@
 {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* Funga drawer bila kuzuia browser kufuata kiungo kilichobonyezwa. */
+        document.addEventListener('click', function (event) {
+            const link = event.target.closest('[data-close-mobile-nav]');
+            if (!link || !window.bootstrap) return;
+            const panel = link.closest('.offcanvas');
+            const drawer = panel && bootstrap.Offcanvas.getInstance(panel);
+            if (drawer) drawer.hide();
+        });
+    </script>
     <script>
         /* Mfumo wa SUA toast: kufunga kiotomatiki baada ya progress bar, pause kwenye hover */
         (function () {

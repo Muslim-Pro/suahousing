@@ -16,7 +16,7 @@ from django.template.loader import render_to_string
 from houses.models import House, Room
 
 from .utils import normalize_tanzania_phone_number
-from .models import Profile, SupportRequest
+from .models import HouseReport, LandlordApplication, Profile, Review, SupportRequest
 
 
 logger = logging.getLogger(__name__)
@@ -246,6 +246,64 @@ class StudentDetailsForm(forms.Form):
         ])
 
 
+class LandlordApplicationForm(forms.ModelForm):
+    phone = forms.CharField(
+        max_length=20,
+        label='Phone number',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'tel',
+            'placeholder': '+255 712 345 678',
+        }),
+    )
+
+    class Meta:
+        model = LandlordApplication
+        fields = ('property_address', 'applicant_type', 'verification_details')
+        widgets = {
+            'property_address': forms.TextInput(attrs={
+                'class': 'form-control',
+                'autocomplete': 'street-address',
+            }),
+            'applicant_type': forms.Select(attrs={'class': 'form-select'}),
+            'verification_details': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Tell us how we can verify your authority to list this property.',
+            }),
+        }
+        labels = {
+            'property_address': 'Property address',
+            'applicant_type': 'Your relationship to the property',
+            'verification_details': 'Verification details',
+        }
+        help_texts = {
+            'verification_details': 'Tell us who we can contact or what non-sensitive proof you can show. Do not enter national ID numbers or upload documents here.',
+        }
+
+    def __init__(self, *args, profile, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.profile = profile
+        if not self.is_bound:
+            self.initial['phone'] = profile.phone
+
+    def clean_phone(self):
+        phone = self.cleaned_data['phone'].strip()
+        if not re.fullmatch(r'\+?[0-9\s()\-]{7,20}', phone):
+            raise forms.ValidationError('Enter a valid phone number.')
+        return phone
+
+    def save(self, commit=True):
+        # Hifadhi namba iliyotolewa pamoja na ombi ili admin aitumie kuwasiliana na mwombaji.
+        application = super().save(commit=False)
+        application.profile = self.profile
+        if commit:
+            self.profile.phone = self.cleaned_data['phone'].strip()
+            self.profile.save(update_fields=['phone'])
+            application.save()
+        return application
+
+
 class SupportRequestForm(forms.Form):
     message = forms.CharField(
         max_length=2000,
@@ -275,6 +333,35 @@ class BookingMessageForm(forms.Form):
             'placeholder': 'Write a message about this room',
         }),
     )
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ('rating', 'comment')
+        widgets = {
+            'rating': forms.Select(attrs={'class': 'form-select'}),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Share a useful, honest summary of your experience',
+            }),
+        }
+        labels = {'rating': 'Rating', 'comment': 'Review'}
+
+
+class HouseReportForm(forms.ModelForm):
+    class Meta:
+        model = HouseReport
+        fields = ('reason', 'details')
+        widgets = {
+            'reason': forms.Select(attrs={'class': 'form-select'}),
+            'details': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Add details that will help us review this listing',
+            }),
+        }
 
 
 class BookingPaymentForm(forms.Form):

@@ -17,7 +17,10 @@ from houses.payments import ClickPesaError
 from .models import (
     Booking,
     BookingMessage,
+    HouseReport,
+    LandlordApplication,
     Profile,
+    Review,
     SavedHouse,
     StudentNotification,
     SupportRequest,
@@ -138,6 +141,12 @@ class LandlordDashboardActionsTests(TestCase):
         self.assertContains(response, 'id="inquiries"')
         self.assertContains(response, 'id="payments"')
         self.assertContains(response, 'href="/#support"')
+        self.assertContains(response, 'position: sticky;')
+        self.assertContains(response, 'top: 66px;')
+        self.assertContains(response, 'Change Password')
+        self.assertContains(response, 'id="landlordNavbarPanel"')
+        self.assertContains(response, 'class="offcanvas offcanvas-lg offcanvas-start')
+        self.assertContains(response, 'data-bs-backdrop="true"')
 
     def test_non_landlords_cannot_open_property_creation(self):
         student = User.objects.create_user(
@@ -476,6 +485,74 @@ class StudentDashboardTests(TestCase):
         self.assertContains(response, reverse('student_dashboard'))
         self.assertContains(response, reverse('available_rooms'))
         self.assertContains(response, reverse('account_settings'))
+        self.assertContains(response, 'id="suaNavbarPanel"')
+        self.assertContains(response, 'data-bs-toggle="offcanvas"')
+
+    def test_student_can_submit_and_resubmit_landlord_application(self):
+        application_url = reverse('apply_for_landlord')
+        response = self.client.get(application_url)
+        self.assertContains(response, 'Apply as a landlord')
+        self.assertContains(response, 'Property address')
+        self.assertContains(response, 'Do not enter national ID numbers')
+
+        application_data = {
+            'phone': '+255 712 345 678',
+            'property_address': 'Near SUA main gate, Mazimbu',
+            'applicant_type': LandlordApplication.APPLICANT_OWNER,
+            'verification_details': 'Admin can call me and visit the property.',
+        }
+        response = self.client.post(application_url, application_data)
+        self.assertRedirects(response, reverse('student_dashboard'))
+        application = LandlordApplication.objects.get(profile=self.student.profile)
+        self.assertEqual(application.status, LandlordApplication.STATUS_PENDING)
+        self.student.profile.refresh_from_db()
+        self.assertEqual(self.student.profile.phone, '+255 712 345 678')
+        self.assertContains(
+            self.client.get(reverse('student_dashboard')),
+            'waiting for admin review',
+        )
+
+        self.client.post(application_url, application_data)
+        self.assertEqual(LandlordApplication.objects.filter(profile=self.student.profile).count(), 1)
+
+        application.status = LandlordApplication.STATUS_REJECTED
+        application.admin_note = 'Please provide a clearer property address.'
+        application.save(update_fields=['status', 'admin_note'])
+        self.assertContains(self.client.get(application_url), 'Please provide a clearer property address.')
+        application_data['property_address'] = 'SUA main gate, Mazimbu, Morogoro'
+        self.client.post(application_url, application_data)
+        application.refresh_from_db()
+        self.assertEqual(application.status, LandlordApplication.STATUS_PENDING)
+        self.assertEqual(application.property_address, application_data['property_address'])
+        self.assertEqual(application.admin_note, '')
+
+    def test_only_admin_approval_changes_applicant_to_landlord(self):
+        application = LandlordApplication.objects.create(
+            profile=self.student.profile,
+            property_address='Near SUA main gate',
+            applicant_type=LandlordApplication.APPLICANT_OWNER,
+            verification_details='Admin can contact me to verify.',
+        )
+        admin_user = User.objects.create_superuser(
+            username='application-admin',
+            email='application-admin@example.com',
+            password='Strong-admin-password-123!',
+        )
+        self.client.force_login(admin_user)
+
+        response = self.client.post(
+            reverse('admin:accounts_landlordapplication_change', args=[application.pk]),
+            {'status': LandlordApplication.STATUS_APPROVED, 'admin_note': 'Phone verified.', '_save': 'Save'},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        application.refresh_from_db()
+        self.student.profile.refresh_from_db()
+        self.assertEqual(application.status, LandlordApplication.STATUS_APPROVED)
+        self.assertEqual(application.reviewed_by, admin_user)
+        self.assertIsNotNone(application.reviewed_at)
+        self.assertEqual(self.student.profile.user_type, Profile.TYPE_LANDLORD)
+        self.assertRedirects(response, reverse('admin:accounts_landlordapplication_changelist'))
 
     def test_student_login_redirects_to_student_dashboard(self):
         self.client.logout()
@@ -940,6 +1017,89 @@ class StudentDashboardTests(TestCase):
         )
         booking.refresh_from_db()
         self.assertEqual(booking.payment_status, Booking.PAYMENT_PAID)
+
+    def test_booking_conversation_is_two_way_and_notifies_each_recipient(self):
+        _, room, landlord = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_PENDING,
+        )
+        message_url = reverse('send_booking_message', args=[booking.pk])
+
+        self.client.post(message_url, {'message': 'Can I view this room tomorrow?'})
+        student_message = BookingMessage.objects.get(booking=booking)
+        self.assertEqual(student_message.sender, self.student)
+        self.assertTrue(StudentNotification.objects.filter(
+            recipient=landlord,
+            booking=booking,
+            notification_type=StudentNotification.TYPE_STUDENT_MESSAGE,
+        ).exists())
+
+        self.client.force_login(landlord)
+        landlord_dashboard = self.client.get(reverse('landlord_dashboard'))
+        self.assertContains(landlord_dashboard, 'Can I view this room tomorrow?')
+        self.assertContains(landlord_dashboard, 'Notifications')
+        self.client.post(message_url, {'message': 'Yes, please contact me first.'})
+        self.assertTrue(StudentNotification.objects.filter(
+            recipient=self.student,
+            booking=booking,
+            notification_type=StudentNotification.TYPE_MESSAGE,
+        ).exists())
+
+        self.client.force_login(self.student)
+        student_dashboard = self.client.get(reverse('student_dashboard'))
+        self.assertContains(student_dashboard, 'Yes, please contact me first.')
+        self.assertContains(student_dashboard, 'Message your landlord')
+
+    def test_review_requires_paid_approved_booking_and_is_shown_on_listing(self):
+        house, room, _ = self._create_room()
+        booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+        review_url = reverse('submit_booking_review', args=[booking.pk])
+
+        self.client.post(review_url, {'rating': '5', 'comment': 'Clean and close to campus.'})
+        self.assertFalse(Review.objects.filter(booking=booking).exists())
+
+        booking.payment_status = Booking.PAYMENT_PAID
+        booking.save(update_fields=['payment_status'])
+        response = self.client.post(
+            review_url,
+            {'rating': '5', 'comment': 'Clean and close to campus.'},
+        )
+        self.assertRedirects(response, reverse('student_dashboard'))
+        self.assertEqual(Review.objects.get(booking=booking).rating, 5)
+
+        self.client.post(review_url, {'rating': '4', 'comment': 'Duplicate review.'})
+        self.assertEqual(Review.objects.filter(booking=booking).count(), 1)
+        detail_response = self.client.get(reverse('house_detail', args=[house.pk]))
+        self.assertContains(detail_response, '5.0 / 5')
+        self.assertContains(detail_response, 'Clean and close to campus.')
+
+    def test_student_can_report_listing_once_until_admin_reviews_it(self):
+        house, _, landlord = self._create_room()
+        report_url = reverse('report_house', args=[house.pk])
+        data = {'reason': 'availability', 'details': 'The landlord says it is already occupied.'}
+
+        response = self.client.post(report_url, data)
+        self.assertRedirects(response, reverse('house_detail', args=[house.pk]))
+        report = HouseReport.objects.get(house=house, reporter=self.student)
+        self.assertEqual(report.reason, 'availability')
+        self.assertEqual(report.status, HouseReport.STATUS_PENDING)
+
+        self.client.post(report_url, data)
+        self.assertEqual(HouseReport.objects.filter(house=house, reporter=self.student).count(), 1)
+        self.assertContains(
+            self.client.get(reverse('house_detail', args=[house.pk])),
+            'Your report is awaiting review.',
+        )
+
+        self.client.force_login(landlord)
+        self.client.post(report_url, data)
+        self.assertEqual(HouseReport.objects.filter(house=house).count(), 1)
 
     def test_landlord_cannot_update_another_landlords_booking(self):
         _, room, owner = self._create_room()

@@ -19,6 +19,7 @@ urlpatterns = [
         RedirectView.as_view(pattern_name='landlord_dashboard', permanent=False),
     ),
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
+    path('student/apply-landlord/', views.apply_for_landlord, name='apply_for_landlord'),
     path('student/houses/<int:pk>/save/', views.save_house, name='save_house'),
     path('student/rooms/<int:pk>/book/', views.apply_for_room, name='apply_for_room'),
     path(
@@ -32,6 +33,9 @@ urlpatterns = [
         name='booking_payment_receipt',
     ),
     path('student/notifications/<int:pk>/read/', views.mark_notification_read, name='mark_notification_read'),
+    path('bookings/<int:pk>/messages/', views.send_booking_message, name='send_booking_message'),
+    path('student/bookings/<int:pk>/review/', views.submit_booking_review, name='submit_booking_review'),
+    path('student/houses/<int:pk>/report/', views.report_house, name='report_house'),
     path('student/support/', views.submit_support_request, name='submit_support_request'),
     path('landlord/bookings/<int:pk>/', views.landlord_update_booking, name='landlord_update_booking'),
     path('settings/', views.account_settings, name='account_settings'),

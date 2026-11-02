@@ -5,17 +5,22 @@
 {% block extra_css %}
 <style>
     .landlord-shell {
-        min-height: calc(100vh - 76px);
+        min-height: calc(100vh - 66px);
         background: #f5f7fb;
     }
     .landlord-sidebar {
         background: linear-gradient(180deg, #123b2b 0%, #102f24 100%);
-        min-height: calc(100vh - 76px);
+        min-height: calc(100vh - 66px);
+        height: calc(100vh - 66px);
         width: 250px;
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
         box-shadow: 8px 0 24px rgba(15, 23, 42, 0.06);
+        position: sticky;
+        top: 66px;
+        align-self: flex-start;
+        overflow-y: auto;
     }
     .landlord-sidebar .nav-link {
         color: rgba(255, 255, 255, 0.72);
@@ -163,6 +168,9 @@
         .landlord-sidebar {
             width: 100%;
             min-height: auto;
+            height: auto;
+            position: static;
+            overflow-y: visible;
             box-shadow: none;
         }
         .landlord-sidebar .nav-link:hover {
@@ -183,29 +191,34 @@
 {% endblock %}
 
 {% block navbar %}
-<nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top shadow-sm py-3">
+<nav class="navbar navbar-expand-lg bg-success navbar-dark sticky-top shadow-sm py-3 mobile-nav-host">
     <div class="container-fluid px-4">
         <a class="navbar-brand fw-bold" href="{% url 'landlord_dashboard' %}">SSH</a>
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#landlordNavbar">
+        <button class="navbar-toggler border-0 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#landlordNavbarPanel" aria-controls="landlordNavbarPanel" aria-label="Open navigation menu">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="landlordNavbar">
+        <div class="offcanvas offcanvas-lg offcanvas-start bg-white text-dark mobile-nav-panel" tabindex="-1" id="landlordNavbarPanel" aria-labelledby="landlordNavbarPanelLabel" data-bs-backdrop="true" data-bs-scroll="false">
+            <div class="offcanvas-header d-lg-none bg-success text-white">
+                <h2 class="offcanvas-title h5 fw-bold mb-0" id="landlordNavbarPanelLabel">SUA Student Housing</h2>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close navigation"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column flex-lg-row align-items-lg-center">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
                 <li class="nav-item">
-                    <a class="nav-link text-white fw-semibold" href="{% url 'landlord_dashboard' %}">Dashboard</a>
+                    <a class="nav-link text-white fw-semibold" href="{% url 'landlord_dashboard' %}" data-close-mobile-nav><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}">Available Rooms</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}" data-close-mobile-nav><i class="fa-solid fa-bed" aria-hidden="true"></i>Available Rooms</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="#properties">My Properties</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="#properties" data-close-mobile-nav><i class="fa-solid fa-building" aria-hidden="true"></i>My Properties</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}#support">Help &amp; Support</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}#support" data-close-mobile-nav><i class="fa-regular fa-circle-question" aria-hidden="true"></i>Help &amp; Support</a>
                 </li>
             </ul>
             {% if user.is_authenticated and user.user_type == 'landlord' %}
-            <div class="dropdown mt-3 mt-lg-0 profile-dropdown">
+            <div class="dropdown mt-3 mt-lg-0 profile-dropdown mobile-menu-actions">
                 <button class="btn btn-link profile-dropdown-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {% if user.profile.profile_pic %}
                         <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.first_name|default:user.username }}" class="rounded-circle profile-avatar">
@@ -265,6 +278,10 @@
             <a class="nav-link" href="{% url 'landlord_dashboard' %}#inquiries">
                 <i class="fa-solid fa-comments me-2"></i> Inquiries
             </a>
+            <a class="nav-link" href="{% url 'landlord_dashboard' %}#landlord-notifications">
+                <i class="fa-regular fa-bell me-2"></i> Notifications
+                {% if unread_notification_count %}<span class="badge text-bg-warning ms-auto">{{ unread_notification_count }}</span>{% endif %}
+            </a>
             <a class="nav-link" href="{% url 'landlord_dashboard' %}#payments">
                 <i class="fa-solid fa-money-bill-wave me-2"></i> Payments <span class="ms-auto feature-status">Soon</span>
             </a>
@@ -292,6 +309,34 @@
                 <i class="fa-solid fa-plus me-1"></i> Add New Property
             </a>
         </div>
+
+        <section class="card border-0 shadow-sm rounded-4 mb-4 dashboard-section" id="landlord-notifications" aria-labelledby="landlord-notifications-title">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h2 class="h5 fw-bold mb-0" id="landlord-notifications-title">Notifications</h2>
+                {% if unread_notification_count %}<span class="badge rounded-pill text-bg-success">{{ unread_notification_count }} unread</span>{% endif %}
+            </div>
+            <div class="list-group list-group-flush">
+                {% for notification in notifications %}
+                <div class="list-group-item px-4 py-3 {% if not notification.is_read %}bg-success bg-opacity-10{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+                        <div>
+                            <strong>{{ notification.title }}</strong>
+                            <p class="small text-muted mb-1">{{ notification.message }}</p>
+                            <span class="small text-muted">{{ notification.created_at|date:"M j, Y g:i A" }}</span>
+                        </div>
+                        {% if not notification.is_read %}
+                        <form method="post" action="{% url 'mark_notification_read' notification.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-success text-nowrap">Mark read</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="list-group-item px-4 py-3 text-muted">Booking requests and student messages will appear here.</div>
+                {% endfor %}
+            </div>
+        </section>
 
         <div class="row g-3 mb-4">
             <div class="col-sm-6 col-xl-3">
@@ -349,6 +394,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -466,7 +512,20 @@
                             </div>
                             {% endif %}
                         </div>
-                        <form method="post" action="{% url 'landlord_update_booking' booking.pk %}" class="mt-3">
+                        {% if booking.messages.all %}
+                        <div class="border-top mt-3 pt-3">
+                            <h4 class="small fw-bold mb-2">Conversation with student</h4>
+                            <div class="d-flex flex-column gap-2">
+                                {% for message in booking.messages.all %}
+                                <div class="small {% if message.sender_id == user.id %}text-end{% endif %}">
+                                    <span class="d-block text-muted">{% if message.sender_id == user.id %}You{% else %}{{ message.sender.get_full_name|default:message.sender.username }}{% endif %} · {{ message.created_at|date:"M j, g:i A" }}</span>
+                                    <span class="d-inline-block border rounded-3 px-3 py-2 text-start">{{ message.message }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <form method="post" action="{% url 'send_booking_message' booking.pk %}" class="mt-3">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="message">
                             <label for="booking-message-{{ booking.pk }}" class="form-label small fw-semibold">Message the student</label>

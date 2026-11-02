@@ -200,6 +200,28 @@
                         </button>
                     </form>
                 {% endif %}
+                {% if is_student and request.user.pk != house.landlord_id %}
+                    {% if has_pending_report %}
+                        <p class="small text-muted mt-3 mb-0"><i class="fa-regular fa-flag me-1" aria-hidden="true"></i>Your report is awaiting review.</p>
+                    {% else %}
+                        <details class="mt-3 text-start">
+                            <summary class="small text-danger fw-semibold" style="cursor: pointer;"><i class="fa-regular fa-flag me-1" aria-hidden="true"></i>Report this listing</summary>
+                            <form method="post" action="{% url 'report_house' house.pk %}" class="mt-2">
+                                {% csrf_token %}
+                                <label for="report-reason" class="form-label small fw-semibold">Reason</label>
+                                <select id="report-reason" name="reason" class="form-select form-select-sm mb-2" required>
+                                    <option value="">Choose a reason</option>
+                                    {% for reason_code, reason_name in report_form.fields.reason.choices %}
+                                        {% if reason_code %}<option value="{{ reason_code }}">{{ reason_name }}</option>{% endif %}
+                                    {% endfor %}
+                                </select>
+                                <label for="report-details" class="form-label small fw-semibold">Details (optional)</label>
+                                <textarea id="report-details" name="details" class="form-control form-control-sm" rows="3" maxlength="1000" placeholder="Help us understand the concern"></textarea>
+                                <button type="submit" class="btn btn-sm btn-outline-danger mt-2">Send report</button>
+                            </form>
+                        </details>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -280,6 +302,34 @@
         </div>
     </div>
 </div>
+
+<section class="mt-4 mb-5" aria-labelledby="reviews-title">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+        <div>
+            <p class="text-success text-uppercase fw-bold small mb-1">Verified bookings</p>
+            <h2 class="h4 fw-bold mb-0" id="reviews-title">Student reviews</h2>
+        </div>
+        {% if review_summary.count %}
+            <span class="badge text-bg-success"><i class="fa-solid fa-star me-1" aria-hidden="true"></i>{{ review_summary.average|floatformat:1 }} / 5 · {{ review_summary.count }} review{{ review_summary.count|pluralize }}</span>
+        {% else %}
+            <span class="small text-muted">No reviews yet</span>
+        {% endif %}
+    </div>
+    <div class="d-flex flex-column gap-3">
+        {% for review in house_reviews %}
+        <article class="border rounded-3 p-3">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <strong>{{ review.booking.student.first_name|default:"Student" }}</strong>
+                <span class="small text-warning" aria-label="{{ review.rating }} out of 5 stars">{{ review.rating }} / 5 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+            </div>
+            {% if review.comment %}<p class="mb-1 mt-2">{{ review.comment }}</p>{% endif %}
+            <span class="small text-muted">{{ review.created_at|date:"M j, Y" }}</span>
+        </article>
+        {% empty %}
+        <p class="text-muted mb-0">Reviews from students with completed payments will appear here.</p>
+        {% endfor %}
+    </div>
+</section>
 
 
 

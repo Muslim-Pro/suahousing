@@ -348,23 +348,23 @@
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
                 {% if not request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}" data-close-mobile-nav><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}" data-close-mobile-nav><i class="fa-solid fa-house d-lg-none" aria-hidden="true"></i>Home</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}" data-close-mobile-nav><i class="fa-solid fa-bed" aria-hidden="true"></i>Available Rooms</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'available_rooms' %}" data-close-mobile-nav><i class="fa-solid fa-bed d-lg-none" aria-hidden="true"></i>Available Rooms</a>
                 </li>
                 {% if request.user.is_authenticated and request.user.user_type == 'landlord' %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'landlord_dashboard' %}" data-close-mobile-nav><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Dashboard</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'landlord_dashboard' %}" data-close-mobile-nav><i class="fa-solid fa-gauge-high d-lg-none" aria-hidden="true"></i>Dashboard</a>
                 </li>
                 {% elif request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'student_dashboard' %}" data-close-mobile-nav><i class="fa-solid fa-user-graduate" aria-hidden="true"></i>Student Dashboard</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'student_dashboard' %}" data-close-mobile-nav><i class="fa-solid fa-user-graduate d-lg-none" aria-hidden="true"></i>Student Dashboard</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}#support" data-close-mobile-nav><i class="fa-regular fa-circle-question" aria-hidden="true"></i>Help &amp; Support</a>
+                    <a class="nav-link text-white-50 fw-semibold" href="{% url 'home' %}#support" data-close-mobile-nav><i class="fa-regular fa-circle-question d-lg-none" aria-hidden="true"></i>Help &amp; Support</a>
                 </li>
             </ul>
 

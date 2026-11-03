@@ -173,6 +173,12 @@ class Booking(models.Model):
                 condition=Q(status__in=['pending', 'approved']),
                 name='unique_active_booking_per_student_room',
             ),
+            # Hata requests zikishindana, database hairuhusu room kuwa na approvals mbili.
+            models.UniqueConstraint(
+                fields=['room'],
+                condition=Q(status='approved'),
+                name='unique_approved_booking_per_room',
+            ),
         ]
 
     def __str__(self):

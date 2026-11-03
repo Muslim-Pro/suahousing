@@ -530,23 +530,42 @@ def apply_for_room(request, pk):
         messages.error(request, 'Please enter a valid message for the landlord.')
         return redirect('house_detail', pk=room.house_id)
 
-    existing_booking = Booking.objects.filter(
-        student=request.user,
-        room=room,
-        status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
-    ).first()
-    if existing_booking:
-        messages.info(request, 'You already have an active request for this room.')
-        return redirect('student_dashboard')
-
     try:
         with transaction.atomic():
+            # Lock room hii ili request na approval zisikague availability kwa wakati mmoja.
+            room = Room.objects.select_for_update().select_related(
+                'house',
+                'house__landlord',
+            ).get(pk=pk)
+            if not room.house.is_available:
+                messages.error(request, 'This property is no longer available.')
+                return redirect('house_detail', pk=room.house_id)
+            if Booking.objects.filter(
+                room=room,
+                status=Booking.STATUS_APPROVED,
+            ).exists():
+                messages.error(request, 'This room has already been booked.')
+                return redirect('house_detail', pk=room.house_id)
+            existing_booking = Booking.objects.filter(
+                student=request.user,
+                room=room,
+                status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
+            ).exists()
+            if existing_booking:
+                messages.info(request, 'You already have an active request for this room.')
+                return redirect('student_dashboard')
             booking = Booking.objects.create(
                 student=request.user,
                 room=room,
                 student_message=form.cleaned_data['message'].strip(),
             )
     except IntegrityError:
+        if Booking.objects.filter(
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        ).exists():
+            messages.error(request, 'This room has already been booked.')
+            return redirect('house_detail', pk=room.house_id)
         messages.info(request, 'You already have an active request for this room.')
         return redirect('student_dashboard')
     StudentNotification.objects.create(
@@ -634,23 +653,28 @@ def landlord_update_booking(request, pk):
             messages.error(request, 'Only pending booking requests can be reviewed.')
             return redirect('landlord_dashboard')
         if action == 'approve':
-            with transaction.atomic():
-                Room.objects.select_for_update().get(pk=booking.room_id)
-                booking.refresh_from_db()
-                if not booking.room.house.is_available:
-                    messages.error(request, 'This property is no longer available.')
-                    return redirect('landlord_dashboard')
-                another_approved_booking = Booking.objects.filter(
-                    room=booking.room,
-                    status=Booking.STATUS_APPROVED,
-                ).exclude(pk=booking.pk).exists()
-                if another_approved_booking:
-                    messages.error(request, 'This room already has an approved booking.')
-                    return redirect('landlord_dashboard')
-                booking.status = Booking.STATUS_APPROVED
-                booking.save(update_fields=['status', 'updated_at'])
-                title = 'Booking request approved'
-                body = f'Your request for {booking.room.get_room_type_display()} at {booking.room.house.title} was approved.'
+            try:
+                with transaction.atomic():
+                    # Approval na request mpya zinashindana kwa lock hiyo hiyo ya room.
+                    Room.objects.select_for_update().get(pk=booking.room_id)
+                    booking.refresh_from_db()
+                    if not booking.room.house.is_available:
+                        messages.error(request, 'This property is no longer available.')
+                        return redirect('landlord_dashboard')
+                    another_approved_booking = Booking.objects.filter(
+                        room=booking.room,
+                        status=Booking.STATUS_APPROVED,
+                    ).exclude(pk=booking.pk).exists()
+                    if another_approved_booking:
+                        messages.error(request, 'This room already has an approved booking.')
+                        return redirect('landlord_dashboard')
+                    booking.status = Booking.STATUS_APPROVED
+                    booking.save(update_fields=['status', 'updated_at'])
+                    title = 'Booking request approved'
+                    body = f'Your request for {booking.room.get_room_type_display()} at {booking.room.house.title} was approved.'
+            except IntegrityError:
+                messages.error(request, 'This room already has an approved booking.')
+                return redirect('landlord_dashboard')
         else:
             booking.status = Booking.STATUS_REJECTED
             title = 'Booking request declined'

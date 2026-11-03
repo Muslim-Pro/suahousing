@@ -117,6 +117,7 @@ class HouseDetailContactLayoutTests(TestCase):
         self.assertContains(response, 'Maliki Saidi')
         self.assertContains(response, 'href="mailto:maliki@example.com"')
         self.assertContains(response, 'Contact landlord')
+        self.assertContains(response, 'class="small text-danger fw-semibold report-listing-summary"')
 
     def test_house_detail_shows_room_count_with_correct_singular_and_plural(self):
         landlord = User.objects.create_user(username='room-count-landlord')

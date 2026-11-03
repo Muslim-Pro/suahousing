@@ -21,6 +21,38 @@
         top: 66px;
         align-self: flex-start;
         overflow-y: auto;
+        transition: width 0.18s ease;
+    }
+    .landlord-sidebar-header {
+        display: flex;
+        min-height: 32px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .landlord-sidebar-title {
+        margin: 0;
+    }
+    .sidebar-collapse-toggle {
+        display: inline-flex;
+        width: 32px;
+        height: 32px;
+        flex: 0 0 32px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 6px;
+        background: transparent;
+        color: #d1fae5;
+    }
+    .sidebar-collapse-toggle:hover,
+    .sidebar-collapse-toggle:focus-visible {
+        background: rgba(134, 239, 172, 0.16);
+        color: #fff;
+    }
+    .sidebar-collapse-toggle i {
+        transition: transform 0.18s ease;
     }
     .landlord-sidebar .nav-link {
         color: rgba(255, 255, 255, 0.72);
@@ -177,6 +209,48 @@
             transform: none;
         }
     }
+    @media (min-width: 992px) {
+        .landlord-shell {
+            display: block !important;
+        }
+        .landlord-sidebar {
+            position: fixed;
+            top: 66px;
+            bottom: 0;
+            height: calc(100vh - 66px);
+            min-height: 0;
+            z-index: 1010;
+        }
+        .landlord-shell > main {
+            margin-left: 250px;
+            transition: margin-left 0.18s ease;
+        }
+        .landlord-shell.sidebar-collapsed .landlord-sidebar {
+            width: 80px;
+        }
+        .landlord-shell.sidebar-collapsed > main {
+            margin-left: 80px;
+        }
+        .landlord-shell.sidebar-collapsed .landlord-sidebar-header {
+            justify-content: center;
+        }
+        .landlord-shell.sidebar-collapsed .landlord-sidebar-title,
+        .landlord-shell.sidebar-collapsed .sidebar-label,
+        .landlord-shell.sidebar-collapsed .sidebar-status {
+            display: none !important;
+        }
+        .landlord-shell.sidebar-collapsed .sidebar-collapse-toggle i {
+            transform: rotate(180deg);
+        }
+        .landlord-shell.sidebar-collapsed .landlord-sidebar .nav-link {
+            justify-content: center;
+            padding-right: 0.25rem;
+            padding-left: 0.25rem;
+        }
+        .landlord-shell.sidebar-collapsed .landlord-sidebar .nav-link i {
+            margin-right: 0 !important;
+        }
+    }
     @media (prefers-reduced-motion: reduce) {
         .landlord-sidebar .nav-link,
         .stat-card {
@@ -263,35 +337,40 @@
 {% block full_width %}
 {% if user.is_authenticated and user.user_type == 'landlord' %}
 <div class="d-lg-flex landlord-shell">
-    <aside class="landlord-sidebar p-3">
-        <p class="text-uppercase small text-white-50 fw-bold px-2 mb-3">Landlord menu</p>
+    <aside class="landlord-sidebar p-3" id="landlordSidebar">
+        <div class="landlord-sidebar-header">
+            <p class="landlord-sidebar-title text-uppercase small text-white-50 fw-bold px-2">Landlord menu</p>
+            <button type="button" class="sidebar-collapse-toggle d-none d-lg-inline-flex" id="landlordSidebarToggle" aria-controls="landlordSidebar" aria-expanded="true" aria-label="Collapse sidebar" title="Collapse sidebar">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+        </div>
         <nav class="nav flex-column gap-1">
-            <a class="nav-link active" href="{% url 'landlord_dashboard' %}">
-                <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
+            <a class="nav-link active" href="{% url 'landlord_dashboard' %}" aria-label="Dashboard" title="Dashboard">
+                <i class="fa-solid fa-gauge-high me-2" aria-hidden="true"></i><span class="sidebar-label">Dashboard</span>
             </a>
-            <a class="nav-link" href="{% url 'landlord_dashboard' %}#properties">
-                <i class="fa-solid fa-building me-2"></i> My Properties
+            <a class="nav-link" href="{% url 'landlord_dashboard' %}#properties" aria-label="My Properties" title="My Properties">
+                <i class="fa-solid fa-building me-2" aria-hidden="true"></i><span class="sidebar-label">My Properties</span>
             </a>
-            <a class="nav-link" href="{% url 'landlord_add_room' %}">
-                <i class="fa-solid fa-door-open me-2"></i> Add Room
+            <a class="nav-link" href="{% url 'landlord_add_room' %}" aria-label="Add Room" title="Add Room">
+                <i class="fa-solid fa-door-open me-2" aria-hidden="true"></i><span class="sidebar-label">Add Room</span>
             </a>
-            <a class="nav-link" href="{% url 'landlord_dashboard' %}#inquiries">
-                <i class="fa-solid fa-comments me-2"></i> Inquiries
+            <a class="nav-link" href="{% url 'landlord_dashboard' %}#inquiries" aria-label="Inquiries" title="Inquiries">
+                <i class="fa-solid fa-comments me-2" aria-hidden="true"></i><span class="sidebar-label">Inquiries</span>
             </a>
-            <a class="nav-link" href="{% url 'landlord_dashboard' %}#landlord-notifications">
-                <i class="fa-regular fa-bell me-2"></i> Notifications
-                {% if unread_notification_count %}<span class="badge text-bg-warning ms-auto">{{ unread_notification_count }}</span>{% endif %}
+            <a class="nav-link" href="{% url 'landlord_dashboard' %}#landlord-notifications" aria-label="Notifications" title="Notifications">
+                <i class="fa-regular fa-bell me-2" aria-hidden="true"></i><span class="sidebar-label">Notifications</span>
+                {% if unread_notification_count %}<span class="badge text-bg-warning ms-auto sidebar-status">{{ unread_notification_count }}</span>{% endif %}
             </a>
-            <a class="nav-link" href="{% url 'landlord_dashboard' %}#payments">
-                <i class="fa-solid fa-money-bill-wave me-2"></i> Payments <span class="ms-auto feature-status">Soon</span>
+            <a class="nav-link" href="{% url 'landlord_dashboard' %}#payments" aria-label="Payments" title="Payments">
+                <i class="fa-solid fa-money-bill-wave me-2" aria-hidden="true"></i><span class="sidebar-label">Payments</span> <span class="ms-auto feature-status sidebar-status">Soon</span>
             </a>
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#profilePicModal">
-                <i class="fa-solid fa-user-gear me-2"></i> Profile &amp; Settings
+            <a class="nav-link" href="#" aria-label="Profile and Settings" title="Profile and Settings" data-bs-toggle="modal" data-bs-target="#profilePicModal">
+                <i class="fa-solid fa-user-gear me-2" aria-hidden="true"></i><span class="sidebar-label">Profile &amp; Settings</span>
             </a>
         </nav>
         <div class="sidebar-bottom-link">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                <i class="fa-solid fa-key me-2"></i> Change Password
+            <a class="nav-link" href="#" aria-label="Change Password" title="Change Password" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                <i class="fa-solid fa-key me-2" aria-hidden="true"></i><span class="sidebar-label">Change Password</span>
             </a>
         </div>
     </aside>
@@ -394,7 +473,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
 
@@ -671,6 +749,38 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var shell = document.querySelector('.landlord-shell');
+        var toggle = document.getElementById('landlordSidebarToggle');
+        if (!shell || !toggle) return;
+
+        var collapsed = false;
+        try {
+            collapsed = localStorage.getItem('landlordSidebarCollapsed') === 'true';
+        } catch (error) {
+            collapsed = false;
+        }
+
+        function setCollapsed(isCollapsed) {
+            collapsed = isCollapsed;
+            shell.classList.toggle('sidebar-collapsed', collapsed);
+            toggle.setAttribute('aria-expanded', String(!collapsed));
+            toggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+            toggle.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+            try {
+                localStorage.setItem('landlordSidebarCollapsed', String(collapsed));
+            } catch (error) {
+                // Toggle itaendelea kufanya kazi hata browser ikizuia localStorage.
+            }
+        }
+
+        setCollapsed(collapsed);
+        toggle.addEventListener('click', function () {
+            setCollapsed(!collapsed);
+        });
+    });
+</script>
 {% if open_password_modal %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {

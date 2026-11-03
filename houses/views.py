@@ -144,6 +144,12 @@ def house_detail(request, pk):
     for room in rooms:
         room.approved_booking = approved_bookings_by_room.get(room.pk)
 
+    booked_room_ids = set(
+        Booking.objects.filter(
+            room__house=house,
+            status=Booking.STATUS_APPROVED,
+        ).values_list('room_id', flat=True)
+    )
     context = {
         'house': house,
         'rooms': rooms,
@@ -154,6 +160,7 @@ def house_detail(request, pk):
             house=house,
         ).exists(),
         'active_booking_room_ids': active_booking_room_ids,
+        'booked_room_ids': booked_room_ids,
         'student_phone': request.user.profile.phone if is_student else '',
         'landlord_whatsapp': tanzania_whatsapp_number(
             house.landlord.profile.phone,

@@ -7,6 +7,7 @@ from unittest.mock import patch
 from django.contrib.auth.models import User
 from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import IntegrityError, transaction
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
@@ -141,12 +142,25 @@ class LandlordDashboardActionsTests(TestCase):
         self.assertContains(response, 'id="inquiries"')
         self.assertContains(response, 'id="payments"')
         self.assertContains(response, 'href="/#support"')
-        self.assertContains(response, 'position: sticky;')
+        self.assertContains(response, 'position: fixed;')
         self.assertContains(response, 'top: 66px;')
+        self.assertContains(response, 'bottom: 0;')
+        self.assertContains(response, 'height: calc(100vh - 66px);')
+        self.assertContains(response, 'margin-left: 250px;')
         self.assertContains(response, 'Change Password')
+        self.assertContains(response, 'id="landlordSidebarToggle"')
+        self.assertContains(response, 'aria-label="Collapse sidebar"')
+        self.assertContains(response, 'class="sidebar-label">Dashboard</span>')
+        self.assertContains(response, 'aria-label="Profile and Settings"')
+        self.assertContains(response, "landlordSidebarCollapsed")
         self.assertContains(response, 'id="landlordNavbarPanel"')
         self.assertContains(response, 'class="offcanvas offcanvas-lg offcanvas-start')
         self.assertContains(response, 'data-bs-backdrop="true"')
+        rendered_page = response.content.decode()
+        main_start = rendered_page.index('<main class="flex-grow-1 p-3 p-lg-4 bg-light">')
+        main_end = rendered_page.index('</main>', main_start)
+        for section_id in ('properties', 'inquiries', 'payments'):
+            self.assertLess(rendered_page.index(f'id="{section_id}"'), main_end)
 
     def test_non_landlords_cannot_open_property_creation(self):
         student = User.objects.create_user(
@@ -854,6 +868,72 @@ class StudentDashboardTests(TestCase):
         self.client.post(booking_url, {'message': 'Duplicate request.'})
 
         self.assertEqual(Booking.objects.filter(student=self.student, room=room).count(), 1)
+
+    def test_room_with_approved_booking_rejects_new_requests_and_hides_form(self):
+        house, room, _ = self._create_room()
+        existing_student = User.objects.create_user(username='already-booked-student')
+        Booking.objects.create(
+            student=existing_student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+
+        response = self.client.post(
+            reverse('apply_for_room', args=[room.pk]),
+            {'message': 'I would like to book this room.'},
+        )
+
+        self.assertRedirects(response, reverse('house_detail', args=[house.pk]))
+        self.assertEqual(Booking.objects.filter(room=room).count(), 1)
+        detail_response = self.client.get(reverse('house_detail', args=[house.pk]))
+        self.assertContains(detail_response, 'Already booked')
+        self.assertNotContains(detail_response, reverse('apply_for_room', args=[room.pk]))
+
+    def test_landlord_cannot_approve_a_second_request_for_the_same_room(self):
+        _, room, landlord = self._create_room()
+        existing_student = User.objects.create_user(username='existing-approved-student')
+        Booking.objects.create(
+            student=existing_student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+        competing_booking = Booking.objects.create(
+            student=self.student,
+            room=room,
+            status=Booking.STATUS_PENDING,
+        )
+        self.client.force_login(landlord)
+
+        response = self.client.post(
+            reverse('landlord_update_booking', args=[competing_booking.pk]),
+            {'action': 'approve'},
+        )
+
+        self.assertRedirects(response, reverse('landlord_dashboard'))
+        competing_booking.refresh_from_db()
+        self.assertEqual(competing_booking.status, Booking.STATUS_PENDING)
+        self.assertEqual(
+            Booking.objects.filter(room=room, status=Booking.STATUS_APPROVED).count(),
+            1,
+        )
+
+    def test_database_rejects_two_approved_bookings_for_one_room(self):
+        _, room, _ = self._create_room()
+        existing_student = User.objects.create_user(username='unique-room-student')
+        Booking.objects.create(
+            student=existing_student,
+            room=room,
+            status=Booking.STATUS_APPROVED,
+        )
+        another_student = User.objects.create_user(username='second-unique-room-student')
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Booking.objects.create(
+                    student=another_student,
+                    room=room,
+                    status=Booking.STATUS_APPROVED,
+                )
 
     @patch('accounts.services.send_clickpesa_ussd_push')
     def test_approved_booking_starts_ussd_for_database_room_price(self, send_push):

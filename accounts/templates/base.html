@@ -170,6 +170,9 @@
         color: #dc3545;
     }
     @media (max-width: 991.98px) {
+        .offcanvas-backdrop.show {
+            opacity: 0.24;
+        }
         .mobile-nav-host {
             z-index: 1050;
         }
@@ -286,6 +289,21 @@
         .mobile-menu-actions .profile-dropdown-toggle:hover {
             background: #eaf5ee;
         }
+        .mobile-menu-actions .dropdown-menu {
+            max-height: min(320px, calc(100vh - 220px));
+            overflow-y: auto;
+            margin-top: 0 !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .mobile-menu-actions .dropdown-menu.show {
+            position: absolute !important;
+            top: auto !important;
+            right: 0 !important;
+            bottom: calc(100% + 0.35rem) !important;
+            left: auto !important;
+            transform: none !important;
+            margin: 0 !important;
+        }
     }
     @media (min-width: 992px) {
         .mobile-nav-panel {
@@ -371,7 +389,7 @@
             <!-- Upande wa Kulia: picha ya profile + first name (si username) -->
             <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0 navbar-profile-actions mobile-menu-actions">
                 {% if request.user.is_authenticated %}
-                    <div class="dropdown">
+                    <div class="dropdown mobile-profile-dropdown">
                         <button class="btn btn-link navbar-profile-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {% if request.user.profile.profile_pic %}
                                 <img src="{{ request.user.profile.profile_pic.url }}" alt="{{ request.user.first_name|default:request.user.username }}" class="rounded-circle navbar-profile-avatar">
@@ -554,6 +572,21 @@
 {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        /* Kwenye simu, dropdown ya account ifunguke juu ili chaguo zisikatwe chini. */
+        (function () {
+            var mobileMenu = window.matchMedia('(max-width: 991.98px)');
+
+            function updateProfileDropdownDirection() {
+                document.querySelectorAll('.mobile-profile-dropdown').forEach(function (dropdown) {
+                    dropdown.classList.toggle('dropup', mobileMenu.matches);
+                });
+            }
+
+            updateProfileDropdownDirection();
+            mobileMenu.addEventListener('change', updateProfileDropdownDirection);
+        })();
+    </script>
     <script>
         /* Funga drawer bila kuzuia browser kufuata kiungo kilichobonyezwa. */
         document.addEventListener('click', function (event) {

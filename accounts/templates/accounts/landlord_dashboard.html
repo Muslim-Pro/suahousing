@@ -292,7 +292,7 @@
                 </li>
             </ul>
             {% if user.is_authenticated and user.user_type == 'landlord' %}
-            <div class="dropdown mt-3 mt-lg-0 profile-dropdown mobile-menu-actions">
+            <div class="dropdown mt-3 mt-lg-0 profile-dropdown mobile-menu-actions mobile-profile-dropdown">
                 <button class="btn btn-link profile-dropdown-toggle dropdown-toggle d-flex align-items-center gap-2 p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {% if user.profile.profile_pic %}
                         <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.first_name|default:user.username }}" class="rounded-circle profile-avatar">

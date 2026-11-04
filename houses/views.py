@@ -1,11 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Avg, Count, Exists, Min, OuterRef, Prefetch
+from django.db.models import Avg, Count, Exists, Min, OuterRef, Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.forms import HouseReportForm
-from accounts.models import Booking, HouseReport, Review, SavedHouse
+from accounts.models import Booking, HouseReport, LandlordApplication, Review, SavedHouse
 from accounts.utils import tanzania_whatsapp_number
 from .models import House, Room
 
@@ -30,9 +30,14 @@ def home(request):
 
 def available_rooms(request):
     """Ukurasa wa umma wa kuonyesha nyumba na vyumba vilivyopo."""
+    approved_landlord_applications = LandlordApplication.objects.filter(
+        profile__user_id=OuterRef('landlord_id'),
+        status=LandlordApplication.STATUS_APPROVED,
+    )
     houses = (
         House.objects.filter(is_available=True)
         .annotate(room_count=Count('rooms'), min_price=Min('rooms__price'))
+        .annotate(verified_landlord=Exists(approved_landlord_applications))
         .order_by('-created_at')
     )
 
@@ -55,7 +60,19 @@ def available_rooms(request):
         room_filters['price__gte'] = min_price
     if max_price is not None:
         room_filters['price__lte'] = max_price
-    visible_rooms = Room.objects.filter(**room_filters)
+    visible_rooms = Room.objects.filter(**room_filters).annotate(
+        has_approved_booking=Exists(
+            Booking.objects.filter(
+                room_id=OuterRef('pk'),
+                status=Booking.STATUS_APPROVED,
+            ),
+        ),
+        pending_booking_count=Count(
+            'booking_requests',
+            filter=Q(booking_requests__status=Booking.STATUS_PENDING),
+            distinct=True,
+        ),
+    )
     if room_filters:
         # Exists huhakikisha aina na bei zinakutana kwenye chumba kimoja cha nyumba hiyo.
         houses = houses.filter(Exists(
@@ -67,7 +84,9 @@ def available_rooms(request):
     )
 
     total_houses = House.objects.filter(is_available=True).count()
-    total_rooms = Room.objects.filter(house__is_available=True).count()
+    total_rooms = Room.objects.filter(house__is_available=True).exclude(
+        booking_requests__status=Booking.STATUS_APPROVED,
+    ).distinct().count()
     locations = House.LOCATION_CHOICES
 
     context = {
@@ -114,9 +133,14 @@ def house_list(request):
 # 2. Ukurasa wa Maelezo ya Ndani (Picha kubwa + Vyumba na Bei zake)
 @login_required
 def house_detail(request, pk):
+    approved_landlord_applications = LandlordApplication.objects.filter(
+        profile__user_id=OuterRef('landlord_id'),
+        status=LandlordApplication.STATUS_APPROVED,
+    )
     house = get_object_or_404(
         House.objects.select_related('landlord', 'landlord__profile').annotate(
             room_count=Count('rooms'),
+            verified_landlord=Exists(approved_landlord_applications),
         ),
         pk=pk,
     )
@@ -150,6 +174,12 @@ def house_detail(request, pk):
             status=Booking.STATUS_APPROVED,
         ).values_list('room_id', flat=True)
     )
+    pending_room_ids = set(
+        Booking.objects.filter(
+            room__house=house,
+            status=Booking.STATUS_PENDING,
+        ).values_list('room_id', flat=True)
+    )
     context = {
         'house': house,
         'rooms': rooms,
@@ -161,6 +191,7 @@ def house_detail(request, pk):
         ).exists(),
         'active_booking_room_ids': active_booking_room_ids,
         'booked_room_ids': booked_room_ids,
+        'pending_room_ids': pending_room_ids,
         'student_phone': request.user.profile.phone if is_student else '',
         'landlord_whatsapp': tanzania_whatsapp_number(
             house.landlord.profile.phone,

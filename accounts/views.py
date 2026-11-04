@@ -1,5 +1,6 @@
 import threading
 import uuid
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib import messages
@@ -29,6 +30,7 @@ from .forms import (
     LandlordRoomForm,
     ProfilePicForm,
     ReviewForm,
+    SavedSearchForm,
     StudentDetailsForm,
     SupportRequestForm,
     UserRegisterForm,
@@ -41,6 +43,7 @@ from .models import (
     Profile,
     Review,
     SavedHouse,
+    SavedSearch,
     StudentNotification,
     SupportRequest,
 )
@@ -177,6 +180,13 @@ def landlord_dashboard(request):
         status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
     ).select_related('student', 'student__profile', 'room', 'room__house').prefetch_related('messages__sender')
     notifications = StudentNotification.objects.filter(recipient=request.user)
+    unread_message_count = notifications.filter(
+        is_read=False,
+        notification_type__in=[
+            StudentNotification.TYPE_MESSAGE,
+            StudentNotification.TYPE_STUDENT_MESSAGE,
+        ],
+    ).count()
 
     context = {
         'profile': profile,
@@ -190,6 +200,11 @@ def landlord_dashboard(request):
         'pending_bookings': landlord_bookings.filter(status=Booking.STATUS_PENDING)[:20],
         'landlord_bookings': landlord_bookings[:50],
         'pending_booking_count': landlord_bookings.filter(status=Booking.STATUS_PENDING).count(),
+        'unread_message_count': unread_message_count,
+        'pending_payment_confirmation_count': landlord_bookings.filter(
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_PENDING,
+        ).count(),
         'notifications': notifications[:8],
         'unread_notification_count': notifications.filter(is_read=False).count(),
     }
@@ -226,6 +241,32 @@ def student_dashboard(request):
     saved_houses = SavedHouse.objects.filter(
         student=request.user,
     ).select_related('house')
+    saved_search_list = list(SavedSearch.objects.filter(student=request.user)[:5])
+    for saved_search in saved_search_list:
+        room_filters = {'house__is_available': True}
+        query_params = {}
+        if saved_search.location:
+            room_filters['house__location'] = saved_search.location
+            query_params['location'] = saved_search.location
+        if saved_search.room_type:
+            room_filters['room_type'] = saved_search.room_type
+            query_params['room_type'] = saved_search.room_type
+        if saved_search.minimum_price is not None:
+            room_filters['price__gte'] = saved_search.minimum_price
+            query_params['min_price'] = saved_search.minimum_price
+        if saved_search.maximum_price is not None:
+            room_filters['price__lte'] = saved_search.maximum_price
+            query_params['max_price'] = saved_search.maximum_price
+        matching_rooms = Room.objects.filter(
+            **room_filters,
+        ).exclude(
+            booking_requests__status=Booking.STATUS_APPROVED,
+        ).select_related('house').distinct().order_by('price')
+        saved_search.matching_room_count = matching_rooms.count()
+        saved_search.matching_rooms = list(matching_rooms[:3])
+        saved_search.results_url = (
+            f'{reverse("available_rooms")}?{urlencode(query_params)}#listings'
+        )
     notifications = StudentNotification.objects.filter(
         recipient=request.user,
     )
@@ -239,6 +280,7 @@ def student_dashboard(request):
         'recent_houses': recent_houses,
         'saved_houses': saved_houses[:6],
         'saved_house_count': saved_houses.count(),
+        'saved_searches': saved_search_list,
         'bookings': booking_list,
         'saved_house_ids': list(
             saved_houses.values_list('house_id', flat=True),
@@ -260,6 +302,70 @@ def student_dashboard(request):
         'landlord_application': landlord_application,
     }
     return render(request, 'accounts/student_dashboard.html', context)
+
+
+@login_required
+def save_search(request):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    if profile.user_type != Profile.TYPE_STUDENT:
+        messages.error(request, 'Only students can save housing searches.')
+        return redirect('landlord_dashboard')
+    if request.method != 'POST':
+        return redirect('available_rooms')
+
+    form = SavedSearchForm(request.POST)
+    if not form.is_valid():
+        messages.error(request, 'Please check the filters and try saving the search again.')
+        return _saved_search_return_url(request)
+
+    search_data = form.cleaned_data
+    existing_searches = SavedSearch.objects.filter(
+        student=request.user,
+        location=search_data['location'],
+        room_type=search_data['room_type'],
+    )
+    for field in ('minimum_price', 'maximum_price'):
+        value = search_data[field]
+        if value is None:
+            existing_searches = existing_searches.filter(**{f'{field}__isnull': True})
+        else:
+            existing_searches = existing_searches.filter(**{field: value})
+
+    if existing_searches.exists():
+        messages.info(request, 'You have already saved these filters.')
+    else:
+        with transaction.atomic():
+            saved_search = form.save(commit=False)
+            saved_search.student = request.user
+            saved_search.save()
+            old_search_ids = list(
+                SavedSearch.objects.filter(student=request.user)
+                .order_by('-created_at')
+                .values_list('pk', flat=True)[5:]
+            )
+            SavedSearch.objects.filter(pk__in=old_search_ids).delete()
+        messages.success(request, 'Search saved. Matching room counts update as availability changes.')
+    return _saved_search_return_url(request)
+
+
+def _saved_search_return_url(request):
+    candidate = request.POST.get('next', '')
+    if candidate and url_has_allowed_host_and_scheme(
+        candidate,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return redirect(candidate)
+    return redirect('student_dashboard')
+
+
+@login_required
+def delete_saved_search(request, pk):
+    if request.method == 'POST':
+        saved_search = get_object_or_404(SavedSearch, pk=pk, student=request.user)
+        saved_search.delete()
+        messages.success(request, 'Saved search removed.')
+    return redirect('student_dashboard')
 
 
 @login_required
@@ -940,6 +1046,13 @@ def landlord_change_password(request):
         status__in=[Booking.STATUS_PENDING, Booking.STATUS_APPROVED],
     ).select_related('student', 'student__profile', 'room', 'room__house').prefetch_related('messages__sender')
     notifications = StudentNotification.objects.filter(recipient=request.user)
+    unread_message_count = notifications.filter(
+        is_read=False,
+        notification_type__in=[
+            StudentNotification.TYPE_MESSAGE,
+            StudentNotification.TYPE_STUDENT_MESSAGE,
+        ],
+    ).count()
     context = {
         'profile': profile,
         'profile_form': ProfilePicForm(instance=profile),
@@ -952,6 +1065,11 @@ def landlord_change_password(request):
         'pending_bookings': landlord_bookings.filter(status=Booking.STATUS_PENDING)[:20],
         'landlord_bookings': landlord_bookings[:50],
         'pending_booking_count': landlord_bookings.filter(status=Booking.STATUS_PENDING).count(),
+        'unread_message_count': unread_message_count,
+        'pending_payment_confirmation_count': landlord_bookings.filter(
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_PENDING,
+        ).count(),
         'notifications': notifications[:8],
         'unread_notification_count': notifications.filter(is_read=False).count(),
     }

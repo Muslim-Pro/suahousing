@@ -16,7 +16,7 @@ from django.template.loader import render_to_string
 from houses.models import House, Room
 
 from .utils import normalize_tanzania_phone_number
-from .models import HouseReport, LandlordApplication, Profile, Review, SupportRequest
+from .models import HouseReport, LandlordApplication, Profile, Review, SavedSearch, SupportRequest
 
 
 logger = logging.getLogger(__name__)
@@ -362,6 +362,44 @@ class HouseReportForm(forms.ModelForm):
                 'placeholder': 'Add details that will help us review this listing',
             }),
         }
+
+
+class SavedSearchForm(forms.ModelForm):
+    class Meta:
+        model = SavedSearch
+        fields = ('location', 'room_type', 'minimum_price', 'maximum_price')
+        widgets = {
+            'location': forms.Select(attrs={'class': 'form-select'}),
+            'room_type': forms.Select(attrs={'class': 'form-select'}),
+            'minimum_price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 0,
+                'step': 1000,
+            }),
+            'maximum_price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 0,
+                'step': 1000,
+            }),
+        }
+        labels = {
+            'location': 'Location',
+            'room_type': 'Room type',
+            'minimum_price': 'Minimum price (TZS)',
+            'maximum_price': 'Maximum price (TZS)',
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        minimum_price = cleaned_data.get('minimum_price')
+        maximum_price = cleaned_data.get('maximum_price')
+        if (
+            minimum_price is not None
+            and maximum_price is not None
+            and minimum_price > maximum_price
+        ):
+            raise forms.ValidationError('Maximum price must be greater than or equal to minimum price.')
+        return cleaned_data
 
 
 class BookingPaymentForm(forms.Form):

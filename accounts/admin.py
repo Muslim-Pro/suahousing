@@ -10,6 +10,7 @@ from .models import (
     Profile,
     Review,
     SavedHouse,
+    SavedSearch,
     StudentNotification,
     SupportRequest,
 )
@@ -85,6 +86,13 @@ class BookingAdmin(admin.ModelAdmin):
 class SavedHouseAdmin(admin.ModelAdmin):
     list_display = ('student', 'house', 'created_at')
     search_fields = ('student__username', 'house__title')
+
+
+@admin.register(SavedSearch)
+class SavedSearchAdmin(admin.ModelAdmin):
+    list_display = ('student', 'location', 'room_type', 'minimum_price', 'maximum_price', 'created_at')
+    list_filter = ('location', 'room_type', 'created_at')
+    search_fields = ('student__username', 'student__email')
 
 
 @admin.register(BookingMessage)

@@ -23,6 +23,7 @@ from .models import (
     Profile,
     Review,
     SavedHouse,
+    SavedSearch,
     StudentNotification,
     SupportRequest,
 )
@@ -142,6 +143,13 @@ class LandlordDashboardActionsTests(TestCase):
         self.assertContains(response, 'id="inquiries"')
         self.assertContains(response, 'id="payments"')
         self.assertContains(response, 'href="/#support"')
+        self.assertContains(response, 'Pending booking requests')
+        self.assertNotContains(response, 'Inquiry tracking not connected')
+        self.assertNotContains(response, '>Soon</span>')
+        self.assertContains(response, 'href="#properties" class="card stat-card')
+        self.assertContains(response, 'href="#inquiries" class="card stat-card')
+        self.assertContains(response, 'href="#landlord-notifications" class="card stat-card')
+        self.assertContains(response, 'href="#payments" class="card stat-card')
         self.assertContains(response, 'position: fixed;')
         self.assertContains(response, 'top: 66px;')
         self.assertContains(response, 'bottom: 0;')
@@ -165,6 +173,56 @@ class LandlordDashboardActionsTests(TestCase):
         main_end = rendered_page.index('</main>', main_start)
         for section_id in ('properties', 'inquiries', 'payments'):
             self.assertLess(rendered_page.index(f'id="{section_id}"'), main_end)
+
+    def test_dashboard_action_cards_use_live_request_message_and_payment_counts(self):
+        student = User.objects.create_user(username='action-card-student')
+        house = House.objects.create(
+            landlord=self.landlord,
+            title='Action Card House',
+            description='Dashboard count fixture.',
+            location='mazimbu',
+            address='Near SUA',
+            image='house_images/action-card.png',
+        )
+        pending_room = Room.objects.create(
+            house=house,
+            room_type='single',
+            price=150000,
+            room_image='room_images/action-card-pending.png',
+        )
+        payment_room = Room.objects.create(
+            house=house,
+            room_type='master',
+            price=250000,
+            room_image='room_images/action-card-payment.png',
+        )
+        pending_booking = Booking.objects.create(
+            student=student,
+            room=pending_room,
+            status=Booking.STATUS_PENDING,
+        )
+        payment_booking = Booking.objects.create(
+            student=student,
+            room=payment_room,
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_PENDING,
+        )
+        StudentNotification.objects.create(
+            recipient=self.landlord,
+            booking=pending_booking,
+            notification_type=StudentNotification.TYPE_STUDENT_MESSAGE,
+            title='New student message',
+            message='Can I view the room?',
+        )
+
+        response = self.client.get(reverse('landlord_dashboard'))
+
+        self.assertEqual(response.context['pending_booking_count'], 1)
+        self.assertEqual(response.context['unread_message_count'], 1)
+        self.assertEqual(response.context['pending_payment_confirmation_count'], 1)
+        self.assertEqual(payment_booking.payment_status, Booking.PAYMENT_PENDING)
+        self.assertContains(response, 'Unread messages')
+        self.assertContains(response, 'Payments to confirm')
 
     def test_non_landlords_cannot_open_property_creation(self):
         student = User.objects.create_user(
@@ -706,6 +764,94 @@ class StudentDashboardTests(TestCase):
         self.client.post(save_url, {'next': reverse('student_dashboard') + '#saved-homes'})
         self.assertFalse(SavedHouse.objects.filter(student=self.student, house=house).exists())
 
+    def test_student_can_save_search_view_matches_and_remove_it(self):
+        landlord = User.objects.create_user(username='saved-search-landlord')
+        house = House.objects.create(
+            landlord=landlord,
+            title='Saved Search House',
+            description='Matches the saved search.',
+            location='mazimbu',
+            address='Near SUA',
+            image='house_images/saved-search.png',
+        )
+        matching_room = Room.objects.create(
+            house=house,
+            room_type='single',
+            price=150000,
+            room_image='room_images/saved-search-match.png',
+        )
+        Room.objects.create(
+            house=house,
+            room_type='single',
+            price=250000,
+            room_image='room_images/saved-search-expensive.png',
+        )
+        already_booked_room = Room.objects.create(
+            house=house,
+            room_type='single',
+            price=160000,
+            room_image='room_images/saved-search-booked.png',
+        )
+        other_student = User.objects.create_user(username='saved-search-booked-student')
+        Booking.objects.create(
+            student=other_student,
+            room=already_booked_room,
+            status=Booking.STATUS_APPROVED,
+        )
+        save_url = reverse('save_search')
+        next_url = (
+            f'{reverse("available_rooms")}?location=mazimbu&room_type=single'
+            '&min_price=100000&max_price=200000'
+        )
+        search_data = {
+            'location': 'mazimbu',
+            'room_type': 'single',
+            'minimum_price': '100000',
+            'maximum_price': '200000',
+            'next': next_url,
+        }
+
+        response = self.client.post(save_url, search_data)
+        self.assertRedirects(response, next_url, fetch_redirect_response=False)
+        saved_search = SavedSearch.objects.get(student=self.student)
+        self.assertEqual(saved_search.location, 'mazimbu')
+        self.assertEqual(saved_search.room_type, 'single')
+
+        dashboard = self.client.get(reverse('student_dashboard'))
+        dashboard_search = dashboard.context['saved_searches'][0]
+        self.assertEqual(dashboard_search.matching_room_count, 1)
+        self.assertEqual([room.pk for room in dashboard_search.matching_rooms], [matching_room.pk])
+        self.assertEqual(
+            dashboard_search.results_url,
+            f'{next_url}#listings',
+        )
+        self.assertContains(dashboard, 'Saved searches')
+        self.assertContains(dashboard, '1 matching room available now')
+        self.assertContains(dashboard, 'View matches')
+
+        self.client.post(save_url, search_data)
+        self.assertEqual(SavedSearch.objects.filter(student=self.student).count(), 1)
+
+        delete_response = self.client.post(
+            reverse('delete_saved_search', args=[saved_search.pk]),
+        )
+        self.assertRedirects(delete_response, reverse('student_dashboard'))
+        self.assertFalse(SavedSearch.objects.filter(student=self.student).exists())
+
+    def test_saved_search_rejects_minimum_price_above_maximum(self):
+        self.client.post(
+            reverse('save_search'),
+            {
+                'location': '',
+                'room_type': '',
+                'minimum_price': '250000',
+                'maximum_price': '100000',
+                'next': reverse('available_rooms'),
+            },
+        )
+
+        self.assertFalse(SavedSearch.objects.filter(student=self.student).exists())
+
     def test_room_details_offer_save_and_booking_actions(self):
         house, room, _ = self._create_room()
 
@@ -714,7 +860,37 @@ class StudentDashboardTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, reverse('save_house', args=[house.pk]))
         self.assertContains(response, reverse('apply_for_room', args=[room.pk]))
-        self.assertContains(response, 'Book now')
+        self.assertContains(response, 'Send booking request')
+        self.assertContains(response, 'Available')
+
+    def test_house_details_distinguish_pending_from_booked_rooms(self):
+        house, pending_room, landlord = self._create_room()
+        booked_room = Room.objects.create(
+            house=house,
+            room_type='master',
+            price=250000,
+            room_image='room_images/already-booked.png',
+        )
+        pending_student = User.objects.create_user(username='pending-room-student')
+        booked_student = User.objects.create_user(username='booked-room-student')
+        Booking.objects.create(
+            student=pending_student,
+            room=pending_room,
+            status=Booking.STATUS_PENDING,
+        )
+        Booking.objects.create(
+            student=booked_student,
+            room=booked_room,
+            status=Booking.STATUS_APPROVED,
+        )
+
+        response = self.client.get(reverse('house_detail', args=[house.pk]))
+
+        self.assertContains(response, 'Requests pending · accepting requests')
+        self.assertContains(response, 'Already booked')
+        self.assertContains(response, 'This room is no longer accepting booking requests.')
+        self.assertEqual(response.content.decode().count(reverse('apply_for_room', args=[pending_room.pk])), 1)
+        self.assertNotContains(response, reverse('apply_for_room', args=[booked_room.pk]))
 
     def test_paid_booking_can_download_pdf_receipt_from_dashboard_and_room(self):
         house, room, _ = self._create_room()
@@ -761,6 +937,41 @@ class StudentDashboardTests(TestCase):
         self.assertContains(verification_response, 'Booking House')
         self.assertNotContains(verification_response, 'Amina')
         self.assertNotContains(verification_response, '255712345678')
+
+    def test_booking_dashboard_shows_request_approval_and_payment_steps(self):
+        house, first_room, _ = self._create_room()
+        second_room = Room.objects.create(
+            house=house,
+            room_type='master',
+            price=250000,
+            room_image='room_images/approved-room.png',
+        )
+        third_room = Room.objects.create(
+            house=house,
+            room_type='double',
+            price=300000,
+            room_image='room_images/paid-room.png',
+        )
+        Booking.objects.create(student=self.student, room=first_room)
+        Booking.objects.create(
+            student=self.student,
+            room=second_room,
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_PENDING,
+        )
+        Booking.objects.create(
+            student=self.student,
+            room=third_room,
+            status=Booking.STATUS_APPROVED,
+            payment_status=Booking.PAYMENT_PAID,
+        )
+
+        response = self.client.get(reverse('student_dashboard'))
+
+        self.assertContains(response, 'aria-label="Booking progress"')
+        self.assertContains(response, 'Awaiting landlord')
+        self.assertContains(response, 'Awaiting confirmation')
+        self.assertContains(response, 'Payment confirmed')
 
     def test_unpaid_booking_cannot_download_receipt(self):
         _, room, _ = self._create_room()

@@ -66,6 +66,72 @@
         flex-shrink: 0;
         object-fit: cover;
     }
+    .booking-progress {
+        display: grid;
+        width: min(440px, 100%);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.25rem;
+        margin: 1rem 0 0;
+    }
+    .booking-progress-step {
+        position: relative;
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
+        color: #64748b;
+        font-size: 0.72rem;
+        line-height: 1.25;
+        text-align: center;
+    }
+    .booking-progress-step:not(:last-child)::after {
+        position: absolute;
+        top: 11px;
+        right: calc(-50% + 14px);
+        left: calc(50% + 14px);
+        height: 2px;
+        background: #dce3e8;
+        content: "";
+    }
+    .booking-progress-step.is-complete:not(:last-child)::after {
+        background: #198754;
+    }
+    .booking-progress-marker {
+        z-index: 1;
+        display: grid;
+        width: 24px;
+        height: 24px;
+        flex: 0 0 24px;
+        place-items: center;
+        border: 2px solid #cbd5dc;
+        border-radius: 50%;
+        background: #fff;
+        font-size: 0.68rem;
+        font-weight: 700;
+    }
+    .booking-progress-step.is-complete .booking-progress-marker {
+        border-color: #198754;
+        background: #198754;
+        color: #fff;
+    }
+    .booking-progress-step.is-current .booking-progress-marker {
+        border-color: #198754;
+        color: #198754;
+    }
+    .booking-progress-step.is-current {
+        color: #176b43;
+        font-weight: 700;
+    }
+    .booking-progress-step.is-rejected .booking-progress-marker {
+        border-color: #dc3545;
+        background: #dc3545;
+        color: #fff;
+    }
+    .booking-progress-step.is-rejected {
+        color: #b02a37;
+        font-weight: 700;
+    }
     @media (prefers-reduced-motion: no-preference) {
         .student-listing-card {
             transition: transform 0.18s ease, box-shadow 0.18s ease;
@@ -365,6 +431,57 @@
         </div>
     </section>
 
+    <section class="mt-5" id="saved-searches" aria-labelledby="saved-searches-title">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+            <div>
+                <p class="text-success text-uppercase fw-bold small mb-1">Your filters</p>
+                <h2 class="h4 fw-bold mb-0" id="saved-searches-title">Saved searches</h2>
+            </div>
+            <a href="{% url 'available_rooms' %}" class="link-success fw-semibold text-decoration-none">Find more rooms <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i></a>
+        </div>
+        <div class="d-flex flex-column gap-2">
+            {% for saved_search in saved_searches %}
+            <article class="border rounded-3 bg-white p-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <h3 class="h6 fw-bold mb-1">{{ saved_search.get_location_display }} · {{ saved_search.get_room_type_display }}</h3>
+                    <p class="small text-muted mb-1">
+                        {% if saved_search.minimum_price != None or saved_search.maximum_price != None %}
+                            Budget: {% if saved_search.minimum_price != None %}TZS {{ saved_search.minimum_price|floatformat:0 }}{% else %}no minimum{% endif %} – {% if saved_search.maximum_price != None %}TZS {{ saved_search.maximum_price|floatformat:0 }}{% else %}no maximum{% endif %}
+                        {% else %}
+                            Any budget
+                        {% endif %}
+                    </p>
+                    <span class="small fw-semibold text-success">{{ saved_search.matching_room_count }} matching room{{ saved_search.matching_room_count|pluralize }} available now</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{{ saved_search.results_url }}" class="btn btn-sm btn-outline-success">View matches</a>
+                    <form method="post" action="{% url 'delete_saved_search' saved_search.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" aria-label="Remove saved search for {{ saved_search.get_location_display }}" title="Remove saved search">
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+                {% if saved_search.matching_rooms %}
+                <div class="w-100 border-top mt-2 pt-2" aria-label="Matching rooms">
+                    {% for room in saved_search.matching_rooms %}
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 py-2 {% if not forloop.last %}border-bottom{% endif %}">
+                        <div>
+                            <strong class="small d-block">{{ room.house.title }} · {{ room.get_room_type_display }}</strong>
+                            <span class="small text-muted">{{ room.house.get_location_display }} · TZS {{ room.price|floatformat:0 }} / semester</span>
+                        </div>
+                        <a href="{% url 'house_detail' room.house_id %}#room-{{ room.pk }}" class="link-success small fw-semibold text-decoration-none">View room</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </article>
+            {% empty %}
+            <p class="border rounded-3 bg-white p-3 text-muted mb-0">No saved searches yet. Apply filters to listings, then save them here.</p>
+            {% endfor %}
+        </div>
+    </section>
+
     <section class="mt-5" id="my-bookings" aria-labelledby="my-bookings-title">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
             <div>
@@ -381,8 +498,25 @@
                         <div>
                             <h3 class="h5 fw-bold mb-1">{{ booking.room.house.title }}</h3>
                             <p class="small text-muted mb-2">{{ booking.room.get_room_type_display }} · TZS {{ booking.room.price }} / semester</p>
-                            <span class="badge rounded-pill {% if booking.status == 'approved' %}text-bg-success{% elif booking.status == 'rejected' %}text-bg-danger{% else %}text-bg-warning{% endif %}">{{ booking.get_status_display }}</span>
-                            <span class="badge rounded-pill {% if booking.payment_status == 'paid' %}text-bg-success{% else %}text-bg-secondary{% endif %}">Payment: {{ booking.get_payment_status_display }}</span>
+                            {# Hatua hizi zinaonyesha approval na uthibitisho wa malipo kwa mtiririko mmoja. #}
+                            <ol class="booking-progress list-unstyled" aria-label="Booking progress">
+                                <li class="booking-progress-step is-complete">
+                                    <span class="booking-progress-marker"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+                                    <span>Request sent</span>
+                                </li>
+                                <li class="booking-progress-step {% if booking.status == 'approved' %}is-complete{% elif booking.status == 'rejected' %}is-rejected{% else %}is-current{% endif %}">
+                                    <span class="booking-progress-marker">
+                                        {% if booking.status == 'approved' %}<i class="fa-solid fa-check" aria-hidden="true"></i>{% elif booking.status == 'rejected' %}<i class="fa-solid fa-xmark" aria-hidden="true"></i>{% else %}2{% endif %}
+                                    </span>
+                                    <span>{% if booking.status == 'pending' %}Awaiting landlord{% elif booking.status == 'approved' %}Approved{% else %}Declined{% endif %}</span>
+                                </li>
+                                <li class="booking-progress-step {% if booking.payment_status == 'paid' %}is-complete{% elif booking.status == 'approved' %}is-current{% endif %}">
+                                    <span class="booking-progress-marker">
+                                        {% if booking.payment_status == 'paid' %}<i class="fa-solid fa-check" aria-hidden="true"></i>{% else %}3{% endif %}
+                                    </span>
+                                    <span>{% if booking.payment_status == 'paid' %}Payment confirmed{% elif booking.status == 'approved' and booking.payment_status == 'pending' %}Awaiting confirmation{% elif booking.status == 'approved' %}Payment required{% elif booking.status == 'rejected' %}Not required{% else %}After approval{% endif %}</span>
+                                </li>
+                            </ol>
                         </div>
                         <div class="d-flex flex-wrap gap-2">
                             <a href="{% url 'house_detail' booking.room.house.pk %}" class="btn btn-sm btn-outline-success rounded-pill">View</a>

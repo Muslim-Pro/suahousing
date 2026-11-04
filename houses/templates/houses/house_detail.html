@@ -185,6 +185,9 @@
                 <span class="small d-block text-muted">Contacts (Landlord):</span>
                 <div class="landlord-contact-row mt-1">
                     <strong class="text-dark landlord-contact-name">{{ house.landlord.get_full_name|default:house.landlord.username }}</strong>
+                    {% if house.verified_landlord %}
+                        <span class="badge text-bg-success"><i class="fa-solid fa-circle-check me-1" aria-hidden="true"></i>Admin-approved landlord</span>
+                    {% endif %}
                     {% if landlord_whatsapp %}
                         <a href="https://wa.me/{{ landlord_whatsapp }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-success rounded-pill landlord-contact-button">
                             <i class="fa-brands fa-whatsapp me-1"></i>Contact landlord
@@ -248,6 +251,13 @@
                     <div class="card-body d-flex flex-column justify-content-between room-card-body">
                         <div>
                             <span class="badge bg-secondary mb-2 room-type-badge">{{ room.get_room_type_display }}</span>
+                            {% if room.pk in booked_room_ids %}
+                                <span class="badge text-bg-secondary mb-2">Booked</span>
+                            {% elif room.pk in pending_room_ids %}
+                                <span class="badge text-bg-warning mb-2">Requests pending · accepting requests</span>
+                            {% else %}
+                                <span class="badge text-bg-success mb-2">Available</span>
+                            {% endif %}
                             <h3 class="text-danger fw-bold my-2 room-price">TZS {{ room.price }} <small class="text-muted fs-6">/ Semester</small></h3>
                             {% if room.description %}
                                 <p class="card-text text-muted small mt-2 bg-light p-2 rounded">{{ room.description }}</p>
@@ -295,7 +305,7 @@
                                     {% csrf_token %}
                                     <label class="form-label small fw-semibold" for="booking-message-{{ room.pk }}">Message to landlord</label>
                                     <textarea id="booking-message-{{ room.pk }}" name="message" class="form-control form-control-sm mb-2" rows="2" maxlength="2000" required placeholder="Introduce yourself or ask a question"></textarea>
-                                    <button type="submit" class="btn btn-success w-100 rounded-pill">Book now</button>
+                                    <button type="submit" class="btn btn-success w-100 rounded-pill">Send booking request</button>
                                 </form>
                             {% endif %}
                         {% elif is_student %}

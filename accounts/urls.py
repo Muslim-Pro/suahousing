@@ -20,6 +20,8 @@ urlpatterns = [
     ),
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
     path('student/apply-landlord/', views.apply_for_landlord, name='apply_for_landlord'),
+    path('student/searches/save/', views.save_search, name='save_search'),
+    path('student/searches/<int:pk>/delete/', views.delete_saved_search, name='delete_saved_search'),
     path('student/houses/<int:pk>/save/', views.save_house, name='save_house'),
     path('student/rooms/<int:pk>/book/', views.apply_for_room, name='apply_for_room'),
     path(

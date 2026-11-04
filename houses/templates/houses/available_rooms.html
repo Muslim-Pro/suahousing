@@ -176,7 +176,7 @@
     <p class="text-uppercase fw-semibold mb-2 opacity-75" style="letter-spacing: 2px;">Live Listings</p>
     <h1 class="display-4 fw-bold mb-3">Available Houses &amp; Rooms</h1>
     <p class="lead mx-auto mb-4" style="max-width: 720px;">
-        Browse real-time listings from verified landlords around SUA campuses. Every house below is pulled directly from our database.
+        Browse live listings from landlords approved by the SUA Student Housing team. Room availability is shown for each listing.
     </p>
     <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
         <span class="stat-pill">{{ total_houses }} Houses Open</span>
@@ -246,6 +246,23 @@
         </div>
     </form>
 
+    {% if request.user.is_authenticated and request.user.user_type == 'student' %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <p class="small text-muted mb-0">Save these filters to quickly find matching rooms later.</p>
+        <form method="post" action="{% url 'save_search' %}">
+            {% csrf_token %}
+            <input type="hidden" name="location" value="{{ selected_location }}">
+            <input type="hidden" name="room_type" value="{{ selected_room_type }}">
+            <input type="hidden" name="minimum_price" value="{{ min_price|default_if_none:'' }}">
+            <input type="hidden" name="maximum_price" value="{{ max_price|default_if_none:'' }}">
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="btn btn-outline-success btn-sm rounded-pill">
+                <i class="fa-regular fa-bookmark me-1" aria-hidden="true"></i>Save this search
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
     <!-- HOUSES + ROOMS FROM DATABASE -->
     <div class="row g-4">
         {% for house in houses %}
@@ -259,7 +276,10 @@
 
                 <div class="p-4">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <span class="badge bg-success">{{ house.get_location_display }}</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-success">{{ house.get_location_display }}</span>
+                            {% if house.verified_landlord %}<span class="badge text-bg-success"><i class="fa-solid fa-circle-check me-1" aria-hidden="true"></i>Admin-approved landlord</span>{% endif %}
+                        </div>
                         <small class="text-muted fw-semibold">{{ house.matching_rooms|length }} room{{ house.matching_rooms|length|pluralize }}</small>
                     </div>
 
@@ -272,7 +292,7 @@
                     {% endif %}
 
                     {% if house.matching_rooms %}
-                        <h6 class="fw-bold text-dark mb-3">Rooms Available</h6>
+                        <h6 class="fw-bold text-dark mb-3">Room availability</h6>
                         <div class="d-flex flex-column gap-2 mb-3">
                             {% for room in house.matching_rooms %}
                             <div class="room-chip d-flex align-items-center gap-3">
@@ -283,6 +303,13 @@
                                 {% endif %}
                                 <div class="flex-grow-1">
                                     <div class="fw-semibold small">{{ room.get_room_type_display }}</div>
+                                    {% if room.has_approved_booking %}
+                                        <span class="badge text-bg-secondary">Booked</span>
+                                    {% elif room.pending_booking_count %}
+                                        <span class="badge text-bg-warning">Requests pending · accepting requests</span>
+                                    {% else %}
+                                        <span class="badge text-bg-success">Available</span>
+                                    {% endif %}
                                     <div class="text-danger fw-bold">TZS {{ room.price|floatformat:0 }}</div>
                                     {% if room.description %}
                                         <div class="text-muted" style="font-size: 0.78rem;">{{ room.description|truncatewords:12 }}</div>

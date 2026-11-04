@@ -114,6 +114,33 @@ class SavedHouse(models.Model):
         return f'{self.student.username} saved {self.house.title}'
 
 
+class SavedSearch(models.Model):
+    student = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='saved_housing_searches',
+    )
+    location = models.CharField(
+        max_length=50,
+        choices=[('', 'Any location'), *House.LOCATION_CHOICES],
+        blank=True,
+    )
+    room_type = models.CharField(
+        max_length=20,
+        choices=[('', 'Any room type'), *Room.ROOM_TYPES],
+        blank=True,
+    )
+    minimum_price = models.PositiveIntegerField(blank=True, null=True)
+    maximum_price = models.PositiveIntegerField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.student.username} housing search'
+
+
 class Booking(models.Model):
     # Omba chumba; mwenye nyumba ndiye anayekubali au kukataa ombi.
     STATUS_PENDING = 'pending'
